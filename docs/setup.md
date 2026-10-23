@@ -1,7 +1,7 @@
 # Setting up Nautical Nomads on Cloudflare
 
-Everything is done in the Cloudflare dashboard of the account that holds
-nauticalnomads.com, except step 2 (one line in GitHub).
+Most steps are clicks in the Cloudflare dashboard of the account that holds
+nauticalnomads.com; steps 2 to 4 are in GitHub.
 
 ## 1. Create the database
 
@@ -13,22 +13,31 @@ Copy the **Database ID**.
 GitHub → `wrangler.jsonc` → pencil icon → replace `00000000-0000-0000-0000-000000000000`
 with the Database ID → commit.
 
-## 3. Create the tables
+## 3. Let GitHub deploy (tables are created automatically)
 
-D1 → `nautical-nomads` → **Console**. Paste and run, in order, the contents of:
+Do **not** paste the migration files into the D1 console: the deploy workflow
+creates the tables and keeps track of which migrations have run.
 
-1. `migrations/0000_init.sql`
-2. `migrations/0001_audit_append_only.sql`
+1. **Cloudflare API token.** Cloudflare → My Profile → API Tokens → Create Token →
+   "Edit Cloudflare Workers" template → add permission **Account → D1 → Edit** →
+   Account resources: the account that holds nauticalnomads.com → Zone resources:
+   nauticalnomads.com → Create. Copy the token.
+2. **Account ID.** Cloudflare → Workers & Pages → right-hand column "Account ID". Copy it.
+3. **GitHub secrets.** GitHub → NN → Settings → Secrets and variables → Actions →
+   New repository secret: `CLOUDFLARE_API_TOKEN` (the token) and `CLOUDFLARE_ACCOUNT_ID`.
 
-(Later migrations: the same, one file at a time, in number order.)
+## 4. Make `main` the home of the new site
 
-## 4. Point the Worker build at this code
+1. Merge the pull request with the new site into `main`.
+2. GitHub → NN → Settings → General → **Default branch** → switch to `main`.
+   (GitHub only shows a workflow's "Run workflow" button for workflows on the default branch.)
+3. Cloudflare → Workers & Pages → `nn` → Settings → Build → **Disconnect** the Git
+   repository. From now on only the GitHub workflow deploys, and it runs migrations
+   first. Cloudflare's own build would deploy code without them.
 
-Workers & Pages → `nn` → Settings → Build:
-
-- **Production branch**: the branch this code lives on (merge it into `main`, then use `main`).
-- **Build command**: `npm run build`
-- **Deploy command**: `npx wrangler deploy`
+To deploy: GitHub → NN → Actions → **Deploy production** → Run workflow → branch `main`
+→ Run. The run summary shows the restore point, and a failed smoke test rolls the
+site back automatically.
 
 ## 5. Secrets
 
