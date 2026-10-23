@@ -114,7 +114,8 @@ jobs:
 
       - name: Roll back if the smoke test failed
         if: failure() && steps.smoke.outcome == 'failure' && steps.prev.outputs.id != ''
-        run: npx wrangler rollback "${{ steps.prev.outputs.id }}" --message "Automatic rollback: smoke test failed" || true
+        run: |
+          npx wrangler rollback "${{ steps.prev.outputs.id }}" --message "Automatic rollback - smoke test failed" || true
 
       - name: Tag the release
         if: success()
