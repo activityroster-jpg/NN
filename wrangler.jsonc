@@ -12,9 +12,8 @@
     {
       "binding": "DB",
       "database_name": "nautical-nomads",
-      // Cloudflare dashboard → Storage & Databases → D1 → Create, location
-      // Western Europe, name "nautical-nomads" → paste its Database ID here.
-      "database_id": "00000000-0000-0000-0000-000000000000",
+      // D1 "nautical-nomads", Western Europe (created 23 October 2026).
+      "database_id": "5371c64f-2133-4f27-acc1-82438f8468fd",
       "migrations_dir": "migrations"
     }
   ],
