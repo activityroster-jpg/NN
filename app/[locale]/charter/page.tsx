@@ -153,7 +153,7 @@ export default async function CharterResults({ params, searchParams }: Props) {
           </div>
         </div>
       </div>
-      <CompareTray href={`/${locale}/compare?${trip.toString()}`} labelCompare={t.results.compareNow} hint={t.results.compareHint} clearLabel={t.results.clearFilters.split(" ")[0] ?? "Clear"} />
+      <CompareTray href={`/${locale}/compare?${trip.toString()}`} labelCompare={t.results.compareNow} hint={t.results.compareHint} clearLabel={t.common.clear} />
     </CompareProvider>
   );
 }

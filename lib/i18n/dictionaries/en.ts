@@ -73,6 +73,7 @@ const en = {
     search: "Search",
     save: "Save",
     send: "Send",
+    clear: "Clear",
   },
   currency: { label: "Currency" },
   language: { label: "Language" },
@@ -327,6 +328,9 @@ const en = {
   booking: {
     title: "Booking {ref}",
     statusHold: "Held for you until {time}",
+    kindDeposit: "Deposit",
+    kindBalance: "Balance",
+    kindFull: "Full payment",
     statusAwaiting: "Awaiting payment",
     statusPaid: "Payment received, confirming with the charter company",
     statusConfirmed: "Confirmed",

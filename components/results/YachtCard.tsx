@@ -36,7 +36,7 @@ export function YachtCard({
   const cat = categoryName(t, q.categoryId);
   const atBase = q.payAtBase.reduce((s, l) => s + l.amount, 0);
   const discounted = offer.listPrice > offer.price;
-  const crew = q.lines.filter((l) => l.code === "skipper" || l.code === "chef" || l.code === "hostess").map((l) => l.label.toLowerCase());
+  const crew = q.lines.filter((l) => l.code === "skipper" || l.code === "chef" || l.code === "hostess").map((l) => l.label);
   const crewLabel = crew.length ? crew.join(" + ") : null;
   return (
     <article className="card group flex flex-col overflow-hidden transition hover:shadow-md">
@@ -71,17 +71,15 @@ export function YachtCard({
           <li className="flex items-center gap-1.5 truncate"><IconPin className="h-4 w-4 shrink-0 text-muted" /><span className="truncate">{y.base.name}</span></li>
         </ul>
         <p className="mt-2 text-xs text-muted">{fmt(t.results.capacity, { n: capacity })}</p>
-        <div className="mt-auto flex items-end justify-between gap-3 border-t border-line pt-3">
-          <div>
-            <p className="text-xs text-muted">{t.results.totalWeek}</p>
-            <Price amount={q.total} currency={q.currency} display={display} rates={rates} locale={locale} approxLabel={t.common.approx} className="text-2xl font-semibold" />
-            {crewLabel && <p className="text-xs text-muted">{fmt(t.results.includesCrew, { crew: crewLabel })}</p>}
-            {q.unavailable.length > 0 && <p className="text-xs text-warn">{fmt(t.results.crewOnRequest, { crew: q.unavailable.map((r) => t.common[r]).join(", ") })}</p>}
-            {discounted && <p className="text-xs text-ok">{fmt(t.results.wasPrice, { price: money(q.total + Math.ceil((offer.listPrice - offer.price) * (q.charter / offer.price)), q.currency, locale) })}</p>}
-            {atBase > 0 && <p className="text-xs text-muted">{fmt(t.results.payAtBase, { price: money(atBase, q.currency, locale) })}</p>}
-          </div>
-          <div className="flex flex-col items-end gap-2">
-            <p className="text-right text-xs text-muted">
+        <div className="mt-auto border-t border-line pt-3">
+          <p className="text-xs text-muted">{t.results.totalWeek}</p>
+          <Price amount={q.total} currency={q.currency} display={display} rates={rates} locale={locale} approxLabel={t.common.approx} className="text-2xl font-semibold" />
+          {crewLabel && <p className="text-xs text-muted">{fmt(t.results.includesCrew, { crew: crewLabel })}</p>}
+          {q.unavailable.length > 0 && <p className="text-xs text-warn">{fmt(t.results.crewOnRequest, { crew: q.unavailable.map((r) => t.common[r]).join(", ") })}</p>}
+          {discounted && <p className="text-xs text-ok">{fmt(t.results.wasPrice, { price: money(q.total + Math.ceil((offer.listPrice - offer.price) * (q.charter / offer.price)), q.currency, locale) })}</p>}
+          {atBase > 0 && <p className="text-xs text-muted">{fmt(t.results.payAtBase, { price: money(atBase, q.currency, locale) })}</p>}
+          <div className="mt-3 flex items-center justify-between gap-2">
+            <p className="text-xs text-muted">
               {money(q.perPerson, q.currency, locale)} {t.common.perPerson}
             </p>
             <Link href={href} className="btn-primary px-4 py-2 text-sm">

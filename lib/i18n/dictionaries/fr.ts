@@ -72,6 +72,7 @@ const fr: Dictionary = {
     search: "Rechercher",
     save: "Enregistrer",
     send: "Envoyer",
+    clear: "Vider",
   },
   currency: { label: "Devise" },
   language: { label: "Langue" },
@@ -326,6 +327,9 @@ const fr: Dictionary = {
   booking: {
     title: "Réservation {ref}",
     statusHold: "Option à votre nom jusqu'à {time}",
+    kindDeposit: "Acompte",
+    kindBalance: "Solde",
+    kindFull: "Paiement intégral",
     statusAwaiting: "En attente de paiement",
     statusPaid: "Paiement reçu, confirmation en cours auprès du loueur",
     statusConfirmed: "Confirmée",

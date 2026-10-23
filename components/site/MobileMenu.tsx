@@ -7,7 +7,7 @@ import { IconClose, IconMenu } from "@/components/Icons";
 export function MobileMenu({ links, labels, children }: { links: { href: string; label: string }[]; labels: { menu: string; close: string }; children?: React.ReactNode }) {
   const [open, setOpen] = useState(false);
   return (
-    <div className="md:hidden">
+    <div className="lg:hidden">
       <button type="button" className="btn-ghost -mr-2" aria-expanded={open} aria-label={open ? labels.close : labels.menu} onClick={() => setOpen(!open)}>
         {open ? <IconClose /> : <IconMenu />}
       </button>

@@ -28,14 +28,14 @@ export function Header({ locale, t, currency }: { locale: Locale; t: Dictionary;
         <Link href={`/${locale}`} className="shrink-0 text-ink">
           <Logo />
         </Link>
-        <nav className="hidden items-center gap-1 md:flex">
+        <nav className="hidden items-center gap-1 lg:flex">
           {links.map((l) => (
-            <Link key={l.href} href={l.href} className="rounded-full px-3 py-2 text-[15px] font-medium text-ink/80 hover:bg-ink/5 hover:text-ink">
+            <Link key={l.href} href={l.href} className="rounded-full px-3 py-2 text-[15px] font-medium whitespace-nowrap text-ink/80 hover:bg-ink/5 hover:text-ink">
               {l.label}
             </Link>
           ))}
         </nav>
-        <div className="hidden items-center gap-2 md:flex">
+        <div className="hidden items-center gap-2 lg:flex">
           {switchers}
           <Link href={`/${locale}/plan`} className="btn-primary ml-1 px-4 py-2 text-sm">
             {t.nav.plan}

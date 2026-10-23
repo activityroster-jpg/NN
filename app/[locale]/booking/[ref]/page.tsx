@@ -123,7 +123,7 @@ export default async function BookingPage({ params, searchParams }: Props) {
               <ul className="divide-y divide-line text-sm">
                 {payments.map((p) => (
                   <li key={p.id} className="flex items-center justify-between gap-3 py-2">
-                    <span>{p.kind === "deposit" ? t.yacht.depositNow.split(" ")[0] : p.kind === "balance" ? t.yacht.balanceBy.split(" ")[0] : t.yacht.fullNow}</span>
+                    <span>{p.kind === "deposit" ? t.booking.kindDeposit : p.kind === "balance" ? t.booking.kindBalance : t.booking.kindFull}</span>
                     <span className="text-muted">{p.status === "paid" ? t.booking.paid : fmt(t.booking.due, { date: dateLong(p.dueDate, locale) })}</span>
                     <span className="font-medium">{money(p.amount, p.currency as Currency, locale, true)}</span>
                   </li>
