@@ -1,0 +1,12 @@
+# Copy to .dev.vars for `npm run dev`. Never commit real values.
+SITE_URL=http://localhost:3000
+ADMIN_EMAILS=info@nauticalnomads.com
+CRON_SECRET=dev-cron-secret
+# Optional in dev: without these, emails print to the console and card payment is disabled.
+RESEND_API_KEY=
+STRIPE_SECRET_KEY=
+STRIPE_WEBHOOK_SECRET=
+# Booking managers: leave empty to use the built-in demo fleet.
+MMK_API_TOKEN=
+NAUSYS_USERNAME=
+NAUSYS_PASSWORD=

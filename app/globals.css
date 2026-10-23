@@ -1,95 +1,75 @@
 @import "tailwindcss";
 
-/* ─────────────────────────────────────────────────────────────────────────
-   Nautical Nomads — design tokens
-   Brand bible §9.2. Horizon is the primary system; Tempest & Lagoon are
-   alternate, toggleable palettes (set `data-theme` on <html>).
-
-   NOTE: Only the Horizon hexes are specified in the brand bible. Tempest and
-   Lagoon values below are PROPOSED placeholders — see PROGRESS.md. They keep
-   the same six token roles so swapping palettes never changes the layout.
-   ───────────────────────────────────────────────────────────────────────── */
-
 @theme inline {
-  /* Map brand tokens onto Tailwind's color scale so utilities like
-     `bg-surface`, `text-ink`, `text-accent-sun` work everywhere. */
   --color-surface: var(--surface);
   --color-surface-2: var(--surface-2);
+  --color-card: var(--card);
   --color-ink: var(--ink);
-  --color-accent-sun: var(--accent-sun);
-  --color-accent-sea: var(--accent-sea);
-  --color-accent-sand: var(--accent-sand);
+  --color-muted: var(--muted);
+  --color-line: var(--line);
+  --color-brand: var(--brand);
+  --color-brand-ink: var(--brand-ink);
+  --color-brand-soft: var(--brand-soft);
+  --color-accent: var(--accent);
+  --color-sea: var(--sea);
+  --color-ok: var(--ok);
+  --color-warn: var(--warn);
+  --color-danger: var(--danger);
 
-  /* Redesign §1.1 — friendlier Horizon aliases (same hexes) so components can
-     use `bg-terracotta`, `text-deep-ink`, `border-driftwood-tan`, etc. */
-  --color-hull-white: var(--surface);
-  --color-driftwood: var(--surface-2);
-  --color-deep-ink: var(--ink);
-  --color-terracotta: var(--accent-sun);
-  --color-faded-denim: var(--accent-sea);
-  --color-driftwood-tan: var(--accent-sand);
-  /* AA-accessible variants for small text / CTA fills on light surfaces */
-  --color-terracotta-text: var(--accent-sun-text);
-  --color-meta: var(--meta-on-light);
-
-  /* Fonts — Billabong-inspired system (redesign v2 §1.2), via lib/fonts.ts.
-     display = Cormorant Garamond (hero / campaign / collection / editorial headings)
-     body    = DM Sans (nav, UI, body, headings 700, meta, price, SKU)
-     editorial aliases to Cormorant; mono folds into DM Sans. */
   --font-display: var(--font-cormorant), ui-serif, Georgia, serif;
-  --font-editorial: var(--font-cormorant), ui-serif, Georgia, serif;
-  --font-body: var(--font-dm-sans), ui-sans-serif, system-ui, sans-serif;
-  --font-mono: var(--font-dm-sans), ui-sans-serif, system-ui, sans-serif;
-
-  /* Type scale — Display 1 → Caption (brand bible §9.2) */
-  --text-display-1: 4.5rem;
-  --text-display-1--line-height: 1.05;
-  --text-display-2: 3rem;
-  --text-display-2--line-height: 1.1;
-  --text-heading: 2rem;
-  --text-heading--line-height: 1.2;
-  --text-sub: 1.375rem;
-  --text-sub--line-height: 1.3;
-  --text-body: 1.0625rem;
-  --text-body--line-height: 1.6;
-  --text-caption: 0.8125rem;
-  --text-caption--line-height: 1.4;
+  --font-sans: var(--font-dm-sans), ui-sans-serif, system-ui, sans-serif;
 }
 
-/* Horizon — primary system (brand bible §9.2) */
 :root,
 [data-theme="horizon"] {
-  --surface: #faf6ec; /* Hull White */
-  --surface-2: #efe8d8; /* Driftwood */
-  --ink: #2a2826; /* Deep Ink */
-  --accent-sun: #c75d3e; /* Terracotta — large/decorative use */
-  --accent-sea: #4a6b85; /* Faded Denim */
-  --accent-sand: #b39570; /* Driftwood Tan — large/decorative use */
-  /* WCAG-AA accessible variants for SMALL text on light surfaces (the brand
-     Terracotta/Tan fail AA at body size). Used for links, CTA fills + small
-     meta; the originals stay for large headings/decorative fills (≥24px). */
-  --accent-sun-text: #a8492e; /* 5.32:1 on Hull White, 4.70:1 on Driftwood */
-  --meta-on-light: #7e6444; /* tan-ish meta that passes 5.13:1 on Hull White */
+  --surface: #faf6ec;
+  --surface-2: #efe8d8;
+  --card: #fffdf8;
+  --ink: #2a2826;
+  --muted: #6b6258;
+  --line: #e2d9c6;
+  --brand: #a8492e;
+  --brand-ink: #ffffff;
+  --brand-soft: #f6e3da;
+  --accent: #c75d3e;
+  --sea: #4a6b85;
+  --ok: #2f7a4f;
+  --warn: #9a6a12;
+  --danger: #b3261e;
 }
 
-/* Tempest — stormier alternate (PROPOSED, pending brand sign-off) */
-[data-theme="tempest"] {
-  --surface: #eef1f3;
-  --surface-2: #dce2e6;
-  --ink: #1f262b;
-  --accent-sun: #c25a3c;
-  --accent-sea: #2f4a5c;
-  --accent-sand: #8a9399;
+[data-theme="aegean"] {
+  --surface: #f6f9fc;
+  --surface-2: #e6eef7;
+  --card: #ffffff;
+  --ink: #0b2545;
+  --muted: #51607a;
+  --line: #d6e0ec;
+  --brand: #0b4f8a;
+  --brand-ink: #ffffff;
+  --brand-soft: #dde9f6;
+  --accent: #d9921f;
+  --sea: #0e7c9e;
+  --ok: #1f7a4d;
+  --warn: #8a5a00;
+  --danger: #b3261e;
 }
 
-/* Lagoon — brighter coastal alternate (PROPOSED, pending brand sign-off) */
-[data-theme="lagoon"] {
-  --surface: #f3faf7;
-  --surface-2: #dff0ea;
-  --ink: #1d2b2a;
-  --accent-sun: #e07a4d;
-  --accent-sea: #2a8c8c;
-  --accent-sand: #9bbfae;
+[data-theme="riviera"] {
+  --surface: #fbf8f3;
+  --surface-2: #f1ebe0;
+  --card: #ffffff;
+  --ink: #18302f;
+  --muted: #5c6b69;
+  --line: #e3dccf;
+  --brand: #0f5c5c;
+  --brand-ink: #ffffff;
+  --brand-soft: #dcefec;
+  --accent: #e0643a;
+  --sea: #1f8a8a;
+  --ok: #2f7a4f;
+  --warn: #8a5a00;
+  --danger: #b3261e;
 }
 
 html {
@@ -100,11 +80,73 @@ html {
 }
 
 body {
-  font-family: var(--font-body);
-  min-height: 100dvh;
+  font-family: var(--font-sans);
+  background-color: var(--surface);
 }
 
 ::selection {
-  background-color: var(--accent-sun);
-  color: var(--surface);
+  background-color: var(--brand);
+  color: var(--brand-ink);
+}
+
+:focus-visible {
+  outline: 2px solid var(--brand);
+  outline-offset: 2px;
+}
+
+@utility btn {
+  @apply inline-flex items-center justify-center gap-2 rounded-full px-5 py-3 text-[15px] font-semibold whitespace-nowrap transition disabled:cursor-not-allowed disabled:opacity-50;
+}
+@utility btn-primary {
+  @apply btn bg-brand text-brand-ink hover:brightness-110 active:brightness-95;
+}
+@utility btn-secondary {
+  @apply btn border border-ink/15 bg-card text-ink hover:border-ink/30;
+}
+@utility btn-ghost {
+  @apply btn px-3 text-ink hover:bg-ink/5;
+}
+@utility card {
+  @apply rounded-2xl border border-line bg-card;
+}
+@utility field-label {
+  @apply mb-1.5 block text-sm font-medium text-ink;
+}
+@utility field {
+  @apply w-full rounded-xl border border-line bg-card px-3.5 py-2.5 text-[15px] text-ink placeholder:text-muted/70 focus:border-brand focus:outline-none;
+}
+@utility chip {
+  @apply inline-flex items-center gap-1 rounded-full border border-line bg-card px-3 py-1.5 text-sm text-ink transition hover:border-ink/30;
+}
+@utility chip-on {
+  @apply border-brand bg-brand-soft text-ink;
+}
+@utility badge {
+  @apply inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-semibold;
+}
+@utility container-page {
+  @apply mx-auto w-full max-w-6xl px-4 sm:px-6;
+}
+@utility h-display {
+  @apply font-display font-semibold tracking-tight;
+}
+@utility prose-nn {
+  & p {
+    @apply mb-4 leading-relaxed text-ink/90;
+  }
+  & h2 {
+    @apply mt-8 mb-3 text-xl font-semibold;
+  }
+  & h3 {
+    @apply mt-6 mb-2 font-semibold;
+  }
+  & ul {
+    @apply mb-4 list-disc pl-5 text-ink/90;
+  }
+  & li {
+    @apply mb-1;
+  }
+  & a {
+    @apply text-brand underline;
+  }
 }

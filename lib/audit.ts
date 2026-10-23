@@ -1,24 +1,14 @@
-import { createServiceClient } from "@/lib/supabase/service";
-import type { Json } from "@/lib/database.types";
+import type { Db } from "@/lib/db";
+import { auditLog } from "@/lib/db/schema";
 
-// Best-effort write to the audit_log table (same table the settings page reads).
-// Never throws and no-ops if the table is missing, so an audit failure can never
-// block the underlying admin action.
-export async function writeAudit(
-  actor: { id: string; email: string | null },
+/** Append a line to the audit log. The table refuses updates and deletes (migration 0001). */
+export async function audit(
+  db: Db,
+  actor: string,
   action: string,
-  detail: Json,
+  entity: string,
+  entityId: string | null,
+  detail?: Record<string, unknown>,
 ): Promise<void> {
-  try {
-    const sb = createServiceClient();
-    await sb
-      .from("audit_log")
-      .insert({ actor_id: actor.id, actor_email: actor.email, action, detail } as never)
-      .then(
-        () => undefined,
-        () => undefined,
-      );
-  } catch {
-    /* best-effort */
-  }
+  await db.insert(auditLog).values({ actor, action, entity, entityId, detail: detail ?? null });
 }

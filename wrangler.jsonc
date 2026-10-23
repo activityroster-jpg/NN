@@ -1,19 +1,27 @@
 {
   "$schema": "node_modules/wrangler/config-schema.json",
   "name": "nn",
-  // Custom entry wraps OpenNext's worker (fetch) + adds the scheduled handler.
+  // Custom entry: OpenNext's fetch handler plus the scheduled handler (worker.js).
   "main": "worker.js",
-  "compatibility_date": "2025-03-01",
+  "compatibility_date": "2025-09-01",
   "compatibility_flags": ["nodejs_compat"],
-  "assets": {
-    "directory": ".open-next/assets",
-    "binding": "ASSETS",
-  },
-  // Abandoned-cart journey (§B-11). Hourly cron drives /api/cron/abandoned-cart
-  // via the scheduled handler in worker.js. CRON_SECRET must be set as a secret.
-  "triggers": {
-    "crons": ["0 * * * *"],
-  },
-  // Secrets (Supabase, Stripe, Resend, POD keys, CRON_SECRET) are set in the
-  // Cloudflare dashboard or via `wrangler secret put` — never committed here.
+  "assets": { "directory": ".open-next/assets", "binding": "ASSETS" },
+  // Hourly: expire 24-hour holds, send balance reminders, refresh FX rates.
+  "triggers": { "crons": ["7 * * * *"] },
+  "d1_databases": [
+    {
+      "binding": "DB",
+      "database_name": "nautical-nomads",
+      // D1 "nautical-nomads", Western Europe (created 23 October 2026).
+      "database_id": "5371c64f-2133-4f27-acc1-82438f8468fd",
+      "migrations_dir": "migrations"
+    }
+  ],
+  "observability": { "enabled": true },
+  "vars": {
+    "SITE_URL": "https://nauticalnomads.com"
+  }
+  // Secrets (set in the dashboard, never here): STRIPE_SECRET_KEY,
+  // STRIPE_WEBHOOK_SECRET, RESEND_API_KEY, ADMIN_EMAILS, CRON_SECRET,
+  // MMK_API_TOKEN, NAUSYS_USERNAME, NAUSYS_PASSWORD. See docs/setup.md.
 }
