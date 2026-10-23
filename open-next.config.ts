@@ -1,10 +1,9 @@
-import { defineCloudflareConfig } from "@opennextjs/cloudflare";
+import { defineCloudflareConfig } from "@opennextjs/cloudflare/config";
 
 const config = defineCloudflareConfig({});
 
-// `npm run build` runs this OpenNext build. OpenNext's Next.js build phase
-// defaults to re-running `npm run build`, which would recurse forever — so point
-// it directly at `next build`.
+// `npm run build` runs OpenNext, whose Next.js phase would otherwise call
+// `npm run build` again and recurse. Point it straight at `next build`.
 config.buildCommand = "npx next build";
 
 export default config;

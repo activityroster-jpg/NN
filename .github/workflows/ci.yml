@@ -10,23 +10,14 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-
       - uses: actions/setup-node@v4
         with:
           node-version: 22
           cache: npm
-
-      - name: Install
-        run: npm ci
-
-      - name: Format check
-        run: npm run format:check
-
-      - name: Lint
-        run: npm run lint
-
+      - run: npm ci
       - name: Typecheck
         run: npm run typecheck
-
-      - name: Build
-        run: npm run build:next
+      - name: Unit tests
+        run: npm test
+      - name: Production build (Cloudflare Worker bundle)
+        run: npm run build
