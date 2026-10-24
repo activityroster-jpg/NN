@@ -3,6 +3,9 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { IconArrowRight, IconCalendar, IconCheck, IconHelm, IconPin } from "@/components/Icons";
 import { getDb } from "@/lib/db";
+import { getEnvAsync } from "@/lib/env";
+import { autofillInBackground } from "@/lib/photos/autofill";
+import { galleryFor } from "@/lib/photos/slots";
 import { saturdays } from "@/lib/domain/dates";
 import { destinationById } from "@/lib/domain/destinations";
 import { getDictionary, type Dictionary } from "@/lib/i18n";
@@ -26,8 +29,11 @@ export default async function DestinationPage({ params }: Props) {
   const locale = await requireLocale(params.then((p) => ({ locale: p.locale })));
   const t = getDictionary(locale);
   const def = destinationById(id);
-  const d = def ? await destinationView(await getDb(), id) : undefined;
+  const db = await getDb();
+  const d = def ? await destinationView(db, id) : undefined;
   if (!def || !d || !d.active) notFound();
+  autofillInBackground(await getEnvAsync(), db);
+  const gallery = await galleryFor(db, id);
   const c = t.destinations[id as DestKey];
   // Next few in-season Saturdays as quick starts.
   const quick = saturdays(todayIso(), 60).filter((s) => def.seasonMonths.includes(Number(s.slice(5, 7)))).slice(0, 6);
@@ -52,6 +58,17 @@ export default async function DestinationPage({ params }: Props) {
               <li key={h} className="card flex items-center gap-3 p-4"><IconCheck className="h-5 w-5 shrink-0 text-ok" />{h}</li>
             ))}
           </ul>
+          {gallery.length > 0 && (
+            <div className={`mt-10 grid gap-3 ${gallery.length === 1 ? "" : gallery.length === 2 ? "sm:grid-cols-2" : "sm:grid-cols-3"}`}>
+              {gallery.map((g, i) => (
+                <figure key={g.url} className={`relative overflow-hidden rounded-2xl ${i === 0 && gallery.length === 3 ? "sm:col-span-2 sm:row-span-2" : ""}`}>
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img src={g.url} alt={`${c.name} ${i + 1}`} loading="lazy" className="block aspect-[4/3] h-full w-full object-cover" />
+                  {g.credit && <figcaption className="absolute right-2 bottom-1 text-[10px] text-white/80 drop-shadow">{g.credit}</figcaption>}
+                </figure>
+              ))}
+            </div>
+          )}
           <div className="mt-10 grid gap-5 sm:grid-cols-2">
             <div className="card p-5">
               <h2 className="flex items-center gap-2 font-semibold"><IconCalendar className="h-5 w-5 text-sea" />{t.plan.whenTitle}</h2>
