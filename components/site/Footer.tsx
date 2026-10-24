@@ -39,6 +39,11 @@ export function Footer({ locale, t }: { locale: Locale; t: Dictionary }) {
                 {t.home.moreDestinations}
               </Link>
             </li>
+            <li>
+              <Link href={`/${locale}/cruising`} className="hover:underline">
+                {t.footer.cruisingGuides}
+              </Link>
+            </li>
           </ul>
         </div>
         <div>

@@ -434,6 +434,7 @@ const nl: Dictionary = {
   },
   footer: {
     explore: "Ontdekken",
+    cruisingGuides: "Vaargidsen",
     company: "Bedrijf",
     legal: "Juridisch",
     terms: "Boekingsvoorwaarden",

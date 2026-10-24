@@ -435,6 +435,7 @@ const en = {
   },
   footer: {
     explore: "Explore",
+    cruisingGuides: "Cruising guides",
     company: "Company",
     legal: "Legal",
     terms: "Booking conditions",
