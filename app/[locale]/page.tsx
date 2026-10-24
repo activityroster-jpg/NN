@@ -61,13 +61,13 @@ export default async function Home({ params }: { params: Promise<{ locale: strin
                 <Link
                   key={d.id}
                   href={`/${locale}/plan?d=${d.id}`}
-                  className="group flex items-center justify-between rounded-2xl border border-white/30 bg-white/10 px-4 py-3 backdrop-blur transition hover:bg-white/20"
+                  className="group flex items-center justify-between rounded-2xl bg-white/95 px-4 py-3 text-ink shadow-lg shadow-black/20 transition hover:bg-white"
                 >
                   <span>
-                    <span className="block text-[11px] font-semibold tracking-wider uppercase opacity-80">{t.destinations[d.id as DestKey].region}</span>
+                    <span className="block text-[11px] font-semibold tracking-wider text-muted uppercase">{t.destinations[d.id as DestKey].region}</span>
                     <span className="h-display text-xl leading-tight">{t.destinations[d.id as DestKey].name}</span>
                   </span>
-                  <IconArrowRight className="h-5 w-5 opacity-70 transition group-hover:translate-x-1" />
+                  <IconArrowRight className="h-5 w-5 text-brand transition group-hover:translate-x-1" />
                 </Link>
               ))}
             </div>
