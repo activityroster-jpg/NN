@@ -24,8 +24,9 @@ export function Header({ locale, t, currency }: { locale: Locale; t: Dictionary;
       <a href="#main" className="sr-only focus:not-sr-only focus:absolute focus:top-2 focus:left-2 focus:rounded focus:bg-card focus:px-3 focus:py-2">
         {t.nav.skipToContent}
       </a>
-      <div className="container-page flex h-16 items-center justify-between gap-4">
-        <Link href={`/${locale}`} className="shrink-0 text-ink">
+      <div className="container-page relative flex h-16 items-center justify-between gap-4">
+        {/* Centred on mobile (absolute), inline on desktop. */}
+        <Link href={`/${locale}`} className="absolute left-1/2 shrink-0 -translate-x-1/2 text-ink lg:static lg:translate-x-0">
           <Logo />
         </Link>
         <nav className="hidden items-center gap-1 lg:flex">
@@ -41,9 +42,11 @@ export function Header({ locale, t, currency }: { locale: Locale; t: Dictionary;
             {t.nav.plan}
           </Link>
         </div>
-        <MobileMenu links={[...links, { href: `/${locale}/plan`, label: t.nav.plan }]} labels={{ menu: t.nav.menu, close: t.nav.close }}>
-          {switchers}
-        </MobileMenu>
+        <div className="ml-auto lg:hidden">
+          <MobileMenu links={[...links, { href: `/${locale}/plan`, label: t.nav.plan }]} labels={{ menu: t.nav.menu, close: t.nav.close }}>
+            {switchers}
+          </MobileMenu>
+        </div>
       </div>
     </header>
   );
