@@ -86,7 +86,7 @@ export default async function DestinationPage({ params }: Props) {
             <Link key={x.id} href={`/${locale}/cruising/${x.id}`} className="mt-6 card flex items-center justify-between p-5 hover:border-ink/30">
               <span>
                 <span className="block text-xs font-semibold tracking-wider text-brand uppercase">Cruising guide · video</span>
-                <span className="font-semibold">{x.name}: 7-day route from {x.base}</span>
+                <span className="font-semibold">{x.name}: a week from {x.baseMarina.name}</span>
               </span>
               <IconArrowRight className="h-5 w-5 text-brand" />
             </Link>

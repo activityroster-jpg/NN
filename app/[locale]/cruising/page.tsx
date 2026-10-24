@@ -27,11 +27,11 @@ export default async function CruisingIndex({ params }: { params: Promise<{ loca
           <div className="mt-5 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
             {r.guides.map((g) => (
               <Link key={g.id} href={`/${locale}/cruising/${g.id}`} className="card group flex flex-col p-5 transition hover:border-ink/30">
-                <span className="text-xs font-semibold tracking-wider text-muted uppercase">{g.country} · from {g.base}</span>
+                <span className="text-xs font-semibold tracking-wider text-muted uppercase">{g.country} · from {g.baseMarina.name}</span>
                 <span className="h-display mt-1 text-2xl">{g.name}</span>
                 <span className="mt-2 text-sm text-ink/80">{g.tagline}</span>
                 <span className="mt-4 flex items-center justify-between text-sm text-muted">
-                  <span>7 days · about {totalMiles(g)} nm · {LEVEL[g.level]}</span>
+                  <span>1 week · about {totalMiles(g)} nm · {LEVEL[g.level]}</span>
                   <IconArrowRight className="h-4 w-4 text-brand transition group-hover:translate-x-1" />
                 </span>
               </Link>
