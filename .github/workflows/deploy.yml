@@ -44,6 +44,30 @@ jobs:
             echo "::error::CLOUDFLARE_API_TOKEN and/or CLOUDFLARE_ACCOUNT_ID are not set (Settings → Secrets and variables → Actions). See docs/setup.md."
             exit 1
           fi
+          # The Cloudflare account that holds the nn Worker, the domain and the database.
+          # Account IDs are not secret (they appear in every dashboard URL).
+          EXPECTED="80cced925b3b62150385392a692fc17c"
+          if [ "$CLOUDFLARE_ACCOUNT_ID" != "$EXPECTED" ]; then
+            echo "::error::The CLOUDFLARE_ACCOUNT_ID secret is not the Activityroster account's ID. Set it to $EXPECTED (GitHub → Settings → Secrets and variables → Actions)."
+            exit 1
+          fi
+
+      - name: Check the token can reach D1 in this account
+        run: |
+          set -euo pipefail
+          api() { curl -sS -H "Authorization: Bearer $CLOUDFLARE_API_TOKEN" "https://api.cloudflare.com/client/v4$1"; }
+          echo "Token status: $(api /user/tokens/verify | node -e 'let s="";process.stdin.on("data",d=>s+=d).on("end",()=>{const r=JSON.parse(s);console.log(r.success?r.result.status:JSON.stringify(r.errors))})')"
+          LIST="$(api /accounts/$CLOUDFLARE_ACCOUNT_ID/d1/database)"
+          OK="$(printf '%s' "$LIST" | node -e 'let s="";process.stdin.on("data",d=>s+=d).on("end",()=>{const r=JSON.parse(s);console.log(r.success?"yes":"no:"+JSON.stringify(r.errors))})')"
+          if [ "$OK" != "yes" ]; then
+            echo "::error::The API token cannot list D1 databases in this account ($OK). In Cloudflare → My Profile → API Tokens, edit the token and make sure it has Account → D1 → Edit for this account, then update the CLOUDFLARE_API_TOKEN secret if the token value changed."
+            exit 1
+          fi
+          if ! printf '%s' "$LIST" | grep -q "$(grep -o '"database_id": *"[^"]*"' wrangler.jsonc | head -1 | sed 's/.*"\([^"]*\)"$/\1/')"; then
+            echo "::error::The database id in wrangler.jsonc is not in this Cloudflare account. Create the D1 database in the Activityroster account (or check the id) and update wrangler.jsonc."
+            exit 1
+          fi
+          echo "Cloudflare access OK: token valid, D1 reachable, database found."
 
       - uses: actions/checkout@v4
         with:

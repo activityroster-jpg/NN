@@ -360,3 +360,53 @@ export async function clearPhoto(form: FormData) {
   }
   revalidatePath("/", "layout");
 }
+
+/**
+ * One click: give every destination without a hero, and the two home-page
+ * cards, the best-matching stock photo. Each slot's search words come from
+ * SUGGESTED_QUERIES; the first landscape result wide enough for a hero wins.
+ * Anything already set is left alone, so re-running never overwrites a choice.
+ */
+export async function autoFillPhotos() {
+  const actor = await requireAdmin();
+  const env = await getEnvAsync();
+  const db = await getDb();
+  const { searchUnsplash, unsplashEnabled } = await import("@/lib/photos/unsplash");
+  const { searchPhotos, pexelsEnabled, SUGGESTED_QUERIES } = await import("@/lib/photos/pexels");
+  const search = unsplashEnabled(env) ? (q: string) => searchUnsplash(env, q) : pexelsEnabled(env) ? (q: string) => searchPhotos(env, q) : null;
+  if (!search) redirect("/admin/photos?filled=0");
+
+  const pickFor = async (query: string) => {
+    const { photos } = await search(query);
+    return photos.find((p) => p.width >= 1600 && p.width > p.height) ?? photos[0] ?? null;
+  };
+
+  let filled = 0;
+  const existing = new Map((await db.select().from(destinationSetting).all()).map((r) => [r.id, r]));
+  for (const id of DESTINATION_IDS) {
+    if (existing.get(id)?.heroImageUrl) continue;
+    const p = await pickFor(SUGGESTED_QUERIES[id] ?? `${id} sailing`);
+    if (!p) continue;
+    const credit = `${p.photographer} / ${p.source === "unsplash" ? "Unsplash" : "Pexels"}`;
+    await db
+      .insert(destinationSetting)
+      .values({ id, heroImageUrl: p.url, heroCredit: credit })
+      .onConflictDoUpdate({ target: destinationSetting.id, set: { heroImageUrl: p.url, heroCredit: credit } });
+    if (p.downloadLocation) await reportUnsplashDownload(env, p.downloadLocation);
+    filled++;
+  }
+  const settings = await getSettings(db);
+  const images = { ...settings.images };
+  for (const key of ["monohull", "catamaran"] as const) {
+    if (images[key]) continue;
+    const p = await pickFor(SUGGESTED_QUERIES[key]!);
+    if (!p) continue;
+    images[key] = { url: p.url, credit: `${p.photographer} / ${p.source === "unsplash" ? "Unsplash" : "Pexels"}` };
+    if (p.downloadLocation) await reportUnsplashDownload(env, p.downloadLocation);
+    filled++;
+  }
+  await saveSettings(db, { ...settings, images });
+  await audit(db, actor, "photos_autofilled", "settings", null, { filled });
+  revalidatePath("/", "layout");
+  redirect(`/admin/photos?filled=${filled}`);
+}
