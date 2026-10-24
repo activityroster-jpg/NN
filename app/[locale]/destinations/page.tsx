@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { getDb } from "@/lib/db";
+import { getEnvAsync } from "@/lib/env";
+import { autofillInBackground } from "@/lib/photos/autofill";
 import { getDictionary, type Dictionary } from "@/lib/i18n";
 import { monthName } from "@/lib/i18n/format";
 import { requireLocale } from "@/lib/request";
@@ -16,7 +18,9 @@ export async function generateMetadata({ params }: { params: Promise<{ locale: s
 export default async function Destinations({ params }: { params: Promise<{ locale: string }> }) {
   const locale = await requireLocale(params);
   const t = getDictionary(locale);
-  const all = (await destinationViews(await getDb())).filter((d) => d.active);
+  const db = await getDb();
+  autofillInBackground(await getEnvAsync(), db);
+  const all = (await destinationViews(db)).filter((d) => d.active);
   const featured = all.filter((d) => d.featured);
   const others = all.filter((d) => !d.featured);
   const card = (d: (typeof all)[number], big: boolean) => {

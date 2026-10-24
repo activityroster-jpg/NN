@@ -8,13 +8,14 @@ import type { Yacht } from "@/lib/domain/types";
 import { EMAIL_FOOTER, layout, sendMail } from "@/lib/email/send";
 import { siteUrl, type AppEnv } from "@/lib/env";
 import { refreshRates } from "@/lib/fx";
+import { autofillEmpty } from "@/lib/photos/autofill";
 import { providerFor } from "./charter";
 
 /** Hourly housekeeping: expire holds, remind about balances, refresh FX, purge old auth rows. */
 export async function tick(env: AppEnv, db: Db): Promise<Record<string, number>> {
   const now = new Date().toISOString();
   const today = now.slice(0, 10);
-  const out = { expired: 0, reminders: 0, fx: 0 };
+  const out = { expired: 0, reminders: 0, fx: 0, photos: 0 };
 
   // 1. Holds and unpaid bookings whose option has run out.
   const stale = await db
@@ -70,5 +71,11 @@ export async function tick(env: AppEnv, db: Db): Promise<Record<string, number>>
   }
   await purgeExpiredAuth();
   await db.delete(rateLimit).where(lt(rateLimit.windowStart, Math.floor(Date.now() / 1000) - 86_400));
+  // 4. Photos: fill any empty slots, pausing between stock-API calls (up to ~4 min).
+  try {
+    out.photos = (await autofillEmpty(env, db, 4 * 60_000)).filled;
+  } catch (e) {
+    console.error("photo autofill failed", e);
+  }
   return out;
 }

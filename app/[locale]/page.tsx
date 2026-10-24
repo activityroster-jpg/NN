@@ -4,6 +4,8 @@ import { getDictionary } from "@/lib/i18n";
 import type { Dictionary } from "@/lib/i18n";
 import { requireLocale } from "@/lib/request";
 import { getDb } from "@/lib/db";
+import { getEnvAsync } from "@/lib/env";
+import { autofillInBackground } from "@/lib/photos/autofill";
 import { getSettings } from "@/lib/settings";
 import { destinationViews } from "@/lib/services/destination-settings";
 
@@ -14,6 +16,7 @@ export default async function Home({ params }: { params: Promise<{ locale: strin
   const t = getDictionary(locale);
   const db = await getDb();
   const [settings, views] = await Promise.all([getSettings(db), destinationViews(db)]);
+  autofillInBackground(await getEnvAsync(), db);
   const active = views.filter((d) => d.active);
   const featured = active.filter((d) => d.featured);
   const others = active.filter((d) => !d.featured);
