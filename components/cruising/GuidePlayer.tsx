@@ -6,6 +6,7 @@
 // utterances are never cut off. Without speech (muted, or unsupported)
 // the scenes run on a reading-speed timer with captions.
 
+import { splitSentences } from '@/lib/cruising/narration'
 import { useCallback, useEffect, useMemo, useRef, useState, useSyncExternalStore, type ReactNode } from 'react'
 
 
@@ -46,17 +47,12 @@ export interface Scene {
    * elapsed scene time, for things that run at a fixed rate (flashing lights).
    */
   render: (t: number, sentence: number, seconds: number) => ReactNode
+  /** Audio played once when the scene starts (intro music). */
+  sound?: string
 }
 
 const BASE_CHARS_PER_SECOND = 14.5
 const HOLD_AFTER_SCENE_MS = 700
-
-export function splitSentences(text: string): string[] {
-  return text
-    .split(/(?<=[.!?…])\s+(?=[A-Z0-9"“‘(£])/)
-    .map((s) => s.trim())
-    .filter(Boolean)
-}
 
 function pickVoice(voices: SpeechSynthesisVoice[]): SpeechSynthesisVoice | null {
   const gb = voices.filter((v) => v.lang.replace('_', '-').toLowerCase().startsWith('en-gb'))
@@ -99,7 +95,21 @@ function forSpeech(text: string, pronounce?: Record<string, string>): string {
   return out
 }
 
-export default function LessonPlayer({ title, scenes, pronounce, poster = 1 }: { title: string; scenes: Scene[]; pronounce?: Record<string, string>; /** Scene shown finished as the poster before play. */ poster?: number }) {
+export default function LessonPlayer({
+  title,
+  scenes,
+  pronounce,
+  poster = 1,
+  audioUrl,
+}: {
+  title: string
+  scenes: Scene[]
+  pronounce?: Record<string, string>
+  /** Scene shown finished as the poster before play. */
+  poster?: number
+  /** Recorded narration: the audio URL for a sentence. Falls back to the device voice on error. */
+  audioUrl?: (sentence: string) => string
+}) {
   const sentences = useMemo(() => scenes.map((s) => splitSentences(s.narration)), [scenes])
   const sceneChars = useMemo(() => sentences.map((ss) => ss.reduce((n, s) => n + s.length, 0)), [sentences])
 
@@ -138,7 +148,13 @@ export default function LessonPlayer({ title, scenes, pronounce, poster = 1 }: {
     voiceOn: true,
     rate: 1,
     voice: null as SpeechSynthesisVoice | null,
+    /** Recorded narration failed: use the device voice from now on. */
+    audioFailed: false,
   })
+  // One element each for narration and music, created inside the first tap
+  // so mobile browsers allow later playback.
+  const narrationEl = useRef<HTMLAudioElement | null>(null)
+  const musicEl = useRef<HTMLAudioElement | null>(null)
 
   useEffect(() => {
     if (typeof window === 'undefined' || !('speechSynthesis' in window)) return
@@ -162,20 +178,50 @@ export default function LessonPlayer({ title, scenes, pronounce, poster = 1 }: {
     }
   }, [])
 
-  const canSpeak = speechSupported && voiceOn
+  const recorded = !!audioUrl
+  const canSpeak = (recorded || speechSupported) && voiceOn
 
   const stopSpeech = useCallback(() => {
     e.current.gen++
     e.current.speaking = false
+    narrationEl.current?.pause()
     if (typeof window !== 'undefined' && 'speechSynthesis' in window) window.speechSynthesis.cancel()
   }, [])
 
   const speakCurrent = useCallback(() => {
     const s = e.current
-    if (!s.voiceOn || typeof window === 'undefined' || !('speechSynthesis' in window)) return
+    if (!s.voiceOn || typeof window === 'undefined') return
     const text = sentences[s.scene]?.[s.sentence]
     if (!text) return
     const gen = ++s.gen
+    const finishRecorded = () => {
+      if (gen !== s.gen) return
+      s.speaking = false
+      if (s.sentenceMs > 400) {
+        const measured = text.length / (s.sentenceMs / 1000)
+        s.cps = Math.min(26, Math.max(8, s.cps * 0.6 + measured * 0.4))
+      }
+      advanceSentence()
+    }
+    if (audioUrl && !s.audioFailed) {
+      const a = narrationEl.current ?? (narrationEl.current = new Audio())
+      a.onended = finishRecorded
+      a.onerror = () => {
+        if (gen !== s.gen) return
+        // Not available (no key, busy or offline): switch to the device voice.
+        s.audioFailed = true
+        speakCurrent()
+      }
+      a.src = audioUrl(text)
+      a.playbackRate = s.rate
+      s.speaking = true
+      a.play().catch(() => a.onerror?.(new Event('error')))
+      // Warm the next sentence so it is ready (and generated) in time.
+      const next = sentences[s.scene]?.[s.sentence + 1] ?? sentences[s.scene + 1]?.[0]
+      if (next) void fetch(audioUrl(next)).catch(() => {})
+      return
+    }
+    if (!('speechSynthesis' in window)) return
     const u = new SpeechSynthesisUtterance(forSpeech(text, pronounce))
     u.lang = 'en-GB'
     if (s.voice) u.voice = s.voice
@@ -202,7 +248,7 @@ export default function LessonPlayer({ title, scenes, pronounce, poster = 1 }: {
     s.speaking = true
     window.speechSynthesis.speak(u)
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [sentences, pronounce])
+  }, [sentences, pronounce, audioUrl])
 
   function advanceSentence() {
     const s = e.current
@@ -214,6 +260,19 @@ export default function LessonPlayer({ title, scenes, pronounce, poster = 1 }: {
       s.speechDone = true
     }
   }
+
+  const playSound = useCallback((scene: number) => {
+    const src = scenes[scene]?.sound
+    const m = musicEl.current
+    if (!m) return
+    if (!src || !e.current.voiceOn) {
+      m.pause()
+      return
+    }
+    m.src = src
+    m.volume = 0.8
+    void m.play().catch(() => {})
+  }, [scenes])
 
   const goTo = useCallback((index: number) => {
     const s = e.current
@@ -227,8 +286,11 @@ export default function LessonPlayer({ title, scenes, pronounce, poster = 1 }: {
     setEnded(false)
     setFrame({ scene: s.scene, sentence: 0, t: 0, seconds: 0 })
     // Chrome drops an utterance queued in the same tick as cancel().
-    if (s.playing) window.setTimeout(() => { if (s.playing) speakCurrent() }, 80)
-  }, [scenes.length, speakCurrent, stopSpeech])
+    if (s.playing) {
+      playSound(s.scene)
+      window.setTimeout(() => { if (s.playing) speakCurrent() }, 80)
+    }
+  }, [scenes.length, speakCurrent, stopSpeech, playSound])
 
   const tick = useCallback((now: number) => {
     const s = e.current
@@ -238,6 +300,8 @@ export default function LessonPlayer({ title, scenes, pronounce, poster = 1 }: {
     s.sceneMs += dt
     s.sentenceMs += dt
     const list = sentences[s.scene] ?? []
+    // Scenes without narration (the intro) just run for their minimum time.
+    if (list.length === 0) s.speechDone = true
     const cur = list[s.sentence] ?? ''
     const expectedMs = (cur.length / (s.cps * (s.voiceOn ? 1 : s.rate))) * 1000
     if (!s.speechDone) {
@@ -276,6 +340,7 @@ export default function LessonPlayer({ title, scenes, pronounce, poster = 1 }: {
   }, [sentences, sceneChars, scenes, goTo, stopSpeech])
 
   function speechReady() {
+    if (audioUrl && !e.current.audioFailed) return true
     return typeof window !== 'undefined' && 'speechSynthesis' in window
   }
 
@@ -296,8 +361,11 @@ export default function LessonPlayer({ title, scenes, pronounce, poster = 1 }: {
       s.speechDone = false
     }
     s.last = performance.now()
+    if (audioUrl && !narrationEl.current) narrationEl.current = new Audio()
+    if (!musicEl.current) musicEl.current = new Audio()
     setPlaying(true)
     setStarted(true)
+    if (s.sceneMs === 0) playSound(s.scene)
     // Speak inside the click handler: iOS only allows speech started by a tap.
     if (!s.speechDone) speakCurrent()
     s.raf = requestAnimationFrame(tick)
@@ -308,6 +376,7 @@ export default function LessonPlayer({ title, scenes, pronounce, poster = 1 }: {
     s.playing = false
     cancelAnimationFrame(s.raf)
     stopSpeech()
+    musicEl.current?.pause()
     setPlaying(false)
   }
 
@@ -316,7 +385,7 @@ export default function LessonPlayer({ title, scenes, pronounce, poster = 1 }: {
     const next = !voiceOn
     setVoiceOn(next)
     const s = e.current
-    s.voiceOn = next && speechSupported
+    s.voiceOn = next && (recorded || speechSupported)
     if (!next) {
       stopSpeech()
     } else if (s.playing && !s.speechDone) {
@@ -477,13 +546,13 @@ export default function LessonPlayer({ title, scenes, pronounce, poster = 1 }: {
         <button
           type="button"
           onClick={toggleVoice}
-          disabled={!speechSupported}
+          disabled={!recorded && !speechSupported}
           className={ICON_BUTTON}
           aria-pressed={voiceOn}
           aria-label={voiceOn ? 'Mute narration' : 'Turn narration on'}
           title={speechSupported ? (voiceOn ? 'Mute narration' : 'Turn narration on') : 'Narration is not supported in this browser — captions only'}
         >
-          {voiceOn && speechSupported ? <Volume2 size={20} strokeWidth={1.75} aria-hidden="true" /> : <VolumeX size={20} strokeWidth={1.75} aria-hidden="true" />}
+          {voiceOn && (recorded || speechSupported) ? <Volume2 size={20} strokeWidth={1.75} aria-hidden="true" /> : <VolumeX size={20} strokeWidth={1.75} aria-hidden="true" />}
         </button>
         <button
           type="button"
@@ -520,7 +589,7 @@ export default function LessonPlayer({ title, scenes, pronounce, poster = 1 }: {
                   </button>
                 ))}
               </div>
-              {voiceOptions.length > 1 && (
+              {!recorded && voiceOptions.length > 1 && (
                 <>
                   <label htmlFor="guide-voice" className="mt-4 block text-xs font-semibold text-muted">Narrator voice</label>
                   <select
@@ -533,7 +602,7 @@ export default function LessonPlayer({ title, scenes, pronounce, poster = 1 }: {
                   </select>
                 </>
               )}
-              <p className="mt-4 text-xs leading-snug text-muted">Narration uses your device&apos;s built-in voices, so it sounds different on each device.</p>
+              <p className="mt-4 text-xs leading-snug text-muted">{recorded ? 'Recorded narration.' : 'Narration uses your device\'s built-in voices, so it sounds different on each device.'}</p>
             </div>
           )}
         </div>
@@ -553,7 +622,7 @@ export default function LessonPlayer({ title, scenes, pronounce, poster = 1 }: {
             Your browser blocked the narration — showing captions instead.
           </span>
         )}
-        {!speechSupported && started && <span className="text-white/55">No narrator voice on this device — captions only.</span>}
+        {!recorded && !speechSupported && started && <span className="text-white/55">No narrator voice on this device — captions only.</span>}
       </div>
 
       <details className="group mt-2 rounded-xl bg-white/5 text-sm text-white/85">
@@ -562,7 +631,7 @@ export default function LessonPlayer({ title, scenes, pronounce, poster = 1 }: {
           Transcript
         </summary>
         <ol className="space-y-3 px-3 pb-3">
-          {scenes.map((sc, i) => (
+          {scenes.map((sc, i) => sc.narration && (
             <li key={i}>
               <button type="button" onClick={() => jump(i)} className="rounded-sm text-left font-semibold text-white underline-offset-4 hover:underline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#e9b9a6]">
                 {i + 1}. {sc.title}

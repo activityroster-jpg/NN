@@ -3,6 +3,8 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import GuideVideo from "@/components/cruising/GuideVideo";
 import { guideById, REGIONS, totalMiles } from "@/lib/cruising";
+import { voiceEnabled } from "@/lib/cruising/voice";
+import { getEnvAsync } from "@/lib/env";
 import { monthName } from "@/lib/i18n/format";
 import { requireLocale } from "@/lib/request";
 
@@ -37,7 +39,7 @@ export default async function GuidePage({ params }: Props) {
       <p className="mt-2 text-lg text-ink/80">{g.country} · a week from {g.baseMarina.name} · about {totalMiles(g)} nautical miles</p>
 
       <div className="mt-8">
-        <GuideVideo guide={g} />
+        <GuideVideo guide={g} recorded={voiceEnabled(await getEnvAsync())} />
       </div>
 
       <div id="guide-notes" className="mt-12 grid gap-12 lg:grid-cols-[1fr_320px]">
