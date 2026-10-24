@@ -138,42 +138,39 @@ export default function GuideVideo({ guide: g, recorded = false }: { guide: Crui
   scenes.push({
     title: "Nautical Nomads",
     narration: "",
-    seconds: 5.5,
+    seconds: 6.5,
     sound: recorded ? "/api/narration/intro" : undefined,
     render: (t, _s, sec) => {
-      const letters = "NAUTICAL   NOMADS".split("");
       return (
         <Stage background="#13293b">
           {/* Slow swell lines */}
           {[0, 1, 2, 3].map((k) => (
             <path
               key={k}
-              d={`M -50 ${560 + k * 60} ${Array.from({ length: 18 }, (_, i) => `Q ${i * 100 + 50 - 50} ${560 + k * 60 + (i % 2 ? -14 : 14) * Math.sin(sec * 1.2 + k)} ${i * 100 + 50} ${560 + k * 60}`).join(" ")}`}
+              d={`M -50 ${700 + k * 45} ${Array.from({ length: 18 }, (_, i) => `Q ${i * 100} ${700 + k * 45 + (i % 2 ? -14 : 14) * Math.sin(sec * 1.2 + k)} ${i * 100 + 50} ${700 + k * 45}`).join(" ")}`}
               fill="none"
               stroke="#f2b49c"
               strokeWidth={2}
               opacity={0.12 + k * 0.05}
             />
           ))}
-          <g transform="translate(800 400)">
-            {letters.map((ch, i) => (
-              <text
-                key={i}
-                x={(i - (letters.length - 1) / 2) * 62}
-                y={0}
-                textAnchor="middle"
-                fontSize={64}
-                fontWeight={300}
-                fill="#fff"
-                opacity={fade(t, 0.05 + i * 0.025, 0.2 + i * 0.025)}
-              >
-                {ch}
-              </text>
-            ))}
-          </g>
+          <defs>
+            <clipPath id="nn-intro-reveal">
+              <rect x={800 - 520 * phase(t, 0.05, 0.45)} y={320} width={1040 * phase(t, 0.05, 0.45)} height={120} />
+            </clipPath>
+          </defs>
+          <text x={800} y={400} textAnchor="middle" fontSize={64} fontWeight={300} fill="#fff" letterSpacing={22} wordSpacing={40} clipPath="url(#nn-intro-reveal)">
+            NAUTICAL NOMADS
+          </text>
           <line x1={800 - 420 * fade(t, 0.45, 0.7)} x2={800 + 420 * fade(t, 0.45, 0.7)} y1={450} y2={450} stroke="#f2b49c" strokeWidth={2} />
-          <text x={800} y={510} textAnchor="middle" fontSize={30} fill="#f2b49c" letterSpacing={8} opacity={fade(t, 0.6, 0.8)}>
+          <text x={800} y={505} textAnchor="middle" fontSize={26} fill="#f2b49c" letterSpacing={8} opacity={fade(t, 0.5, 0.65)}>
             ESSENTIAL CRUISING GUIDES
+          </text>
+          <text x={800} y={600} textAnchor="middle" fontSize={70} fontWeight={800} fill="#fff" opacity={fade(t, 0.65, 0.85)}>
+            {g.name}
+          </text>
+          <text x={800} y={655} textAnchor="middle" fontSize={32} fill="#fff" opacity={fade(t, 0.75, 0.92) * 0.85}>
+            {g.country}
           </text>
         </Stage>
       );

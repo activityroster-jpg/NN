@@ -37,7 +37,7 @@ export async function synthesize(env: AppEnv, text: string, previous?: string, n
     }),
     signal: AbortSignal.timeout(30_000),
   });
-  if (!res.ok) throw new Error(`ElevenLabs ${res.status}: ${(await res.text()).slice(0, 200)}`);
+  if (!res.ok) throw new Error(`ElevenLabs ${res.status}: ${(await res.text()).slice(0, 300)}`);
   return res.arrayBuffer();
 }
 
