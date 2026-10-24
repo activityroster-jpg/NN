@@ -125,6 +125,7 @@ export default function LessonPlayer({
   const [voiceName, setVoiceName] = useState<string | null>(null)
   const [settingsOpen, setSettingsOpen] = useState(false)
   const [voiceFailed, setVoiceFailed] = useState(false)
+  const [recordedFailed, setRecordedFailed] = useState(false)
   const containerRef = useRef<HTMLDivElement>(null)
   // Scenes render only in the browser: their trig-heavy SVG can differ in
   // the last decimal place from the server's, and the transcript below
@@ -210,6 +211,7 @@ export default function LessonPlayer({
         if (gen !== s.gen) return
         // Not available (no key, busy or offline): switch to the device voice.
         s.audioFailed = true
+        setRecordedFailed(true)
         speakCurrent()
       }
       a.src = audioUrl(text)
@@ -622,6 +624,7 @@ export default function LessonPlayer({
             Your browser blocked the narration — showing captions instead.
           </span>
         )}
+        {recordedFailed && <span className="text-white/80">Recorded narration unavailable, using this device&apos;s voice.</span>}
         {!recorded && !speechSupported && started && <span className="text-white/55">No narrator voice on this device — captions only.</span>}
       </div>
 
