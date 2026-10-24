@@ -1,0 +1,1 @@
+ALTER TABLE `destination_setting` ADD `hero_credit` text;

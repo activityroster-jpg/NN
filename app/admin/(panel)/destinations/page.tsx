@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { asc } from "drizzle-orm";
 import { Card, PageTitle, Table } from "@/components/admin/ui";
 import { saveDestination, saveProviderBase } from "@/lib/admin/actions";
@@ -24,7 +25,10 @@ export default async function Destinations() {
               <label className="flex items-center gap-1 text-sm"><input type="checkbox" name="featured" defaultChecked={d.featured} />Featured</label>
               <select name="mode" defaultValue={d.mode} className="field py-1.5"><option value="live">Live yachts</option><option value="enquiry">Enquiry only</option></select>
               <input name="sortOrder" defaultValue={d.sortOrder} className="field py-1.5" title="Order" />
-              <input name="heroImageUrl" defaultValue={d.heroImageUrl ?? ""} placeholder="Hero photo URL (https://…)" className="field py-1.5" />
+              <div className="flex items-center gap-2">
+                <input name="heroImageUrl" defaultValue={d.heroImageUrl ?? ""} placeholder="Hero photo URL (https://…)" className="field py-1.5" />
+                <Link href={`/admin/photos?target=destination:${d.id}`} className="shrink-0 text-sm text-brand underline">Find a photo</Link>
+              </div>
               <button className="btn-secondary px-3 py-1.5 text-sm">Save</button>
             </form>
           ))}

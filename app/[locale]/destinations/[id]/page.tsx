@@ -42,6 +42,7 @@ export default async function DestinationPage({ params }: Props) {
             {t.nav.plan} <IconArrowRight className="h-4 w-4" />
           </Link>
         </div>
+        {d.heroCredit && <p className="container-page pb-2 text-right text-[11px] opacity-70">{d.heroCredit}</p>}
       </section>
       <div className="container-page grid gap-12 py-12 lg:grid-cols-[1fr_340px]">
         <div>

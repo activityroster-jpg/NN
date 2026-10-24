@@ -13,6 +13,8 @@ export interface AppEnv {
   MMK_API_TOKEN?: string;
   NAUSYS_USERNAME?: string;
   NAUSYS_PASSWORD?: string;
+  /** Pexels API key: lets the admin search and pick stock photos. */
+  PEXELS_API_KEY?: string;
   /** "true" forces the demo fleet even when live credentials are set (staging). */
   DEMO_FLEET?: string;
 }

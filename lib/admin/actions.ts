@@ -287,10 +287,13 @@ export async function saveDestination(form: FormData) {
     featured: on(form, "featured"),
     mode: s(form, "mode") === "enquiry" ? "enquiry" : "live",
     sortOrder: Number(s(form, "sortOrder")) || 0,
-    heroImageUrl: hero && /^https:\/\//.test(hero) ? hero.slice(0, 500) : null,
+    heroImageUrl: hero && /^https:\/\//.test(hero) ? hero.slice(0, 600) : null,
   };
   const db = await getDb();
-  await db.insert(destinationSetting).values({ id, ...v }).onConflictDoUpdate({ target: destinationSetting.id, set: v });
+  const existing = await db.select().from(destinationSetting).where(eq(destinationSetting.id, id)).get();
+  // A hand-typed URL replaces the credit; the same URL keeps it.
+  const heroCredit = v.heroImageUrl && v.heroImageUrl === existing?.heroImageUrl ? existing.heroCredit : null;
+  await db.insert(destinationSetting).values({ id, ...v, heroCredit }).onConflictDoUpdate({ target: destinationSetting.id, set: { ...v, heroCredit } });
   await audit(db, actor, "updated", "destination", id, v);
   revalidatePath("/admin/destinations");
 }
@@ -308,4 +311,49 @@ export async function saveProviderBase(form: FormData) {
     .onConflictDoUpdate({ target: providerBase.id, set: { name: v.name, destinationId: v.destinationId || null } });
   await audit(db, actor, "mapped", "provider_base", id, v);
   revalidatePath("/admin/destinations");
+}
+
+// ── Photos ─────────────────────────────────────────────────────────────────
+const PhotoTarget = z.string().regex(/^(destination:[a-z-]+|home:(monohull|catamaran))$/);
+
+export async function usePhoto(form: FormData) {
+  const actor = await requireAdmin();
+  const target = PhotoTarget.parse(s(form, "target"));
+  const url = z.string().url().startsWith("https://").max(600).parse(s(form, "url"));
+  const credit = z.string().max(200).parse(s(form, "credit"));
+  const db = await getDb();
+  if (target.startsWith("destination:")) {
+    const id = target.slice("destination:".length);
+    if (!DESTINATION_IDS.includes(id)) return;
+    await db
+      .insert(destinationSetting)
+      .values({ id, heroImageUrl: url, heroCredit: credit })
+      .onConflictDoUpdate({ target: destinationSetting.id, set: { heroImageUrl: url, heroCredit: credit } });
+    await audit(db, actor, "photo_set", "destination", id, { url, credit });
+    revalidatePath("/", "layout");
+    redirect("/admin/destinations");
+  }
+  const key = target.slice("home:".length) as "monohull" | "catamaran";
+  const cur = await getSettings(db);
+  await saveSettings(db, { ...cur, images: { ...cur.images, [key]: { url, credit } } });
+  await audit(db, actor, "photo_set", "settings", key, { url, credit });
+  revalidatePath("/", "layout");
+  redirect("/admin/photos");
+}
+
+export async function clearPhoto(form: FormData) {
+  const actor = await requireAdmin();
+  const target = PhotoTarget.parse(s(form, "target"));
+  const db = await getDb();
+  if (target.startsWith("destination:")) {
+    const id = target.slice("destination:".length);
+    await db.update(destinationSetting).set({ heroImageUrl: null, heroCredit: null }).where(eq(destinationSetting.id, id));
+    await audit(db, actor, "photo_cleared", "destination", id);
+  } else {
+    const key = target.slice("home:".length) as "monohull" | "catamaran";
+    const cur = await getSettings(db);
+    await saveSettings(db, { ...cur, images: { ...cur.images, [key]: null } });
+    await audit(db, actor, "photo_cleared", "settings", key);
+  }
+  revalidatePath("/", "layout");
 }

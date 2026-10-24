@@ -15,6 +15,7 @@ const NAV = [
   ["/admin/pricing", "Pricing"],
   ["/admin/crew", "Crew pool"],
   ["/admin/destinations", "Destinations"],
+  ["/admin/photos", "Photos"],
   ["/admin/categories", "Categories (B)"],
   ["/admin/settings", "Settings"],
   ["/admin/audit", "Audit log"],
