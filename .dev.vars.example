@@ -8,6 +8,7 @@ STRIPE_SECRET_KEY=
 STRIPE_WEBHOOK_SECRET=
 # Optional: stock photo search in Admin → Photos.
 UNSPLASH_ACCESS_KEY=
+PIXABAY_API_KEY=
 PEXELS_API_KEY=
 # Booking managers: leave empty to use the built-in demo fleet.
 MMK_API_TOKEN=

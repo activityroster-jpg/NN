@@ -3,6 +3,8 @@ import { getCloudflareContext } from "@opennextjs/cloudflare";
 /** Bindings and secrets the Worker receives. Secrets are set in the Cloudflare dashboard. */
 export interface AppEnv {
   DB: D1Database;
+  /** Self-hosted photos (see wrangler.jsonc). Optional until the bucket exists. */
+  PHOTOS?: R2Bucket;
   SITE_URL?: string;
   ADMIN_EMAILS?: string;
   CRON_SECRET?: string;
@@ -17,6 +19,9 @@ export interface AppEnv {
   PEXELS_API_KEY?: string;
   /** Unsplash access key: alternative photo source for the admin. */
   UNSPLASH_ACCESS_KEY?: string;
+  /** Pixabay API key: photos are downloaded into PHOTOS, never hotlinked (their terms). */
+  PIXABAY_API_KEY?: string;
+  PIXABAY_API_BASE?: string;
   /** "true" forces the demo fleet even when live credentials are set (staging). */
   DEMO_FLEET?: string;
 }

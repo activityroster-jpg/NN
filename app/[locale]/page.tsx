@@ -4,6 +4,8 @@ import { getDictionary } from "@/lib/i18n";
 import type { Dictionary } from "@/lib/i18n";
 import { requireLocale } from "@/lib/request";
 import { getDb } from "@/lib/db";
+import { getEnvAsync } from "@/lib/env";
+import { autofillInBackground } from "@/lib/photos/autofill";
 import { getSettings } from "@/lib/settings";
 import { destinationViews } from "@/lib/services/destination-settings";
 
@@ -14,6 +16,7 @@ export default async function Home({ params }: { params: Promise<{ locale: strin
   const t = getDictionary(locale);
   const db = await getDb();
   const [settings, views] = await Promise.all([getSettings(db), destinationViews(db)]);
+  autofillInBackground(await getEnvAsync(), db);
   const active = views.filter((d) => d.active);
   const featured = active.filter((d) => d.featured);
   const others = active.filter((d) => !d.featured);
@@ -25,10 +28,11 @@ export default async function Home({ params }: { params: Promise<{ locale: strin
       {/* Hero */}
       <section className="relative isolate overflow-hidden text-white">
         <picture className="absolute inset-0 -z-10 block">
-          <source media="(max-width: 640px)" srcSet="/photos/home-hero-sm.jpg" />
+          {!settings.images.hero && <source media="(max-width: 640px)" srcSet="/photos/home-hero-sm.jpg" />}
           {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img src="/photos/home-hero.jpg" alt="" className="h-full w-full object-cover object-[60%_center]" fetchPriority="high" />
+          <img src={settings.images.hero?.url ?? "/photos/home-hero.jpg"} alt="" className="h-full w-full object-cover object-[60%_center]" fetchPriority="high" />
         </picture>
+        {settings.images.hero?.credit && <p className="absolute right-3 bottom-2 z-10 text-[11px] text-white/70">{settings.images.hero.credit}</p>}
         <div aria-hidden className="absolute inset-0 -z-10 bg-gradient-to-r from-black/65 via-black/35 to-black/10" />
         <div className="container-page grid items-end gap-10 pt-24 pb-16 md:grid-cols-[1.1fr_0.9fr] md:pt-36 md:pb-20">
           <div>
@@ -60,13 +64,13 @@ export default async function Home({ params }: { params: Promise<{ locale: strin
                 <Link
                   key={d.id}
                   href={`/${locale}/plan?d=${d.id}`}
-                  className="group flex items-center justify-between rounded-2xl border border-white/30 bg-white/10 px-4 py-3 backdrop-blur transition hover:bg-white/20"
+                  className="group flex items-center justify-between rounded-2xl bg-white/95 px-4 py-3 text-ink shadow-lg shadow-black/20 transition hover:bg-white"
                 >
                   <span>
-                    <span className="block text-[11px] font-semibold tracking-wider uppercase opacity-80">{t.destinations[d.id as DestKey].region}</span>
+                    <span className="block text-[11px] font-semibold tracking-wider text-muted uppercase">{t.destinations[d.id as DestKey].region}</span>
                     <span className="h-display text-xl leading-tight">{t.destinations[d.id as DestKey].name}</span>
                   </span>
-                  <IconArrowRight className="h-5 w-5 opacity-70 transition group-hover:translate-x-1" />
+                  <IconArrowRight className="h-5 w-5 text-brand transition group-hover:translate-x-1" />
                 </Link>
               ))}
             </div>

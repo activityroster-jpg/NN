@@ -19,7 +19,7 @@ export interface Photo {
   height: number;
   /** Unsplash only: endpoint to ping when the photo is used. */
   downloadLocation?: string;
-  source?: "pexels" | "unsplash";
+  source?: "pexels" | "unsplash" | "pixabay";
 }
 
 const Response = z.object({

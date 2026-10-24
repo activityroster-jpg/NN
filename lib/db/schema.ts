@@ -267,6 +267,13 @@ export const webhookEvent = sqliteTable("webhook_event", {
   receivedAt: text("received_at").notNull().default(now),
 });
 
+/** Stock-photo search results, kept 24 hours (Pixabay asks for caching and limits calls). */
+export const photoCache = sqliteTable("photo_cache", {
+  query: text("query").primaryKey(),
+  hits: text("hits", { mode: "json" }).notNull(),
+  fetchedAt: text("fetched_at").notNull(),
+});
+
 export const rateLimit = sqliteTable("rate_limit", {
   key: text("key").primaryKey(),
   windowStart: integer("window_start").notNull(),

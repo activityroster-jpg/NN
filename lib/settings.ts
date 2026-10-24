@@ -38,8 +38,9 @@ export const SettingsSchema = z.object({
   /** Photos for the "sailing yacht or catamaran" cards on the home page. */
   images: z
     .object({
-      monohull: z.object({ url: z.string().url(), credit: z.string() }).nullable().default(null),
-      catamaran: z.object({ url: z.string().url(), credit: z.string() }).nullable().default(null),
+      hero: z.object({ url: z.string(), credit: z.string() }).nullable().default(null),
+      monohull: z.object({ url: z.string(), credit: z.string() }).nullable().default(null),
+      catamaran: z.object({ url: z.string(), credit: z.string() }).nullable().default(null),
     })
     .default({}),
   offeringB: z

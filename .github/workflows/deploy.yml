@@ -67,7 +67,12 @@ jobs:
             echo "::error::The database id in wrangler.jsonc is not in this Cloudflare account. Create the D1 database in the Activityroster account (or check the id) and update wrangler.jsonc."
             exit 1
           fi
-          echo "Cloudflare access OK: token valid, D1 reachable, database found."
+          BUCKETS="$(api "/accounts/$CLOUDFLARE_ACCOUNT_ID/r2/buckets?jurisdiction=eu")"
+          if ! printf '%s' "$BUCKETS" | grep -q '"name": *"nautical-nomads-photos"'; then
+            echo "::error::The R2 bucket nautical-nomads-photos was not found (or the token lacks Account → Workers R2 Storage → Edit). Cloudflare → R2 → Create bucket → nautical-nomads-photos, location Europe. See docs/setup.md 4b."
+            exit 1
+          fi
+          echo "Cloudflare access OK: token valid, D1 reachable, database and photo bucket found."
 
       - uses: actions/checkout@v4
         with:
