@@ -3,7 +3,7 @@ import type { AppEnv } from "@/lib/env";
 // Recorded narration via ElevenLabs. Each sentence is generated once, stored
 // in R2 under a key that includes the voice and model, and served from there.
 
-// "George": warm, mature British narrator from the ElevenLabs voice library.
+// "George": warm British narrator. Same voice and settings as the ActivityRoster how-to videos.
 const DEFAULT_VOICE = "JBFqnCBsd6RMkjVDRZzb";
 // Multilingual model: pronounces Croatian, Greek and Italian place names properly.
 const DEFAULT_MODEL = "eleven_multilingual_v2";
@@ -18,7 +18,8 @@ export function voiceConfig(env: AppEnv) {
 
 export function narrationKey(env: AppEnv, hash: string): string {
   const { voice, model } = voiceConfig(env);
-  return `narration/${voice}/${model}/${hash}.mp3`;
+  // "s2": voice settings version; bump when the settings change so clips are re-recorded.
+  return `narration/${voice}/${model}/s2/${hash}.mp3`;
 }
 
 /** Generate one sentence. Neighbouring sentences are passed so the delivery flows. */
@@ -33,7 +34,7 @@ export async function synthesize(env: AppEnv, text: string, previous?: string, n
       model_id: model,
       previous_text: previous,
       next_text: next,
-      voice_settings: { stability: 0.5, similarity_boost: 0.75, style: 0, use_speaker_boost: true },
+      voice_settings: { stability: 0.5, similarity_boost: 0.8, style: 0.15, use_speaker_boost: true },
     }),
     signal: AbortSignal.timeout(30_000),
   });
@@ -42,7 +43,7 @@ export async function synthesize(env: AppEnv, text: string, previous?: string, n
 }
 
 /** Version of the intro sting; bump to regenerate it. */
-export const INTRO_KEY = "narration/intro/v1.mp3";
+export const INTRO_KEY = "narration/intro/v2.mp3";
 
 const INTRO_PROMPT =
   "Short, warm, uplifting instrumental intro for a sailing travel show: gentle acoustic guitar and soft strings, light ocean waves and a distant seagull, optimistic and relaxed, Mediterranean summer feel, clean ending. No vocals.";
@@ -54,8 +55,8 @@ export async function synthesizeIntro(env: AppEnv): Promise<ArrayBuffer> {
   const music = await fetch(`${base}/v1/music?output_format=mp3_44100_128`, {
     method: "POST",
     headers,
-    body: JSON.stringify({ prompt: INTRO_PROMPT, music_length_ms: 7000 }),
-    signal: AbortSignal.timeout(60_000),
+    body: JSON.stringify({ prompt: INTRO_PROMPT, music_length_ms: 7000, force_instrumental: true }),
+    signal: AbortSignal.timeout(90_000),
   });
   if (music.ok) return music.arrayBuffer();
   console.error("intro music", music.status, (await music.text()).slice(0, 200));
