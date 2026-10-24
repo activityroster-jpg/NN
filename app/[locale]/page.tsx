@@ -1,5 +1,4 @@
 import Link from "next/link";
-import { FlagBackdrop } from "@/components/Flag";
 import { IconAnchor, IconArrowRight, IconCalendar, IconChat, IconCheck, IconClock, IconHelm, IconShield } from "@/components/Icons";
 import { getDictionary } from "@/lib/i18n";
 import type { Dictionary } from "@/lib/i18n";
@@ -62,10 +61,8 @@ export default async function Home({ params }: { params: Promise<{ locale: strin
                 <Link
                   key={d.id}
                   href={`/${locale}/plan?d=${d.id}`}
-                  className="group relative isolate flex items-center justify-between overflow-hidden rounded-2xl border border-white/30 bg-white/10 px-4 py-3 backdrop-blur transition hover:bg-white/20"
+                  className="group flex items-center justify-between rounded-2xl border border-white/30 bg-white/10 px-4 py-3 backdrop-blur transition hover:bg-white/20"
                 >
-                  <FlagBackdrop country={d.country} className="opacity-40 saturate-[.6] blur-[1px] transition group-hover:opacity-55" />
-                  <span aria-hidden className="pointer-events-none absolute inset-0 -z-10 bg-gradient-to-r from-black/35 to-black/10" />
                   <span>
                     <span className="block text-[11px] font-semibold tracking-wider uppercase opacity-80">{t.destinations[d.id as DestKey].region}</span>
                     <span className="h-display text-xl leading-tight">{t.destinations[d.id as DestKey].name}</span>
