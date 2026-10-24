@@ -1,7 +1,7 @@
 /* eslint-disable @next/next/no-img-element */
 import Link from "next/link";
 import { Card, PageTitle } from "@/components/admin/ui";
-import { clearPhoto, usePhoto } from "@/lib/admin/actions";
+import { autoFillPhotos, clearPhoto, usePhoto } from "@/lib/admin/actions";
 import { getDb } from "@/lib/db";
 import { DESTINATION_IDS } from "@/lib/domain/destinations";
 import { getEnvAsync } from "@/lib/env";
@@ -14,7 +14,7 @@ export const metadata = { title: "Photos" };
 
 const TARGETS = [...DESTINATION_IDS.map((d) => ({ key: `destination:${d}`, label: `Destination: ${d}` })), { key: "home:monohull", label: "Home: sailing yacht card" }, { key: "home:catamaran", label: "Home: catamaran card" }];
 
-export default async function Photos({ searchParams }: { searchParams: Promise<{ target?: string; q?: string; page?: string }> }) {
+export default async function Photos({ searchParams }: { searchParams: Promise<{ target?: string; q?: string; page?: string; filled?: string }> }) {
   const sp = await searchParams;
   const env = await getEnvAsync();
   const db = await getDb();
@@ -60,6 +60,15 @@ export default async function Photos({ searchParams }: { searchParams: Promise<{
         <p className="mt-2 text-xs text-muted">Tip: name a place plus “sailing”, “harbour”, “bay” or “catamaran”. Landscape photos only. Suggested: “{suggested}”.</p>
       </Card>
       {error && <p className="rounded-xl bg-danger/10 p-3 text-sm text-danger">Photo search failed: {error}</p>}
+      {enabled && (
+        <Card title="Fill every empty slot at once">
+          <form action={autoFillPhotos} className="flex flex-wrap items-center gap-3">
+            <button className="btn-primary px-4 py-2 text-sm">Fill empty destinations and home cards</button>
+            <p className="text-sm text-muted">Picks the best-matching landscape photo for each destination that has none, plus the two home-page cards. Photos you have already chosen are kept. You can swap any result below afterwards.</p>
+          </form>
+          {sp.filled !== undefined && <p className="mt-3 text-sm text-ok">{sp.filled === "0" ? "Nothing filled: photo search is off or nothing was empty." : `Filled ${sp.filled} slot${sp.filled === "1" ? "" : "s"}.`}</p>}
+        </Card>
+      )}
       {enabled && (
         <Card title={`Results for “${q}” (${total})`} actions={
           <div className="flex gap-2 text-sm">
