@@ -159,6 +159,19 @@ jobs:
             fi
           done
 
+      - name: Record the guide narration and intro music
+        # Recording uses ELEVENLABS_API_KEY on the Worker. Each call records for
+        # about 25 seconds; repeat until nothing is left. Problems are reported
+        # here but never fail the deploy (videos fall back to the device voice).
+        run: |
+          for i in $(seq 1 20); do
+            r="$(curl -sS --max-time 90 -X POST "$SITE/api/narration/warm" || echo '{"error":"request failed"}')"
+            echo "$r"
+            if printf '%s' "$r" | grep -q '"remaining":0' && ! printf '%s' "$r" | grep -q '"error"'; then echo "All narration recorded."; exit 0; fi
+            if printf '%s' "$r" | grep -q '"error"'; then echo "::warning::Narration not fully recorded: $r"; exit 0; fi
+          done
+          echo "::warning::Narration still recording; the hourly job will finish it."
+
       - name: Roll back if the smoke test failed
         if: failure() && steps.smoke.outcome == 'failure' && steps.prev.outputs.id != ''
         run: |
