@@ -15,6 +15,8 @@ export interface AppEnv {
   NAUSYS_PASSWORD?: string;
   /** Pexels API key: lets the admin search and pick stock photos. */
   PEXELS_API_KEY?: string;
+  /** Unsplash access key: alternative photo source for the admin. */
+  UNSPLASH_ACCESS_KEY?: string;
   /** "true" forces the demo fleet even when live credentials are set (staging). */
   DEMO_FLEET?: string;
 }

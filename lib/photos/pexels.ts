@@ -17,6 +17,9 @@ export interface Photo {
   pageUrl: string;
   width: number;
   height: number;
+  /** Unsplash only: endpoint to ping when the photo is used. */
+  downloadLocation?: string;
+  source?: "pexels" | "unsplash";
 }
 
 const Response = z.object({
@@ -65,6 +68,7 @@ export async function searchPhotos(env: AppEnv, query: string, page = 1): Promis
       pageUrl: p.url,
       width: p.width,
       height: p.height,
+      source: "pexels",
     })),
   };
 }

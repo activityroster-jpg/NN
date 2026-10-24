@@ -6,6 +6,7 @@ import { getDb } from "@/lib/db";
 import { DESTINATION_IDS } from "@/lib/domain/destinations";
 import { getEnvAsync } from "@/lib/env";
 import { pexelsEnabled, searchPhotos, SUGGESTED_QUERIES, type Photo } from "@/lib/photos/pexels";
+import { searchUnsplash, unsplashEnabled } from "@/lib/photos/unsplash";
 import { destinationViews } from "@/lib/services/destination-settings";
 import { getSettings } from "@/lib/settings";
 
@@ -21,13 +22,14 @@ export default async function Photos({ searchParams }: { searchParams: Promise<{
   const suggested = SUGGESTED_QUERIES[target.split(":")[1] ?? ""] ?? "sailing";
   const q = (sp.q ?? "").trim() || suggested;
   const page = Math.max(1, Number(sp.page) || 1);
-  const enabled = pexelsEnabled(env);
+  const source = unsplashEnabled(env) ? "unsplash" : pexelsEnabled(env) ? "pexels" : null;
+  const enabled = source !== null;
   let photos: Photo[] = [];
   let total = 0;
   let error: string | null = null;
-  if (enabled) {
+  if (source) {
     try {
-      ({ photos, total } = await searchPhotos(env, q, page));
+      ({ photos, total } = source === "unsplash" ? await searchUnsplash(env, q, page) : await searchPhotos(env, q, page));
     } catch (e) {
       error = String(e);
     }
@@ -41,10 +43,10 @@ export default async function Photos({ searchParams }: { searchParams: Promise<{
 
   return (
     <div className="space-y-6">
-      <PageTitle title="Photos" sub="Search free stock photos (Pexels, free for commercial use) and set them as destination heroes or home-page images. Photos are served from Pexels; a small credit is shown." />
+      <PageTitle title="Photos" sub={`Search free stock photos and set them as destination heroes or home-page images. Photos are served from ${source === "unsplash" ? "Unsplash" : "Pexels"} and the photographer is credited.`} />
       {!enabled && (
         <Card>
-          <p className="text-sm">Photo search is off. Add the secret <code>PEXELS_API_KEY</code> to the Worker (free key at pexels.com/api). You can still paste a photo URL on the Destinations page.</p>
+          <p className="text-sm">Photo search is off. Add the secret <code>UNSPLASH_ACCESS_KEY</code> (free key: unsplash.com/developers → New Application) or <code>PEXELS_API_KEY</code> to the Worker. You can still paste a photo URL on the Destinations page.</p>
         </Card>
       )}
       <Card title="Search">
@@ -57,7 +59,7 @@ export default async function Photos({ searchParams }: { searchParams: Promise<{
         </form>
         <p className="mt-2 text-xs text-muted">Tip: name a place plus “sailing”, “harbour”, “bay” or “catamaran”. Landscape photos only. Suggested: “{suggested}”.</p>
       </Card>
-      {error && <p className="rounded-xl bg-danger/10 p-3 text-sm text-danger">Pexels search failed: {error}</p>}
+      {error && <p className="rounded-xl bg-danger/10 p-3 text-sm text-danger">Photo search failed: {error}</p>}
       {enabled && (
         <Card title={`Results for “${q}” (${total})`} actions={
           <div className="flex gap-2 text-sm">
@@ -71,7 +73,8 @@ export default async function Photos({ searchParams }: { searchParams: Promise<{
                 <form key={p.id} action={usePhoto} className="card overflow-hidden">
                   <input type="hidden" name="target" value={target} />
                   <input type="hidden" name="url" value={p.url} />
-                  <input type="hidden" name="credit" value={`${p.photographer} / Pexels`} />
+                  <input type="hidden" name="credit" value={`${p.photographer} / ${p.source === "unsplash" ? "Unsplash" : "Pexels"}`} />
+                  <input type="hidden" name="download" value={p.downloadLocation ?? ""} />
                   <img src={p.thumb} alt={p.alt} loading="lazy" className="aspect-[16/10] w-full object-cover" />
                   <div className="flex items-center justify-between gap-2 p-2 text-xs">
                     <a href={p.pageUrl} target="_blank" rel="noopener noreferrer" className="truncate text-muted hover:underline">{p.photographer}</a>

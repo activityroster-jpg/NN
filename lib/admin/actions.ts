@@ -17,6 +17,7 @@ import { clientIp } from "@/lib/request";
 import { bookingLink, confirmWithOperator, recordPayment } from "@/lib/services/bookings";
 import { providerFor } from "@/lib/services/charter";
 import { getSettings, saveSettings, SettingsSchema } from "@/lib/settings";
+import { reportUnsplashDownload } from "@/lib/photos/unsplash";
 import { requestCode, requireAdmin, signOut, verifyCode } from "./auth";
 
 const s = (f: FormData, k: string) => {
@@ -321,6 +322,8 @@ export async function usePhoto(form: FormData) {
   const target = PhotoTarget.parse(s(form, "target"));
   const url = z.string().url().startsWith("https://").max(600).parse(s(form, "url"));
   const credit = z.string().max(200).parse(s(form, "credit"));
+  const download = s(form, "download");
+  if (download.startsWith("https://api.unsplash.com/")) await reportUnsplashDownload(await getEnvAsync(), download);
   const db = await getDb();
   if (target.startsWith("destination:")) {
     const id = target.slice("destination:".length);
