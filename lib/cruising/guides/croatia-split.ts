@@ -21,9 +21,9 @@ export const croatiaSplit: CruisingGuide = {
   baseMarina: {
     name: "Marina Kaštela",
     at: [16.399, 43.545],
-    note: "Most charter companies in central Dalmatia are in two places, both close to Split airport: Marina Kaštela, and the marinas at Seget Donji and Trogir just to the west. This week starts in Kaštela. From Seget or Trogir the loop is the same, with a first leg of a similar length round Čiovo to Šolta.",
-    alsoMain: { name: "Seget & Trogir", at: [16.235, 43.513] },
-    others: ["Marina Baotić, Seget Donji", "Marina Trogir", "ACI Marina Split"],
+    note: "Most charter companies in central Dalmatia are in two places, both close to Split airport: Marina Kaštela, and Seget just to the west. This week starts in Kaštela. From Seget the loop is the same, with a first leg of a similar length round Čiovo to Šolta.",
+    alsoMain: { name: "Seget", at: [16.235, 43.513] },
+    others: ["Marina Baotić, Seget", "ACI Marina Split"],
   },
   arrival:
     "Saturday is check-in day. Boats are usually ready from late afternoon: do the boat briefing, stow the shopping and spend the first night in the marina. Dinner is a short taxi ride away in Split's old town.",
@@ -48,7 +48,6 @@ export const croatiaSplit: CruisingGuide = {
     "Čiovo": "Chiovo",
     "Baotić": "Baotich",
     "Seget Donji": "Seget Donyi",
-    "Trogir": "Troggeer",
     "konoba": "konnoba",
     "konobas": "konnobas",
   },
@@ -138,7 +137,7 @@ export const croatiaSplit: CruisingGuide = {
     },
   ],
   ports: [
-    { name: "Kaštela", at: [16.399, 43.545], kind: "marina", water: true, power: true, fuel: false, note: "Charter base: start and finish. Refuel in Split or Trogir on Friday." },
+    { name: "Kaštela", at: [16.399, 43.545], kind: "marina", water: true, power: true, fuel: false, note: "Charter base: start and finish. Refuel in Split on Friday." },
     { name: "Maslinica", at: [16.195, 43.4], kind: "marina", water: true, power: true, fuel: false, note: "Small marina in a sheltered bay. Book ahead in July and August." },
     { name: "Vis town", at: [16.2, 43.078], kind: "town quay", water: true, power: true, fuel: true, note: "Quay and buoys in a deep, well-protected bay. Fuel station in the harbour." },
     { name: "Komiža", at: [16.075, 43.045], kind: "buoys", water: false, power: false, fuel: true, note: "Open to the west. Leave if a strong westerly or the jugo is forecast." },

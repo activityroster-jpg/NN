@@ -154,7 +154,12 @@ export default function LessonPlayer({
   })
   // One element each for narration and music, created inside the first tap
   // so mobile browsers allow later playback.
-  const narrationEl = useRef<HTMLAudioElement | null>(null)
+  // Recorded narration plays through one Web Audio context that stays running
+  // for the whole video, so devices (Bluetooth especially) never let the
+  // output go idle between sentences and swallow the first syllable.
+  const audioCtx = useRef<AudioContext | null>(null)
+  const currentClip = useRef<AudioBufferSourceNode | null>(null)
+  const clipCache = useRef(new Map<string, Promise<AudioBuffer>>())
   const musicEl = useRef<HTMLAudioElement | null>(null)
 
   useEffect(() => {
@@ -170,10 +175,12 @@ export default function LessonPlayer({
     load()
     window.speechSynthesis.addEventListener('voiceschanged', load)
     const engine = e.current
+    const ctxRef = audioCtx
     return () => {
       window.speechSynthesis.removeEventListener('voiceschanged', load)
       engine.gen++
       engine.playing = false
+      void ctxRef.current?.close()
       cancelAnimationFrame(engine.raf)
       window.speechSynthesis.cancel()
     }
@@ -185,7 +192,12 @@ export default function LessonPlayer({
   const stopSpeech = useCallback(() => {
     e.current.gen++
     e.current.speaking = false
-    narrationEl.current?.pause()
+    const clip = currentClip.current
+    currentClip.current = null
+    if (clip) {
+      clip.onended = null
+      try { clip.stop() } catch { /* already stopped */ }
+    }
     if (typeof window !== 'undefined' && 'speechSynthesis' in window) window.speechSynthesis.cancel()
   }, [])
 
@@ -204,23 +216,50 @@ export default function LessonPlayer({
       }
       advanceSentence()
     }
-    if (audioUrl && !s.audioFailed) {
-      const a = narrationEl.current ?? (narrationEl.current = new Audio())
-      a.onended = finishRecorded
-      a.onerror = () => {
-        if (gen !== s.gen) return
-        // Not available (no key, busy or offline): switch to the device voice.
-        s.audioFailed = true
-        setRecordedFailed(true)
-        speakCurrent()
+    const ctx = audioCtx.current
+    if (audioUrl && ctx && !s.audioFailed) {
+      const load = (url: string) => {
+        let p = clipCache.current.get(url)
+        if (!p) {
+          p = fetch(url)
+            .then((r) => {
+              if (!r.ok) throw new Error(`narration ${r.status}`)
+              return r.arrayBuffer()
+            })
+            .then((b) => ctx.decodeAudioData(b))
+          p.catch(() => clipCache.current.delete(url))
+          clipCache.current.set(url, p)
+        }
+        return p
       }
-      a.src = audioUrl(text)
-      a.playbackRate = s.rate
       s.speaking = true
-      a.play().catch(() => a.onerror?.(new Event('error')))
-      // Warm the next sentence so it is ready (and generated) in time.
+      load(audioUrl(text))
+        .then((buf) => {
+          if (gen !== s.gen || !s.playing) return
+          const clip = ctx.createBufferSource()
+          clip.buffer = buf
+          clip.playbackRate.value = s.rate
+          clip.connect(ctx.destination)
+          clip.onended = () => {
+            if (currentClip.current === clip) currentClip.current = null
+            finishRecorded()
+          }
+          currentClip.current = clip
+          // A short lead-in: a natural pause between sentences, and the first
+          // sound never lands on an output that is still waking up.
+          clip.start(ctx.currentTime + (s.sentence === 0 ? 0.15 : 0.25))
+        })
+        .catch((err) => {
+          if (gen !== s.gen) return
+          console.warn('Recorded narration unavailable, using the device voice:', err)
+          // Not available (no key, busy or offline): switch to the device voice.
+          s.audioFailed = true
+          setRecordedFailed(true)
+          speakCurrent()
+        })
+      // Fetch and decode the next sentence now so there is no gap.
       const next = sentences[s.scene]?.[s.sentence + 1] ?? sentences[s.scene + 1]?.[0]
-      if (next) void fetch(audioUrl(next)).catch(() => {})
+      if (next) void load(audioUrl(next)).catch(() => {})
       return
     }
     if (!('speechSynthesis' in window)) return
@@ -363,7 +402,13 @@ export default function LessonPlayer({
       s.speechDone = false
     }
     s.last = performance.now()
-    if (audioUrl && !narrationEl.current) narrationEl.current = new Audio()
+    if (audioUrl && !audioCtx.current) {
+      // Created inside the tap, so mobile browsers allow it to play.
+      const AC = window.AudioContext ?? (window as unknown as { webkitAudioContext?: typeof AudioContext }).webkitAudioContext
+      if (AC) audioCtx.current = new AC()
+      else s.audioFailed = true
+    }
+    void audioCtx.current?.resume()
     if (!musicEl.current) musicEl.current = new Audio()
     setPlaying(true)
     setStarted(true)
