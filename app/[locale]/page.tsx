@@ -23,44 +23,50 @@ export default async function Home({ params }: { params: Promise<{ locale: strin
   return (
     <>
       {/* Hero */}
-      <section className="relative overflow-hidden">
-        <div aria-hidden className="absolute inset-0 -z-10" style={{ background: "radial-gradient(1200px 500px at 80% -10%, color-mix(in srgb, var(--sea) 22%, transparent), transparent 60%), radial-gradient(900px 400px at -10% 110%, color-mix(in srgb, var(--accent) 16%, transparent), transparent 60%)" }} />
-        <div className="container-page grid items-center gap-12 pt-14 pb-16 md:grid-cols-[1.1fr_0.9fr] md:pt-20 md:pb-24">
+      <section className="relative isolate overflow-hidden text-white">
+        <picture className="absolute inset-0 -z-10 block">
+          <source media="(max-width: 640px)" srcSet="/photos/home-hero-sm.jpg" />
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img src="/photos/home-hero.jpg" alt="" className="h-full w-full object-cover object-[60%_center]" fetchPriority="high" />
+        </picture>
+        <div aria-hidden className="absolute inset-0 -z-10 bg-gradient-to-r from-black/65 via-black/35 to-black/10" />
+        <div className="container-page grid items-end gap-10 pt-24 pb-16 md:grid-cols-[1.1fr_0.9fr] md:pt-36 md:pb-20">
           <div>
             <h1 className="h-display text-5xl leading-[1.02] sm:text-6xl lg:text-7xl">
               {t.home.heroTitle}
-              <span className="mt-2 block text-sea italic">{t.home.heroTitleAccent}</span>
+              <span className="mt-2 block italic text-white/90">{t.home.heroTitleAccent}</span>
             </h1>
-            <p className="mt-6 max-w-xl text-lg text-ink/80">{t.home.heroSub}</p>
+            <p className="mt-6 max-w-xl text-lg text-white/90">{t.home.heroSub}</p>
             <div className="mt-8 flex flex-wrap gap-3">
-              <Link href={`/${locale}/plan`} className="btn-primary px-7 py-3.5 text-base">
+              <Link href={`/${locale}/plan`} className="btn bg-white px-7 py-3.5 text-base text-ink hover:bg-white/90">
                 {t.home.heroCta} <IconArrowRight className="h-4 w-4" />
               </Link>
-              <Link href={`/${locale}/destinations`} className="btn-secondary px-7 py-3.5 text-base">
+              <Link href={`/${locale}/destinations`} className="btn border border-white/60 px-7 py-3.5 text-base text-white hover:bg-white/10">
                 {t.home.heroSecondary}
               </Link>
             </div>
-            <ul className="mt-8 grid gap-2 text-sm text-ink/80 sm:grid-cols-3">
+            <ul className="mt-8 grid gap-2 text-sm text-white/90 sm:grid-cols-3">
               {[t.home.trust1, t.home.trust2, t.home.trust3].map((s) => (
                 <li key={s} className="flex items-start gap-2">
-                  <IconCheck className="mt-0.5 h-4 w-4 shrink-0 text-ok" />
+                  <IconCheck className="mt-0.5 h-4 w-4 shrink-0" />
                   {s}
                 </li>
               ))}
             </ul>
           </div>
-          <div className="relative hidden md:block">
+          <div className="hidden md:block">
             <div className="grid grid-cols-2 gap-3">
-              {featured.map((d, i) => (
+              {featured.map((d) => (
                 <Link
                   key={d.id}
                   href={`/${locale}/plan?d=${d.id}`}
-                  className={`group relative flex aspect-[4/5] flex-col justify-end overflow-hidden rounded-3xl p-4 text-white shadow-sm ${i % 2 === 1 ? "translate-y-8" : ""}`}
-                  style={bg(d)}
+                  className="group flex items-center justify-between rounded-2xl border border-white/30 bg-white/10 px-4 py-3 backdrop-blur transition hover:bg-white/20"
                 >
-                  <span className="text-xs font-semibold tracking-wider uppercase opacity-80">{t.destinations[d.id as DestKey].region}</span>
-                  <span className="h-display text-2xl leading-tight">{t.destinations[d.id as DestKey].name}</span>
-                  <IconArrowRight className="absolute top-4 right-4 h-5 w-5 opacity-70 transition group-hover:translate-x-1" />
+                  <span>
+                    <span className="block text-[11px] font-semibold tracking-wider uppercase opacity-80">{t.destinations[d.id as DestKey].region}</span>
+                    <span className="h-display text-xl leading-tight">{t.destinations[d.id as DestKey].name}</span>
+                  </span>
+                  <IconArrowRight className="h-5 w-5 opacity-70 transition group-hover:translate-x-1" />
                 </Link>
               ))}
             </div>

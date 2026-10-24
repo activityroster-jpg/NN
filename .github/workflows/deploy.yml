@@ -74,6 +74,7 @@ jobs:
 
       - name: Record the Time Travel bookmark (restore point)
         run: |
+          set -o pipefail
           echo "### Production deploy of $(git rev-parse --short HEAD)" >> "$GITHUB_STEP_SUMMARY"
           echo "D1 Time Travel bookmark before this deploy (restore with 'wrangler d1 time-travel restore nautical-nomads --bookmark=…'):" >> "$GITHUB_STEP_SUMMARY"
           echo '```' >> "$GITHUB_STEP_SUMMARY"
