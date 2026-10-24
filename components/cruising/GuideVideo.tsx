@@ -2,7 +2,8 @@
 
 import type { ReactNode } from "react";
 import type { CruisingGuide, LonLat, Port } from "@/lib/cruising/types";
-import GuidePlayer, { fade, phase, splitSentences, Stage, type Scene } from "./GuidePlayer";
+import { dayLead, guideScript, sentenceHash, listOf, MOOR_LABEL, moorText as moorLine, short, splitSentences, windText } from "@/lib/cruising/narration";
+import GuidePlayer, { fade, phase, Stage, type Scene } from "./GuidePlayer";
 
 // Builds the narrated video for a cruising guide from its data: a map of the
 // area, the week's route drawn leg by leg, ports and supplies, winds and
@@ -71,7 +72,7 @@ function Card({ x, y, w, h, children, opacity = 1 }: { x: number; y: number; w: 
   );
 }
 
-export default function GuideVideo({ guide: g }: { guide: CruisingGuide }) {
+export default function GuideVideo({ guide: g, recorded = false }: { guide: CruisingGuide; /** Recorded narration and intro music are available. */ recorded?: boolean }) {
   const P = projector(g);
   const legs = g.legs.map((l) => ({ ...l, xy: l.route.map(P) }));
   const total = g.legs.reduce((n, l) => n + l.nm, 0);
@@ -106,11 +107,8 @@ export default function GuideVideo({ guide: g }: { guide: CruisingGuide }) {
   };
 
   const scenes: Scene[] = [];
-  const WEEKDAY = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday"];
-  const short = (s: string) => s.split(",")[0]!;
-  const lowerFirst = (s: string) => s.charAt(0).toLowerCase() + s.slice(1);
-  const listOf = (items: string[]) =>
-    items.length < 2 ? items.join("") : `${items.slice(0, -1).map(lowerFirst).join(", ")}, and ${lowerFirst(items[items.length - 1]!)}`;
+  const script = guideScript(g);
+  const part = (key: string) => script.find((x) => x.key === key)!;
   const base = g.baseMarina;
   const baseXY = P(base.at);
 
@@ -136,10 +134,56 @@ export default function GuideVideo({ guide: g }: { guide: CruisingGuide }) {
     </g>
   );
 
+  // 0. Brand intro: the wordmark over the intro music.
+  scenes.push({
+    title: "Nautical Nomads",
+    narration: "",
+    seconds: 5.5,
+    sound: recorded ? "/api/narration/intro" : undefined,
+    render: (t, _s, sec) => {
+      const letters = "NAUTICAL   NOMADS".split("");
+      return (
+        <Stage background="#13293b">
+          {/* Slow swell lines */}
+          {[0, 1, 2, 3].map((k) => (
+            <path
+              key={k}
+              d={`M -50 ${560 + k * 60} ${Array.from({ length: 18 }, (_, i) => `Q ${i * 100 + 50 - 50} ${560 + k * 60 + (i % 2 ? -14 : 14) * Math.sin(sec * 1.2 + k)} ${i * 100 + 50} ${560 + k * 60}`).join(" ")}`}
+              fill="none"
+              stroke="#f2b49c"
+              strokeWidth={2}
+              opacity={0.12 + k * 0.05}
+            />
+          ))}
+          <g transform="translate(800 400)">
+            {letters.map((ch, i) => (
+              <text
+                key={i}
+                x={(i - (letters.length - 1) / 2) * 62}
+                y={0}
+                textAnchor="middle"
+                fontSize={64}
+                fontWeight={300}
+                fill="#fff"
+                opacity={fade(t, 0.05 + i * 0.025, 0.2 + i * 0.025)}
+              >
+                {ch}
+              </text>
+            ))}
+          </g>
+          <line x1={800 - 420 * fade(t, 0.45, 0.7)} x2={800 + 420 * fade(t, 0.45, 0.7)} y1={450} y2={450} stroke="#f2b49c" strokeWidth={2} />
+          <text x={800} y={510} textAnchor="middle" fontSize={30} fill="#f2b49c" letterSpacing={8} opacity={fade(t, 0.6, 0.8)}>
+            ESSENTIAL CRUISING GUIDES
+          </text>
+        </Stage>
+      );
+    },
+  });
+
   // 1. Title
   scenes.push({
-    title: g.name,
-    narration: `${g.name}, ${g.country}. ${g.tagline}`,
+    title: part("title").title,
+    narration: part("title").narration,
     seconds: 6,
     render: (t) => (
       <Stage background={SEA}>
@@ -161,8 +205,8 @@ export default function GuideVideo({ guide: g }: { guide: CruisingGuide }) {
 
   // 2. Main base marina
   scenes.push({
-    title: "Where the boats are",
-    narration: base.note,
+    title: part("base").title,
+    narration: part("base").narration,
     seconds: 7,
     render: (t, _s, sec) => (
       <Stage background={SEA}>
@@ -190,8 +234,8 @@ export default function GuideVideo({ guide: g }: { guide: CruisingGuide }) {
     peak: { c: BRAND, h: 200, label: "Peak: hot and busy" },
   } as const;
   scenes.push({
-    title: "When to go",
-    narration: g.seasons.join(" "),
+    title: part("when").title,
+    narration: part("when").narration,
     seconds: 8,
     render: (t) => (
       <Stage background={SEA}>
@@ -224,12 +268,12 @@ export default function GuideVideo({ guide: g }: { guide: CruisingGuide }) {
     let n = splitSentences(g.weather.summary).length;
     for (const w of winds) {
       windStarts.push(n);
-      n += splitSentences(`The ${w.name} blows from the ${w.from}. ${w.note}`).length;
+      n += splitSentences(windText(w)).length;
     }
   }
   scenes.push({
-    title: "Weather and winds",
-    narration: `${g.weather.summary} ${winds.map((w) => `The ${w.name} blows from the ${w.from}. ${w.note}`).join(" ")}`,
+    title: part("weather").title,
+    narration: part("weather").narration,
     seconds: 10,
     render: (t, sentence) => {
       let active = -1;
@@ -264,13 +308,8 @@ export default function GuideVideo({ guide: g }: { guide: CruisingGuide }) {
   });
 
   // 5. Mooring types
-  const MOOR = {
-    marina: "Marinas",
-    "town quay": "Town quays",
-    buoy: "Buoys",
-    anchor: "At anchor",
-  } as const;
-  const moorText = g.mooring.map((m) => `${MOOR[m.kind]}: ${m.note}`);
+  const MOOR = MOOR_LABEL;
+  const moorText = g.mooring.map(moorLine);
   const moorStarts: number[] = [];
   {
     let n = 1;
@@ -319,8 +358,8 @@ export default function GuideVideo({ guide: g }: { guide: CruisingGuide }) {
     );
   };
   scenes.push({
-    title: "Where you moor",
-    narration: `Four ways to spend the night. ${moorText.join(" ")}`,
+    title: part("moor").title,
+    narration: part("moor").narration,
     seconds: 10,
     render: (_t, sentence) => (
       <Stage background={SEA}>
@@ -349,10 +388,8 @@ export default function GuideVideo({ guide: g }: { guide: CruisingGuide }) {
   // 6. Filling up: water, power and fuel
   const rows = g.ports;
   scenes.push({
-    title: "Water, power and fuel",
-    narration: `Filling up. Water and shore power are available in the marinas and on most town quays, but not on buoys or at anchor. Fuel is available in ${listOf(
-      rows.filter((p) => p.fuel).map((p) => p.name),
-    ).replace(/^./, (c) => c.toUpperCase())}. Keep the tanks topped up whenever you pass a fuel station.`,
+    title: part("fill").title,
+    narration: part("fill").narration,
     seconds: 9,
     render: (t) => {
       const rowH = 64;
@@ -408,10 +445,8 @@ export default function GuideVideo({ guide: g }: { guide: CruisingGuide }) {
 
   // 7. The week at a glance
   scenes.push({
-    title: "A sample week",
-    narration: `Now a sample week. It starts and ends in ${short(base.name)}: ${g.legs.length} short sailing days and about ${total} nautical miles, taking in ${listOf(
-      g.legs.slice(0, -1).map((l) => short(l.to)),
-    ).replace(/^./, (c) => c.toUpperCase())}.`,
+    title: part("week").title,
+    narration: part("week").narration,
     seconds: 8,
     render: (t) => (
       <Stage background={SEA}>
@@ -431,8 +466,8 @@ export default function GuideVideo({ guide: g }: { guide: CruisingGuide }) {
 
   // 8. Saturday: check-in and the first night at base
   scenes.push({
-    title: "Saturday: check-in",
-    narration: `Saturday. ${g.arrival}`,
+    title: part("saturday").title,
+    narration: part("saturday").narration,
     seconds: 6,
     render: (t, _s, sec) => (
       <Stage background={SEA}>
@@ -449,12 +484,12 @@ export default function GuideVideo({ guide: g }: { guide: CruisingGuide }) {
   // 9. One scene per sailing day, Sunday to Friday
   for (const [i, l] of legs.entries()) {
     const port = g.ports.find((p) => l.to.startsWith(p.name)) ?? g.ports.find((p) => l.to.includes(p.name));
-    const dayName = WEEKDAY[l.day - 1] ?? `Day ${l.day}`;
-    const todoStart = splitSentences(`${dayName}. ${l.from} to ${l.to}, about ${l.nm} miles. ${l.summary} ${l.stop ?? ""}`.trim()).length;
+    const dayName = part(`day-${l.day}`).title.split(":")[0]!;
+    const todoStart = splitSentences(dayLead(l)).length;
     const cardH = 190 + l.todo.length * 50;
     scenes.push({
-      title: `${dayName}: ${short(l.from)} to ${short(l.to)}`,
-      narration: `${dayName}. ${l.from} to ${l.to}, about ${l.nm} miles. ${l.summary} ${l.stop ? `${l.stop} ` : ""}While you're there: ${listOf(l.todo)}. ${l.overnight}`,
+      title: part(`day-${l.day}`).title,
+      narration: part(`day-${l.day}`).narration,
       seconds: 8,
       render: (t, sentence) => {
         const p = partial(l.xy, phase(t, 0.05, 0.6));
@@ -490,8 +525,8 @@ export default function GuideVideo({ guide: g }: { guide: CruisingGuide }) {
 
   // 10. Back to base, and close
   scenes.push({
-    title: "Friday evening: back to base",
-    narration: `${g.departure} No sailing licence? Add a skipper and simply enjoy the week.`,
+    title: part("close").title,
+    narration: part("close").narration,
     seconds: 6,
     render: (t) => (
       <Stage background={SEA}>
@@ -513,5 +548,6 @@ export default function GuideVideo({ guide: g }: { guide: CruisingGuide }) {
   });
 
   const poster = Math.max(0, scenes.findIndex((sc) => sc.title === "A sample week"));
-  return <GuidePlayer title={`${g.name} cruising guide`} scenes={scenes} pronounce={g.say} poster={poster} />;
+  const audioUrl = recorded ? (text: string) => `/api/narration/${g.id}/${sentenceHash(text)}` : undefined;
+  return <GuidePlayer title={`${g.name} cruising guide`} scenes={scenes} pronounce={g.say} poster={poster} audioUrl={audioUrl} />;
 }

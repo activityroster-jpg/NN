@@ -22,6 +22,12 @@ export interface AppEnv {
   /** Pixabay API key: photos are downloaded into PHOTOS, never hotlinked (their terms). */
   PIXABAY_API_KEY?: string;
   PIXABAY_API_BASE?: string;
+  /** ElevenLabs: recorded narration for the cruising guide videos. */
+  ELEVENLABS_API_KEY?: string;
+  /** Optional overrides: voice, model, and API base (local testing only). */
+  ELEVENLABS_VOICE_ID?: string;
+  ELEVENLABS_MODEL?: string;
+  ELEVENLABS_API_BASE?: string;
   /** "true" forces the demo fleet even when live credentials are set (staging). */
   DEMO_FLEET?: string;
 }
