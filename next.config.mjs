@@ -13,6 +13,8 @@ const nextConfig = {
   poweredByHeader: false,
   // Yacht photos come from the booking managers' CDNs; no optimiser route.
   images: { unoptimized: true },
+  // Admin photo uploads go through a server action.
+  experimental: { serverActions: { bodySizeLimit: "12mb" } },
   async headers() {
     return [{ source: "/:path*", headers: securityHeaders }];
   },

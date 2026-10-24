@@ -39,6 +39,12 @@ To deploy: GitHub → NN → Actions → **Deploy production** → Run workflow 
 → Run. The run summary shows the restore point, and a failed smoke test rolls the
 site back automatically.
 
+## 4b. Photo storage
+
+Cloudflare → **R2** → Create bucket → name `nautical-nomads-photos`, location **Europe** (EU
+jurisdiction). The Worker serves these photos at `/media/…`. Needed for uploading your own photos
+in Admin → Photos and for Pixabay photos (which may not be shown from Pixabay's servers).
+
 ## 5. Secrets
 
 Workers & Pages → `nn` → Settings → Variables and Secrets → Add, type **Secret**:
@@ -50,7 +56,7 @@ Workers & Pages → `nn` → Settings → Variables and Secrets → Add, type **
 | `RESEND_API_KEY` | Resend → API Keys → create (sending access, domain nauticalnomads.com) |
 | `STRIPE_SECRET_KEY` | Stripe → Developers → API keys → restricted key with Checkout Sessions write |
 | `STRIPE_WEBHOOK_SECRET` | Stripe → Developers → Webhooks → add endpoint `https://nauticalnomads.com/api/stripe/webhook`, events `checkout.session.completed` and `checkout.session.async_payment_succeeded` → copy the signing secret |
-| `UNSPLASH_ACCESS_KEY` | Free key from unsplash.com/developers (New Application → Access Key): lets Admin → Photos search stock photos. `PEXELS_API_KEY` works too if you have one |
+| `UNSPLASH_ACCESS_KEY` or `PIXABAY_API_KEY` | Lets Admin → Photos search stock photos. Unsplash photos are shown from Unsplash; Pixabay photos are copied into the storage bucket. `PEXELS_API_KEY` works too if you have one |
 | `MMK_API_TOKEN` | When MMK issues API access |
 | `NAUSYS_USERNAME`, `NAUSYS_PASSWORD` | When NauSYS issues API credentials |
 

@@ -17,6 +17,10 @@
       "migrations_dir": "migrations"
     }
   ],
+  // Photos we host ourselves (Pixabay downloads, owner uploads). Create the
+  // bucket once: Cloudflare → R2 → Create bucket → "nautical-nomads-photos",
+  // location Europe. Served by the Worker at /media/<key>.
+  "r2_buckets": [{ "binding": "PHOTOS", "bucket_name": "nautical-nomads-photos", "jurisdiction": "eu" }],
   "observability": { "enabled": true },
   "vars": {
     "SITE_URL": "https://nauticalnomads.com"

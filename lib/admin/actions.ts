@@ -17,7 +17,6 @@ import { clientIp } from "@/lib/request";
 import { bookingLink, confirmWithOperator, recordPayment } from "@/lib/services/bookings";
 import { providerFor } from "@/lib/services/charter";
 import { getSettings, saveSettings, SettingsSchema } from "@/lib/settings";
-import { reportUnsplashDownload } from "@/lib/photos/unsplash";
 import { requestCode, requireAdmin, signOut, verifyCode } from "./auth";
 
 const s = (f: FormData, k: string) => {
@@ -312,101 +311,4 @@ export async function saveProviderBase(form: FormData) {
     .onConflictDoUpdate({ target: providerBase.id, set: { name: v.name, destinationId: v.destinationId || null } });
   await audit(db, actor, "mapped", "provider_base", id, v);
   revalidatePath("/admin/destinations");
-}
-
-// ── Photos ─────────────────────────────────────────────────────────────────
-const PhotoTarget = z.string().regex(/^(destination:[a-z-]+|home:(monohull|catamaran))$/);
-
-export async function usePhoto(form: FormData) {
-  const actor = await requireAdmin();
-  const target = PhotoTarget.parse(s(form, "target"));
-  const url = z.string().url().startsWith("https://").max(600).parse(s(form, "url"));
-  const credit = z.string().max(200).parse(s(form, "credit"));
-  const download = s(form, "download");
-  if (download.startsWith("https://api.unsplash.com/")) await reportUnsplashDownload(await getEnvAsync(), download);
-  const db = await getDb();
-  if (target.startsWith("destination:")) {
-    const id = target.slice("destination:".length);
-    if (!DESTINATION_IDS.includes(id)) return;
-    await db
-      .insert(destinationSetting)
-      .values({ id, heroImageUrl: url, heroCredit: credit })
-      .onConflictDoUpdate({ target: destinationSetting.id, set: { heroImageUrl: url, heroCredit: credit } });
-    await audit(db, actor, "photo_set", "destination", id, { url, credit });
-    revalidatePath("/", "layout");
-    redirect("/admin/destinations");
-  }
-  const key = target.slice("home:".length) as "monohull" | "catamaran";
-  const cur = await getSettings(db);
-  await saveSettings(db, { ...cur, images: { ...cur.images, [key]: { url, credit } } });
-  await audit(db, actor, "photo_set", "settings", key, { url, credit });
-  revalidatePath("/", "layout");
-  redirect("/admin/photos");
-}
-
-export async function clearPhoto(form: FormData) {
-  const actor = await requireAdmin();
-  const target = PhotoTarget.parse(s(form, "target"));
-  const db = await getDb();
-  if (target.startsWith("destination:")) {
-    const id = target.slice("destination:".length);
-    await db.update(destinationSetting).set({ heroImageUrl: null, heroCredit: null }).where(eq(destinationSetting.id, id));
-    await audit(db, actor, "photo_cleared", "destination", id);
-  } else {
-    const key = target.slice("home:".length) as "monohull" | "catamaran";
-    const cur = await getSettings(db);
-    await saveSettings(db, { ...cur, images: { ...cur.images, [key]: null } });
-    await audit(db, actor, "photo_cleared", "settings", key);
-  }
-  revalidatePath("/", "layout");
-}
-
-/**
- * One click: give every destination without a hero, and the two home-page
- * cards, the best-matching stock photo. Each slot's search words come from
- * SUGGESTED_QUERIES; the first landscape result wide enough for a hero wins.
- * Anything already set is left alone, so re-running never overwrites a choice.
- */
-export async function autoFillPhotos() {
-  const actor = await requireAdmin();
-  const env = await getEnvAsync();
-  const db = await getDb();
-  const { searchUnsplash, unsplashEnabled } = await import("@/lib/photos/unsplash");
-  const { searchPhotos, pexelsEnabled, SUGGESTED_QUERIES } = await import("@/lib/photos/pexels");
-  const search = unsplashEnabled(env) ? (q: string) => searchUnsplash(env, q) : pexelsEnabled(env) ? (q: string) => searchPhotos(env, q) : null;
-  if (!search) redirect("/admin/photos?filled=0");
-
-  const pickFor = async (query: string) => {
-    const { photos } = await search(query);
-    return photos.find((p) => p.width >= 1600 && p.width > p.height) ?? photos[0] ?? null;
-  };
-
-  let filled = 0;
-  const existing = new Map((await db.select().from(destinationSetting).all()).map((r) => [r.id, r]));
-  for (const id of DESTINATION_IDS) {
-    if (existing.get(id)?.heroImageUrl) continue;
-    const p = await pickFor(SUGGESTED_QUERIES[id] ?? `${id} sailing`);
-    if (!p) continue;
-    const credit = `${p.photographer} / ${p.source === "unsplash" ? "Unsplash" : "Pexels"}`;
-    await db
-      .insert(destinationSetting)
-      .values({ id, heroImageUrl: p.url, heroCredit: credit })
-      .onConflictDoUpdate({ target: destinationSetting.id, set: { heroImageUrl: p.url, heroCredit: credit } });
-    if (p.downloadLocation) await reportUnsplashDownload(env, p.downloadLocation);
-    filled++;
-  }
-  const settings = await getSettings(db);
-  const images = { ...settings.images };
-  for (const key of ["monohull", "catamaran"] as const) {
-    if (images[key]) continue;
-    const p = await pickFor(SUGGESTED_QUERIES[key]!);
-    if (!p) continue;
-    images[key] = { url: p.url, credit: `${p.photographer} / ${p.source === "unsplash" ? "Unsplash" : "Pexels"}` };
-    if (p.downloadLocation) await reportUnsplashDownload(env, p.downloadLocation);
-    filled++;
-  }
-  await saveSettings(db, { ...settings, images });
-  await audit(db, actor, "photos_autofilled", "settings", null, { filled });
-  revalidatePath("/", "layout");
-  redirect(`/admin/photos?filled=${filled}`);
 }

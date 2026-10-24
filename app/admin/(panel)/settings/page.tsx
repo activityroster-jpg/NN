@@ -16,7 +16,8 @@ export default async function Settings() {
     ["Stripe card payments", !!env.STRIPE_SECRET_KEY && !!env.STRIPE_WEBHOOK_SECRET, "Secrets STRIPE_SECRET_KEY and STRIPE_WEBHOOK_SECRET"],
     ["Email (Resend)", !!env.RESEND_API_KEY, "Secret RESEND_API_KEY"],
     ["Hourly jobs", !!env.CRON_SECRET, "Secret CRON_SECRET"],
-    ["Photo search", !!(env.UNSPLASH_ACCESS_KEY || env.PEXELS_API_KEY), "Secret UNSPLASH_ACCESS_KEY (or PEXELS_API_KEY)"],
+    ["Photo search", !!(env.UNSPLASH_ACCESS_KEY || env.PIXABAY_API_KEY || env.PEXELS_API_KEY), "Secret UNSPLASH_ACCESS_KEY, PIXABAY_API_KEY or PEXELS_API_KEY"],
+    ["Photo storage (R2)", !!env.PHOTOS, "R2 bucket nautical-nomads-photos, bound as PHOTOS"],
   ];
   const f = (name: string, label: string, value: string) => (
     <label className="block"><span className="field-label">{label}</span><input name={name} defaultValue={value} className="field" /></label>
