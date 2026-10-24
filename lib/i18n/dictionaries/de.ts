@@ -434,6 +434,7 @@ const de: Dictionary = {
   },
   footer: {
     explore: "Entdecken",
+    cruisingGuides: "Törnführer",
     company: "Unternehmen",
     legal: "Rechtliches",
     terms: "Buchungsbedingungen",

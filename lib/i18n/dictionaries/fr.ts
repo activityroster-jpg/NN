@@ -434,6 +434,7 @@ const fr: Dictionary = {
   },
   footer: {
     explore: "Explorer",
+    cruisingGuides: "Guides de croisière",
     company: "Société",
     legal: "Mentions légales",
     terms: "Conditions de réservation",

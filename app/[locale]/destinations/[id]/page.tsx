@@ -6,6 +6,7 @@ import { getDb } from "@/lib/db";
 import { getEnvAsync } from "@/lib/env";
 import { autofillInBackground } from "@/lib/photos/autofill";
 import { galleryFor } from "@/lib/photos/slots";
+import { GUIDES } from "@/lib/cruising";
 import { saturdays } from "@/lib/domain/dates";
 import { destinationById } from "@/lib/domain/destinations";
 import { getDictionary, type Dictionary } from "@/lib/i18n";
@@ -81,6 +82,15 @@ export default async function DestinationPage({ params }: Props) {
               <p className="mt-2 text-sm text-ink/80">{t.licence.noLicence}</p>
             </div>
           </div>
+          {GUIDES.filter((x) => x.destinationId === id).map((x) => (
+            <Link key={x.id} href={`/${locale}/cruising/${x.id}`} className="mt-6 card flex items-center justify-between p-5 hover:border-ink/30">
+              <span>
+                <span className="block text-xs font-semibold tracking-wider text-brand uppercase">Cruising guide · video</span>
+                <span className="font-semibold">{x.name}: 7-day route from {x.base}</span>
+              </span>
+              <IconArrowRight className="h-5 w-5 text-brand" />
+            </Link>
+          ))}
           <div className="mt-6 card p-5">
             <h2 className="flex items-center gap-2 font-semibold"><IconPin className="h-5 w-5 text-sea" />{t.common.base}</h2>
             <p className="mt-2 text-sm text-ink/80">{def.bases.join(" · ")}</p>
