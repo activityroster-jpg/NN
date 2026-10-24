@@ -106,11 +106,28 @@ export default function GuideVideo({ guide: g }: { guide: CruisingGuide }) {
   };
 
   const scenes: Scene[] = [];
+  const WEEKDAY = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday"];
+  const short = (s: string) => s.split(",")[0]!;
+  const lowerFirst = (s: string) => s.charAt(0).toLowerCase() + s.slice(1);
+  const listOf = (items: string[]) =>
+    items.length < 2 ? items.join("") : `${items.slice(0, -1).map(lowerFirst).join(", ")}, and ${lowerFirst(items[items.length - 1]!)}`;
+  const base = g.baseMarina;
+  const baseXY = P(base.at);
+
+  const BaseMarker = ({ o = 1, pulse = 0 }: { o?: number; pulse?: number }) => (
+    <g opacity={o}>
+      <circle cx={baseXY[0]} cy={baseXY[1]} r={18 + 26 * pulse} fill="none" stroke="#fff" strokeWidth={3} opacity={1 - pulse} />
+      <circle cx={baseXY[0]} cy={baseXY[1]} r={13} fill={BRAND} stroke="#fff" strokeWidth={4} />
+      <text x={baseXY[0] + 22} y={baseXY[1] + 10} fontSize={30} fontWeight={800} fill="#fff" stroke={SEA} strokeWidth={7} paintOrder="stroke">
+        {base.name}
+      </text>
+    </g>
+  );
 
   // 1. Title
   scenes.push({
     title: g.name,
-    narration: `${g.name}, ${g.country}. A seven day sailing week from ${g.base}. ${g.tagline}`,
+    narration: `${g.name}, ${g.country}. ${g.tagline}`,
     seconds: 6,
     render: (t) => (
       <Stage background={SEA}>
@@ -124,132 +141,71 @@ export default function GuideVideo({ guide: g }: { guide: CruisingGuide }) {
           {g.name}
         </text>
         <text x={800} y={560} textAnchor="middle" fontSize={34} fill="#fff" opacity={fade(t, 0.3, 0.5)}>
-          7 days from {g.base} · about {total} nautical miles
+          A week from {short(base.name)} · about {total} nautical miles
         </text>
       </Stage>
     ),
   });
 
-  // 2. Overview of the whole route
+  // 2. Main base marina
   scenes.push({
-    title: "The week at a glance",
-    narration: `Here is the whole loop: ${g.legs.length} short legs and about ${total} nautical miles in total. ${g.legs
-      .map((l) => l.to.split(",")[0])
-      .slice(0, -1)
-      .join(", ")}, and back to ${g.base}.`,
+    title: "Where the boats are",
+    narration: `${base.note} Other bases nearby include ${listOf(base.others).replace(/^./, (c) => c.toUpperCase())}.`,
+    seconds: 7,
+    render: (t, _s, sec) => (
+      <Stage background={SEA}>
+        <Map />
+        <BaseMarker o={fade(t, 0.05, 0.2)} pulse={(sec % 1.6) / 1.6} />
+        <Card x={980} y={560} w={580} h={110 + base.others.length * 52} opacity={fade(t, 0.45, 0.6)}>
+          <text x={1012} y={612} fontSize={24} fontWeight={700} fill={BRAND} letterSpacing={3}>OTHER CHARTER BASES</text>
+          {base.others.map((o, i) => (
+            <text key={o} x={1012} y={665 + i * 52} fontSize={30} fontWeight={600} fill="#2a2826" opacity={fade(t, 0.55 + i * 0.1)}>
+              {o}
+            </text>
+          ))}
+        </Card>
+      </Stage>
+    ),
+  });
+
+  // 3. When to go
+  const MONTHS = ["J", "F", "M", "A", "M", "J", "J", "A", "S", "O", "N", "D"];
+  const RATE = {
+    closed: { c: "#3d5a72", h: 40, label: "Boats laid up" },
+    shoulder: { c: "#a7b9c7", h: 130, label: "Quieter, cooler" },
+    best: { c: "#f2b49c", h: 230, label: "Best time" },
+    peak: { c: BRAND, h: 200, label: "Peak: hot and busy" },
+  } as const;
+  scenes.push({
+    title: "When to go",
+    narration: g.seasons.join(" "),
     seconds: 8,
     render: (t) => (
       <Stage background={SEA}>
-        <Map />
-        {legs.map((l, i) => {
-          const share = 1 / legs.length;
-          const p = partial(l.xy, phase(t, i * share * 0.8, (i + 1) * share * 0.8));
-          return <path key={i} d={pathD(p.pts)} fill="none" stroke={ROUTE} strokeWidth={5} strokeDasharray="14 10" strokeLinecap="round" />;
+        <text x={800} y={140} textAnchor="middle" fontSize={58} fontWeight={800} fill="#fff">When to go</text>
+        {g.months.map((m, i) => {
+          const r = RATE[m];
+          const grow = phase(t, 0.02 + i * 0.03, 0.12 + i * 0.03);
+          const x = 230 + i * 100;
+          return (
+            <g key={i}>
+              <rect x={x} y={620 - r.h * grow} width={76} height={r.h * grow} rx={10} fill={r.c} />
+              <text x={x + 38} y={670} textAnchor="middle" fontSize={30} fontWeight={700} fill="#fff">{MONTHS[i]}</text>
+            </g>
+          );
         })}
-        {g.ports.map((p, i) => (
-          <PortDot key={p.name} p={p} o={fade(t, 0.1 + (i / g.ports.length) * 0.7)} />
+        {(Object.keys(RATE) as (keyof typeof RATE)[]).map((k, i) => (
+          <g key={k} opacity={fade(t, 0.45 + i * 0.05)}>
+            <rect x={230 + i * 300} y={740} width={28} height={28} rx={6} fill={RATE[k].c} />
+            <text x={270 + i * 300} y={764} fontSize={26} fill="#fff">{RATE[k].label}</text>
+          </g>
         ))}
       </Stage>
     ),
   });
 
-  // 3. One scene per day
-  for (const [i, l] of legs.entries()) {
-    const port = g.ports.find((p) => l.to.startsWith(p.name)) ?? g.ports.find((p) => l.to.includes(p.name));
-    scenes.push({
-      title: `Day ${l.day}: ${l.from} to ${l.to.split(",")[0]}`,
-      narration: `Day ${l.day}. ${l.from} to ${l.to}, about ${l.nm} miles. ${l.summary} ${l.stop ? `${l.stop} ` : ""}${l.overnight}`,
-      seconds: 7,
-      render: (t) => {
-        const p = partial(l.xy, phase(t, 0.08, 0.85));
-        return (
-          <Stage background={SEA}>
-            <Map />
-            {legs.slice(0, i).map((d, j) => (
-              <path key={j} d={pathD(d.xy)} fill="none" stroke={ROUTE_DONE} strokeWidth={4} strokeDasharray="10 10" />
-            ))}
-            <path d={pathD(p.pts)} fill="none" stroke={ROUTE} strokeWidth={7} strokeLinecap="round" strokeLinejoin="round" />
-            {port && <PortDot p={port} big o={fade(t, 0.8)} />}
-            <Boat at={p.at} angle={p.angle} />
-            <Card x={40} y={40} w={560} h={150} opacity={fade(t, 0, 0.08)}>
-              <text x={72} y={95} fontSize={26} fontWeight={700} fill={BRAND} letterSpacing={3}>
-                DAY {l.day} · {l.nm} NM
-              </text>
-              <text x={72} y={150} fontSize={40} fontWeight={800} fill="#2a2826">
-                {l.from} → {l.to.split(",")[0]}
-              </text>
-            </Card>
-          </Stage>
-        );
-      },
-    });
-  }
-
-  // 4. Ports and supplies
-  const rows = g.ports;
-  scenes.push({
-    title: "Water, power and fuel",
-    narration: `Where to fill up. Water and shore power are available in the marinas and on most town quays, but not on buoys or at anchor. Fuel is available in ${rows
-      .filter((p) => p.fuel)
-      .map((p) => p.name)
-      .join(", ")}. Keep the tanks topped up when you pass a fuel station.`,
-    seconds: 9,
-    render: (t) => {
-      const rowH = 70;
-      const x0 = 1050;
-      const y0 = 190;
-      return (
-        <Stage background="#13293b">
-          {/* Map shrunk into the left part of the frame, table on the right. */}
-          <defs>
-            <clipPath id="nn-ports-map">
-              <rect width={W} height={H} />
-            </clipPath>
-          </defs>
-          <g transform={`translate(0 ${(H - H * 0.64) / 2}) scale(0.64)`}>
-            <g clipPath="url(#nn-ports-map)">
-              <rect width={W} height={H} fill={SEA} />
-              <Map />
-            </g>
-          </g>
-          {rows.map((p) => {
-            const [x, y] = portXY(p);
-            return (
-              <g key={p.name} transform={`translate(${x * 0.64} ${y * 0.64 + (H - H * 0.64) / 2})`}>
-                <circle r={8} fill={BRAND} stroke="#fff" strokeWidth={3} />
-                <text x={12} y={-10} fontSize={22} fontWeight={700} fill="#fff" stroke={SEA} strokeWidth={5} paintOrder="stroke">{p.name}</text>
-              </g>
-            );
-          })}
-          <Card x={x0 - 30} y={70} w={560} h={130 + rows.length * rowH} opacity={fade(t, 0, 0.1)}>
-            <text x={x0} y={130} fontSize={30} fontWeight={800} fill="#2a2826">Port</text>
-            {["Water", "Power", "Fuel"].map((h, k) => (
-              <text key={h} x={x0 + 300 + k * 85} y={130} textAnchor="middle" fontSize={22} fontWeight={700} fill="#6b6258">{h}</text>
-            ))}
-            {rows.map((p, r) => {
-              const o = fade(t, 0.1 + (r / rows.length) * 0.6);
-              const y = y0 + r * rowH;
-              return (
-                <g key={p.name} opacity={o}>
-                  <line x1={x0} x2={x0 + 500} y1={y - 42} y2={y - 42} stroke="#e2d9c6" strokeWidth={2} />
-                  <text x={x0} y={y} fontSize={30} fontWeight={600} fill="#2a2826">{p.name}</text>
-                  {[p.water, p.power, p.fuel].map((ok, k) => (
-                    <text key={k} x={x0 + 300 + k * 85} y={y} textAnchor="middle" fontSize={34} fontWeight={800} fill={ok ? "#2f7a4f" : "#c9b48c"}>
-                      {ok ? "✓" : "–"}
-                    </text>
-                  ))}
-                </g>
-              );
-            })}
-          </Card>
-        </Stage>
-      );
-    },
-  });
-
-  // 5. Weather and winds
+  // 4. Weather and winds
   const winds = g.weather.winds;
-  // Sentence index where each wind's part of the narration begins.
   const windStarts: number[] = [];
   {
     let n = splitSentences(g.weather.summary).length;
@@ -294,45 +250,235 @@ export default function GuideVideo({ guide: g }: { guide: CruisingGuide }) {
     },
   });
 
-  // 6. Navigation notes
-  const notes = g.navigation.slice(0, 4);
-  scenes.push({
-    title: "Navigation and mooring",
-    narration: notes.join(" "),
-    seconds: 8,
-    render: (_t, sentence) => {
-      // Each note lights up when its first sentence is spoken.
-      const starts: number[] = [];
-      let n = 0;
-      for (const s of notes) {
-        starts.push(n);
-        n += splitSentences(s).length;
-      }
+  // 5. Mooring types
+  const MOOR = {
+    marina: "Marinas",
+    "town quay": "Town quays",
+    buoy: "Buoys",
+    anchor: "At anchor",
+  } as const;
+  const moorText = g.mooring.map((m) => `${MOOR[m.kind]}: ${m.note}`);
+  const moorStarts: number[] = [];
+  {
+    let n = 1;
+    for (const m of moorText) {
+      moorStarts.push(n);
+      n += splitSentences(m).length;
+    }
+  }
+  const MoorArt = ({ kind }: { kind: keyof typeof MOOR }) => {
+    // Simple pictures, 200×140, boat seen from above.
+    const boat = (x: number, y: number, r = 0) => (
+      <g key={`${x}-${y}`} transform={`translate(${x} ${y}) rotate(${r})`}>
+        <path d="M0 -38 C18 -20 20 10 14 36 L-14 36 C-20 10 -18 -20 0 -38 Z" fill="#fff" stroke="#2a2826" strokeWidth={3} />
+      </g>
+    );
+    if (kind === "marina")
       return (
-        <Stage background={SEA}>
-          <text x={110} y={140} fontSize={56} fontWeight={800} fill="#fff">Navigation and mooring</text>
-          {notes.map((s, i) => {
-            const shown = sentence >= starts[i]!;
-            const short = s.split(/(?<=[.!?])\s+/)[0]!;
+        <g>
+          <rect x={0} y={0} width={200} height={22} fill="#c9b48c" />
+          {[50, 100, 150].map((x) => boat(x, 64, 180))}
+          {[50, 100, 150].map((x) => <line key={x} x1={x} y1={100} x2={x} y2={135} stroke="#f2b49c" strokeWidth={3} strokeDasharray="6 5" />)}
+        </g>
+      );
+    if (kind === "town quay")
+      return (
+        <g>
+          <rect x={0} y={0} width={200} height={30} fill="#e8dcc2" />
+          {[20, 55, 90, 125, 160].map((x) => <rect key={x} x={x} y={4} width={20} height={20} fill="#c9b48c" />)}
+          {[60, 140].map((x) => boat(x, 72, 180))}
+        </g>
+      );
+    if (kind === "buoy")
+      return (
+        <g>
+          <circle cx={100} cy={30} r={14} fill="#f2b49c" stroke="#fff" strokeWidth={3} />
+          <line x1={100} y1={44} x2={100} y2={64} stroke="#fff" strokeWidth={3} />
+          {boat(100, 100)}
+        </g>
+      );
+    return (
+      <g>
+        {boat(70, 60, 20)}
+        <path d="M84 96 L150 128" stroke="#fff" strokeWidth={3} strokeDasharray="6 5" />
+        <path d="M150 116 v20 M140 126 h20 M142 134 q8 8 16 0" stroke="#fff" strokeWidth={4} fill="none" strokeLinecap="round" />
+      </g>
+    );
+  };
+  scenes.push({
+    title: "Where you moor",
+    narration: `Four ways to spend the night. ${moorText.join(" ")}`,
+    seconds: 10,
+    render: (_t, sentence) => (
+      <Stage background={SEA}>
+        <text x={800} y={130} textAnchor="middle" fontSize={58} fontWeight={800} fill="#fff">Where you moor</text>
+        {g.mooring.map((m, i) => {
+          const on = sentence >= moorStarts[i]! && (i === g.mooring.length - 1 || sentence < moorStarts[i + 1]!);
+          const shown = sentence >= moorStarts[i]!;
+          const x = 70 + i * 370;
+          return (
+            <g key={m.kind} opacity={shown ? 1 : 0.25}>
+              <rect x={x} y={200} width={350} height={600} rx={24} fill={on ? "#244a66" : "#1f425c"} stroke={on ? "#f2b49c" : "none"} strokeWidth={4} />
+              <g transform={`translate(${x + 75} 250)`}>
+                <MoorArt kind={m.kind} />
+              </g>
+              <text x={x + 175} y={460} textAnchor="middle" fontSize={36} fontWeight={800} fill="#fff">{MOOR[m.kind]}</text>
+              <foreignObject x={x + 25} y={490} width={300} height={290}>
+                <p style={{ margin: 0, color: "rgba(255,255,255,.85)", fontSize: 24, lineHeight: 1.35, textAlign: "center", fontFamily: "inherit" }}>{m.note}</p>
+              </foreignObject>
+            </g>
+          );
+        })}
+      </Stage>
+    ),
+  });
+
+  // 6. Filling up: water, power and fuel
+  const rows = g.ports;
+  scenes.push({
+    title: "Water, power and fuel",
+    narration: `Filling up. Water and shore power are available in the marinas and on most town quays, but not on buoys or at anchor. Fuel is available in ${listOf(
+      rows.filter((p) => p.fuel).map((p) => p.name),
+    ).replace(/^./, (c) => c.toUpperCase())}. Keep the tanks topped up whenever you pass a fuel station.`,
+    seconds: 9,
+    render: (t) => {
+      const rowH = 64;
+      const x0 = 1050;
+      const y0 = 185;
+      return (
+        <Stage background="#13293b">
+          <defs>
+            <clipPath id="nn-ports-map">
+              <rect width={W} height={H} />
+            </clipPath>
+          </defs>
+          <g transform={`translate(0 ${(H - H * 0.64) / 2}) scale(0.64)`}>
+            <g clipPath="url(#nn-ports-map)">
+              <rect width={W} height={H} fill={SEA} />
+              <Map />
+            </g>
+          </g>
+          {rows.map((p) => {
+            const [x, y] = portXY(p);
             return (
-              <g key={i} opacity={shown ? 1 : 0.15}>
-                <circle cx={130} cy={248 + i * 150} r={26} fill={BRAND} />
-                <text x={130} y={258 + i * 150} textAnchor="middle" fontSize={28} fontWeight={800} fill="#fff">{i + 1}</text>
-                <foreignObject x={190} y={215 + i * 150} width={1300} height={130}>
-                  <p style={{ margin: 0, color: "#fff", fontSize: 34, lineHeight: 1.3, fontFamily: "inherit" }}>{short}</p>
-                </foreignObject>
+              <g key={p.name} transform={`translate(${x * 0.64} ${y * 0.64 + (H - H * 0.64) / 2})`}>
+                <circle r={8} fill={BRAND} stroke="#fff" strokeWidth={3} />
+                <text x={12} y={-10} fontSize={22} fontWeight={700} fill="#fff" stroke={SEA} strokeWidth={5} paintOrder="stroke">{p.name}</text>
               </g>
             );
           })}
+          <Card x={x0 - 30} y={70} w={560} h={130 + rows.length * rowH} opacity={fade(t, 0, 0.1)}>
+            <text x={x0} y={130} fontSize={30} fontWeight={800} fill="#2a2826">Port</text>
+            {["Water", "Power", "Fuel"].map((h, k) => (
+              <text key={h} x={x0 + 300 + k * 85} y={130} textAnchor="middle" fontSize={22} fontWeight={700} fill="#6b6258">{h}</text>
+            ))}
+            {rows.map((p, r) => {
+              const o = fade(t, 0.05 + (r / rows.length) * 0.5);
+              const y = y0 + r * rowH;
+              return (
+                <g key={p.name} opacity={o}>
+                  <line x1={x0} x2={x0 + 500} y1={y - 40} y2={y - 40} stroke="#e2d9c6" strokeWidth={2} />
+                  <text x={x0} y={y} fontSize={28} fontWeight={600} fill="#2a2826">{p.name}</text>
+                  {[p.water, p.power, p.fuel].map((ok, k) => (
+                    <text key={k} x={x0 + 300 + k * 85} y={y} textAnchor="middle" fontSize={32} fontWeight={800} fill={ok ? "#2f7a4f" : "#c9b48c"}>
+                      {ok ? "✓" : "–"}
+                    </text>
+                  ))}
+                </g>
+              );
+            })}
+          </Card>
         </Stage>
       );
     },
   });
 
-  // 7. Close
+  // 7. The week at a glance
   scenes.push({
-    title: "Plan your week",
-    narration: `Best months: ${g.bestMonths.map((m) => new Date(2026, m - 1, 1).toLocaleString("en-GB", { month: "long" })).join(", ")}. Sea temperature: ${g.weather.seaTemp} No sailing licence? Add a skipper and simply enjoy the week.`,
+    title: "A sample week",
+    narration: `Now a sample week. It starts and ends in ${short(base.name)}: ${g.legs.length} short sailing days and about ${total} nautical miles, taking in ${listOf(
+      g.legs.slice(0, -1).map((l) => short(l.to)),
+    ).replace(/^./, (c) => c.toUpperCase())}.`,
+    seconds: 8,
+    render: (t) => (
+      <Stage background={SEA}>
+        <Map />
+        {legs.map((l, i) => {
+          const share = 1 / legs.length;
+          const p = partial(l.xy, phase(t, i * share * 0.8, (i + 1) * share * 0.8));
+          return <path key={i} d={pathD(p.pts)} fill="none" stroke={ROUTE} strokeWidth={5} strokeDasharray="14 10" strokeLinecap="round" />;
+        })}
+        {g.ports.filter((p) => !base.name.includes(p.name) && g.legs.some((l) => short(l.to) === p.name || l.to.startsWith(p.name))).map((p, i) => (
+          <PortDot key={p.name} p={p} o={fade(t, 0.1 + (i / g.ports.length) * 0.7)} />
+        ))}
+        <BaseMarker />
+      </Stage>
+    ),
+  });
+
+  // 8. Saturday: check-in and the first night at base
+  scenes.push({
+    title: "Saturday: check-in",
+    narration: `Saturday. ${g.arrival}`,
+    seconds: 6,
+    render: (t, _s, sec) => (
+      <Stage background={SEA}>
+        <Map />
+        <BaseMarker pulse={(sec % 1.6) / 1.6} />
+        <Card x={W - 660} y={40} w={620} h={150} opacity={fade(t, 0, 0.08)}>
+          <text x={W - 628} y={95} fontSize={26} fontWeight={700} fill={BRAND} letterSpacing={3}>SATURDAY · CHECK-IN</text>
+          <text x={W - 628} y={150} fontSize={40} fontWeight={800} fill="#2a2826">First night in {short(base.name)}</text>
+        </Card>
+      </Stage>
+    ),
+  });
+
+  // 9. One scene per sailing day, Sunday to Friday
+  for (const [i, l] of legs.entries()) {
+    const port = g.ports.find((p) => l.to.startsWith(p.name)) ?? g.ports.find((p) => l.to.includes(p.name));
+    const dayName = WEEKDAY[l.day - 1] ?? `Day ${l.day}`;
+    const todoStart = splitSentences(`${dayName}. ${l.from} to ${l.to}, about ${l.nm} miles. ${l.summary} ${l.stop ?? ""}`.trim()).length;
+    const cardH = 190 + l.todo.length * 50;
+    scenes.push({
+      title: `${dayName}: ${short(l.from)} to ${short(l.to)}`,
+      narration: `${dayName}. ${l.from} to ${l.to}, about ${l.nm} miles. ${l.summary} ${l.stop ? `${l.stop} ` : ""}While you're there: ${listOf(l.todo)}. ${l.overnight}`,
+      seconds: 8,
+      render: (t, sentence) => {
+        const p = partial(l.xy, phase(t, 0.05, 0.6));
+        return (
+          <Stage background={SEA}>
+            <Map />
+            {legs.slice(0, i).map((d, j) => (
+              <path key={j} d={pathD(d.xy)} fill="none" stroke={ROUTE_DONE} strokeWidth={4} strokeDasharray="10 10" />
+            ))}
+            <path d={pathD(p.pts)} fill="none" stroke={ROUTE} strokeWidth={7} strokeLinecap="round" strokeLinejoin="round" />
+            {port && <PortDot p={port} big o={fade(t, 0.55)} />}
+            {i === legs.length - 1 ? <BaseMarker o={fade(t, 0.55)} /> : null}
+            <Boat at={p.at} angle={p.angle} />
+            <Card x={W - 680} y={40} w={640} h={cardH} opacity={fade(t, 0, 0.06)}>
+              <text x={W - 648} y={92} fontSize={24} fontWeight={700} fill={BRAND} letterSpacing={3}>
+                {dayName.toUpperCase()} · {l.nm} NM
+              </text>
+              <text x={W - 648} y={145} fontSize={38} fontWeight={800} fill="#2a2826">
+                {short(l.from)} → {short(l.to)}
+              </text>
+              {l.todo.map((item, k) => (
+                <g key={item} opacity={fade(t, 0.12 + k * 0.05) * (sentence >= todoStart ? 1 : 0.55)}>
+                  <circle cx={W - 636} cy={192 + k * 50} r={6} fill={BRAND} />
+                  <text x={W - 616} y={201 + k * 50} fontSize={26} fill="#2a2826">{item}</text>
+                </g>
+              ))}
+            </Card>
+          </Stage>
+        );
+      },
+    });
+  }
+
+  // 10. Back to base, and close
+  scenes.push({
+    title: "Friday evening: back to base",
+    narration: `${g.departure} No sailing licence? Add a skipper and simply enjoy the week.`,
     seconds: 6,
     render: (t) => (
       <Stage background={SEA}>
@@ -342,7 +488,8 @@ export default function GuideVideo({ guide: g }: { guide: CruisingGuide }) {
         {legs.map((l, i) => (
           <path key={i} d={pathD(l.xy)} fill="none" stroke={ROUTE} strokeWidth={5} opacity={fade(t, 0, 0.2)} />
         ))}
-        <Card x={300} y={300} w={1000} h={300} opacity={fade(t, 0.1, 0.25)}>
+        <BaseMarker o={fade(t, 0, 0.2)} />
+        <Card x={300} y={300} w={1000} h={300} opacity={fade(t, 0.3, 0.45)}>
           <text x={800} y={400} textAnchor="middle" fontSize={56} fontWeight={800} fill="#2a2826">Your week in {g.name}</text>
           <text x={800} y={465} textAnchor="middle" fontSize={30} fill="#6b6258">nauticalnomads.com</text>
           <rect x={620} y={500} width={360} height={64} rx={32} fill={BRAND} />
@@ -352,5 +499,6 @@ export default function GuideVideo({ guide: g }: { guide: CruisingGuide }) {
     ),
   });
 
-  return <GuidePlayer title={`${g.name} cruising guide`} scenes={scenes} />;
+  const poster = Math.max(0, scenes.findIndex((sc) => sc.title === "A sample week"));
+  return <GuidePlayer title={`${g.name} cruising guide`} scenes={scenes} pronounce={g.say} poster={poster} />;
 }

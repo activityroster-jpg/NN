@@ -90,7 +90,16 @@ interface Frame {
   seconds: number
 }
 
-export default function LessonPlayer({ title, scenes }: { title: string; scenes: Scene[] }) {
+/** Spoken text for a caption: respells names the voice gets wrong (longest first). */
+function forSpeech(text: string, pronounce?: Record<string, string>): string {
+  let out = text.replace(/°/g, ' degrees ').replace(/(\d)'/g, '$1 minutes')
+  if (pronounce) {
+    for (const k of Object.keys(pronounce).sort((a, b) => b.length - a.length)) out = out.split(k).join(pronounce[k]!)
+  }
+  return out
+}
+
+export default function LessonPlayer({ title, scenes, pronounce, poster = 1 }: { title: string; scenes: Scene[]; pronounce?: Record<string, string>; /** Scene shown finished as the poster before play. */ poster?: number }) {
   const sentences = useMemo(() => scenes.map((s) => splitSentences(s.narration)), [scenes])
   const sceneChars = useMemo(() => sentences.map((ss) => ss.reduce((n, s) => n + s.length, 0)), [sentences])
 
@@ -167,7 +176,7 @@ export default function LessonPlayer({ title, scenes }: { title: string; scenes:
     const text = sentences[s.scene]?.[s.sentence]
     if (!text) return
     const gen = ++s.gen
-    const u = new SpeechSynthesisUtterance(text.replace(/°/g, ' degrees ').replace(/(\d)'/g, '$1 minutes'))
+    const u = new SpeechSynthesisUtterance(forSpeech(text, pronounce))
     u.lang = 'en-GB'
     if (s.voice) u.voice = s.voice
     u.rate = s.rate
@@ -193,7 +202,7 @@ export default function LessonPlayer({ title, scenes }: { title: string; scenes:
     s.speaking = true
     window.speechSynthesis.speak(u)
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [sentences])
+  }, [sentences, pronounce])
 
   function advanceSentence() {
     const s = e.current
@@ -363,12 +372,12 @@ export default function LessonPlayer({ title, scenes }: { title: string; scenes:
   return (
     <section aria-label={`${title} — guide video`} className="rounded-2xl bg-[#13293b] p-1.5 sm:p-3">
       <div ref={containerRef} className="relative overflow-hidden rounded-xl bg-[#1b3a52]" style={{ aspectRatio: '16 / 9' }}>
-        {/* Before play, the route overview (second scene, finished) is the poster. */}
+        {/* Before play, the poster scene is shown finished. */}
         <div className="absolute inset-0">
           {mounted &&
             (started
               ? scenes[frame.scene]!.render(frame.t, frame.sentence, frame.seconds)
-              : scenes[Math.min(1, scenes.length - 1)]!.render(1, 99, 0))}
+              : scenes[Math.min(poster, scenes.length - 1)]!.render(1, 99, 0))}
         </div>
 
         {/* On wider screens captions sit over the picture; phones get them below it. */}

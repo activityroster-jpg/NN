@@ -19,6 +19,7 @@ export interface Port {
 }
 
 export interface Leg {
+  /** 1 = Sunday (first sailing day) … 6 = Friday (back to base). */
   day: number;
   from: string;
   to: string;
@@ -32,7 +33,17 @@ export interface Leg {
   overnight: string;
   /** Optional stop along the way. */
   stop?: string;
+  /** Things to do, two to four short items. */
+  todo: string[];
 }
+
+export interface MooringType {
+  kind: "marina" | "town quay" | "buoy" | "anchor";
+  note: string;
+}
+
+/** How busy and pleasant each month is, January to December. */
+export type MonthRating = "closed" | "shoulder" | "best" | "peak";
 
 export interface Wind {
   name: string;
@@ -53,6 +64,19 @@ export interface CruisingGuide {
   tagline: string;
   intro: string;
   bestMonths: number[];
+  /** Twelve entries, January first. */
+  months: MonthRating[];
+  /** Plain-English season notes, spoken in the video. */
+  seasons: string[];
+  /** Where most charter companies are based: the week starts and ends here. */
+  baseMarina: { name: string; at: LonLat; note: string; others: string[] };
+  /** Saturday: check-in and the first night, still in the base marina. */
+  arrival: string;
+  /** Friday evening return and Saturday check-out. */
+  departure: string;
+  mooring: MooringType[];
+  /** Spoken respellings for place names an English voice gets wrong. */
+  say?: Record<string, string>;
   level: "easy" | "intermediate" | "experienced";
   /** Destination on our booking site, for the "Plan my trip" link. */
   destinationId?: string;
