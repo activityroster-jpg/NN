@@ -80,7 +80,7 @@ export async function tick(env: AppEnv, db: Db): Promise<Record<string, number>>
   }
   // 5. Guide narration: record anything not yet in storage (up to ~3 min).
   try {
-    out.narration = await prerecordNarration(env, 3 * 60_000);
+    out.narration = (await prerecordNarration(env, 3 * 60_000)).made;
   } catch (e) {
     console.error("narration prerecord failed", e);
   }
