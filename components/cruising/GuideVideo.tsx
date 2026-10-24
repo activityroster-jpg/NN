@@ -114,6 +114,18 @@ export default function GuideVideo({ guide: g }: { guide: CruisingGuide }) {
   const base = g.baseMarina;
   const baseXY = P(base.at);
 
+  const alsoXY = base.alsoMain ? P(base.alsoMain.at) : null;
+  const AlsoMarker = ({ o = 1, pulse = 0 }: { o?: number; pulse?: number }) =>
+    alsoXY && base.alsoMain ? (
+      <g opacity={o}>
+        <circle cx={alsoXY[0]} cy={alsoXY[1]} r={18 + 26 * pulse} fill="none" stroke="#fff" strokeWidth={3} opacity={1 - pulse} />
+        <circle cx={alsoXY[0]} cy={alsoXY[1]} r={13} fill={BRAND} stroke="#fff" strokeWidth={4} />
+        <text x={alsoXY[0] - 22} y={alsoXY[1] + 10} textAnchor="end" fontSize={30} fontWeight={800} fill="#fff" stroke={SEA} strokeWidth={7} paintOrder="stroke">
+          {base.alsoMain.name}
+        </text>
+      </g>
+    ) : null;
+
   const BaseMarker = ({ o = 1, pulse = 0 }: { o?: number; pulse?: number }) => (
     <g opacity={o}>
       <circle cx={baseXY[0]} cy={baseXY[1]} r={18 + 26 * pulse} fill="none" stroke="#fff" strokeWidth={3} opacity={1 - pulse} />
@@ -150,14 +162,15 @@ export default function GuideVideo({ guide: g }: { guide: CruisingGuide }) {
   // 2. Main base marina
   scenes.push({
     title: "Where the boats are",
-    narration: `${base.note} Other bases nearby include ${listOf(base.others).replace(/^./, (c) => c.toUpperCase())}.`,
+    narration: base.note,
     seconds: 7,
     render: (t, _s, sec) => (
       <Stage background={SEA}>
         <Map />
         <BaseMarker o={fade(t, 0.05, 0.2)} pulse={(sec % 1.6) / 1.6} />
+        <AlsoMarker o={fade(t, 0.2, 0.35)} pulse={((sec + 0.8) % 1.6) / 1.6} />
         <Card x={980} y={560} w={580} h={110 + base.others.length * 52} opacity={fade(t, 0.45, 0.6)}>
-          <text x={1012} y={612} fontSize={24} fontWeight={700} fill={BRAND} letterSpacing={3}>OTHER CHARTER BASES</text>
+          <text x={1012} y={612} fontSize={24} fontWeight={700} fill={BRAND} letterSpacing={3}>CHARTER MARINAS</text>
           {base.others.map((o, i) => (
             <text key={o} x={1012} y={665 + i * 52} fontSize={30} fontWeight={600} fill="#2a2826" opacity={fade(t, 0.55 + i * 0.1)}>
               {o}

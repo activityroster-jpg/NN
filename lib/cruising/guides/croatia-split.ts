@@ -21,8 +21,9 @@ export const croatiaSplit: CruisingGuide = {
   baseMarina: {
     name: "Marina Kaštela",
     at: [16.399, 43.545],
-    note: "Most charter fleets in central Dalmatia sail from the marinas between Trogir and Split. Marina Kaštela, ten minutes from Split airport, is one of the largest charter bases in Croatia.",
-    others: ["ACI Marina Split", "Marina Baotić, Seget Donji", "Marina Trogir"],
+    note: "Most charter companies in central Dalmatia are in two places, both close to Split airport: Marina Kaštela, and the marinas at Seget Donji and Trogir just to the west. This week starts in Kaštela. From Seget or Trogir the loop is the same, with a first leg of a similar length round Čiovo to Šolta.",
+    alsoMain: { name: "Seget & Trogir", at: [16.235, 43.513] },
+    others: ["Marina Baotić, Seget Donji", "Marina Trogir", "ACI Marina Split"],
   },
   arrival:
     "Saturday is check-in day. Boats are usually ready from late afternoon: do the boat briefing, stow the shopping and spend the first night in the marina. Dinner is a short taxi ride away in Split's old town.",
@@ -46,6 +47,8 @@ export const croatiaSplit: CruisingGuide = {
     "Korčula": "Korchula",
     "Čiovo": "Chiovo",
     "Baotić": "Baotich",
+    "Seget Donji": "Seget Donyi",
+    "Trogir": "Troggeer",
     "konoba": "konnoba",
     "konobas": "konnobas",
   },
