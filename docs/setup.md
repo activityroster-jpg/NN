@@ -57,7 +57,7 @@ Workers & Pages → `nn` → Settings → Variables and Secrets → Add, type **
 | `STRIPE_SECRET_KEY` | Stripe → Developers → API keys → restricted key with Checkout Sessions write |
 | `STRIPE_WEBHOOK_SECRET` | Stripe → Developers → Webhooks → add endpoint `https://nauticalnomads.com/api/stripe/webhook`, events `checkout.session.completed` and `checkout.session.async_payment_succeeded` → copy the signing secret |
 | `UNSPLASH_ACCESS_KEY` or `PIXABAY_API_KEY` | Lets Admin → Photos search stock photos. Unsplash photos are shown from Unsplash; Pixabay photos are copied into the storage bucket. `PEXELS_API_KEY` works too if you have one |
-| `ELEVENLABS_API_KEY` | Recorded narration and intro music for the cruising guide videos (voice "George", multilingual model). Each sentence is recorded once into the storage bucket; the hourly job records anything missing. Optional: `ELEVENLABS_VOICE_ID` to change the voice. Without it the videos use the visitor's device voice |
+| `ELEVENLABS_API_KEY` | Set it on the Worker in Cloudflare, or as a GitHub Actions secret (the deploy copies it to the Worker). Recorded narration and intro music for the cruising guide videos (voice "George", multilingual model). Each sentence is recorded once into the storage bucket; the hourly job records anything missing. Optional: `ELEVENLABS_VOICE_ID` to change the voice. Without it the videos use the visitor's device voice |
 | `MMK_API_TOKEN` | When MMK issues API access |
 | `NAUSYS_USERNAME`, `NAUSYS_PASSWORD` | When NauSYS issues API credentials |
 
