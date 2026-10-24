@@ -49,7 +49,7 @@ export default async function GuidePage({ params }: Props) {
           <section>
             <h2 className="h-display text-3xl">Where the charter boats are</h2>
             <p className="mt-4 text-ink/85">{g.baseMarina.note}</p>
-            <p className="mt-3 text-sm text-ink/75"><strong>Main base:</strong> {g.baseMarina.name}. <strong>Also:</strong> {g.baseMarina.others.join(" · ")}</p>
+            <p className="mt-3 text-sm text-ink/75"><strong>Main bases:</strong> {g.baseMarina.name}{g.baseMarina.alsoMain ? ` and ${g.baseMarina.alsoMain.name}` : ""}. <strong>Marinas:</strong> {g.baseMarina.others.join(" · ")}</p>
           </section>
 
           <section>

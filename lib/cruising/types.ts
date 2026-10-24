@@ -69,7 +69,14 @@ export interface CruisingGuide {
   /** Plain-English season notes, spoken in the video. */
   seasons: string[];
   /** Where most charter companies are based: the week starts and ends here. */
-  baseMarina: { name: string; at: LonLat; note: string; others: string[] };
+  baseMarina: {
+    name: string;
+    at: LonLat;
+    note: string;
+    /** A second main charter area, shown alongside the base. */
+    alsoMain?: { name: string; at: LonLat };
+    others: string[];
+  };
   /** Saturday: check-in and the first night, still in the base marina. */
   arrival: string;
   /** Friday evening return and Saturday check-out. */
