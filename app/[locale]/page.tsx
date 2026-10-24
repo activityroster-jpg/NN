@@ -1,17 +1,24 @@
 import Link from "next/link";
 import { IconAnchor, IconArrowRight, IconCalendar, IconChat, IconCheck, IconClock, IconHelm, IconShield } from "@/components/Icons";
-import { DESTINATIONS } from "@/lib/domain/destinations";
 import { getDictionary } from "@/lib/i18n";
 import type { Dictionary } from "@/lib/i18n";
 import { requireLocale } from "@/lib/request";
+import { getDb } from "@/lib/db";
+import { getSettings } from "@/lib/settings";
+import { destinationViews } from "@/lib/services/destination-settings";
 
 type DestKey = keyof Dictionary["destinations"];
 
 export default async function Home({ params }: { params: Promise<{ locale: string }> }) {
   const locale = await requireLocale(params);
   const t = getDictionary(locale);
-  const featured = DESTINATIONS.filter((d) => d.featured);
-  const others = DESTINATIONS.filter((d) => !d.featured);
+  const db = await getDb();
+  const [settings, views] = await Promise.all([getSettings(db), destinationViews(db)]);
+  const active = views.filter((d) => d.active);
+  const featured = active.filter((d) => d.featured);
+  const others = active.filter((d) => !d.featured);
+  const bg = (d: (typeof views)[number]) =>
+    d.heroImageUrl ? { backgroundImage: `linear-gradient(rgba(0,0,0,.15),rgba(0,0,0,.35)), url(${d.heroImageUrl})`, backgroundSize: "cover", backgroundPosition: "center" } : { background: d.heroGradient };
 
   return (
     <>
@@ -49,7 +56,7 @@ export default async function Home({ params }: { params: Promise<{ locale: strin
                   key={d.id}
                   href={`/${locale}/plan?d=${d.id}`}
                   className={`group relative flex aspect-[4/5] flex-col justify-end overflow-hidden rounded-3xl p-4 text-white shadow-sm ${i % 2 === 1 ? "translate-y-8" : ""}`}
-                  style={{ background: d.heroGradient }}
+                  style={bg(d)}
                 >
                   <span className="text-xs font-semibold tracking-wider uppercase opacity-80">{t.destinations[d.id as DestKey].region}</span>
                   <span className="h-display text-2xl leading-tight">{t.destinations[d.id as DestKey].name}</span>
@@ -77,7 +84,7 @@ export default async function Home({ params }: { params: Promise<{ locale: strin
             const c = t.destinations[d.id as DestKey];
             return (
               <article key={d.id} className="card group flex flex-col overflow-hidden">
-                <div className="relative aspect-[4/3]" style={{ background: d.heroGradient }}>
+                <div className="relative aspect-[4/3]" style={bg(d)}>
                   <span className="absolute bottom-3 left-3 rounded-full bg-black/25 px-2.5 py-1 text-xs font-semibold text-white backdrop-blur">{c.region}</span>
                 </div>
                 <div className="flex flex-1 flex-col p-5">
@@ -143,13 +150,16 @@ export default async function Home({ params }: { params: Promise<{ locale: strin
       <section className="container-page py-16">
         <h2 className="h-display text-4xl">{t.home.typesTitle}</h2>
         <div className="mt-8 grid gap-5 md:grid-cols-2">
-          {[
-            ["monohull", t.home.monoTitle, t.home.monoText],
-            ["catamaran", t.home.catTitle, t.home.catText],
-          ].map(([kind, title, text]) => (
+          {(
+            [
+              ["monohull", t.home.monoTitle, t.home.monoText, settings.images.monohull],
+              ["catamaran", t.home.catTitle, t.home.catText, settings.images.catamaran],
+            ] as const
+          ).map(([kind, title, text, img]) => (
             <div key={kind} className="card overflow-hidden">
               {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img src={`/demo/${kind}-2.svg`} alt="" className="aspect-[16/7] w-full object-cover" />
+              <img src={img?.url ?? `/demo/${kind}-2.svg`} alt="" loading="lazy" className="aspect-[16/7] w-full object-cover" />
+              {img?.credit && <p className="px-6 pt-2 text-[11px] text-muted">{img.credit}</p>}
               <div className="p-6">
                 <h3 className="text-xl font-semibold">{title}</h3>
                 <p className="mt-2 text-ink/75">{text}</p>

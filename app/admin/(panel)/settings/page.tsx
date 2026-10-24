@@ -16,6 +16,7 @@ export default async function Settings() {
     ["Stripe card payments", !!env.STRIPE_SECRET_KEY && !!env.STRIPE_WEBHOOK_SECRET, "Secrets STRIPE_SECRET_KEY and STRIPE_WEBHOOK_SECRET"],
     ["Email (Resend)", !!env.RESEND_API_KEY, "Secret RESEND_API_KEY"],
     ["Hourly jobs", !!env.CRON_SECRET, "Secret CRON_SECRET"],
+    ["Photo search (Pexels)", !!env.PEXELS_API_KEY, "Secret PEXELS_API_KEY"],
   ];
   const f = (name: string, label: string, value: string) => (
     <label className="block"><span className="field-label">{label}</span><input name={name} defaultValue={value} className="field" /></label>

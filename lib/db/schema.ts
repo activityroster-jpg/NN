@@ -192,6 +192,8 @@ export const destinationSetting = sqliteTable("destination_setting", {
   featured: integer("featured", { mode: "boolean" }),
   sortOrder: integer("sort_order"),
   heroImageUrl: text("hero_image_url"),
+  /** Photographer credit shown under the hero, e.g. "Name / Pexels". */
+  heroCredit: text("hero_credit"),
   /** "live" uses the feeds; "enquiry" shows the planner but sends an enquiry instead of results. */
   mode: text("mode").notNull().default("live"),
 });

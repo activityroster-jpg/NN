@@ -7,6 +7,7 @@ export interface DestinationView extends DestinationDef {
   active: boolean;
   mode: "live" | "enquiry";
   heroImageUrl: string | null;
+  heroCredit: string | null;
   sortOrder: number;
 }
 
@@ -27,6 +28,7 @@ export async function destinationViews(db: Db): Promise<DestinationView[]> {
       active: r?.active ?? true,
       mode: r?.mode === "enquiry" ? "enquiry" : "live",
       heroImageUrl: r?.heroImageUrl ?? null,
+      heroCredit: r?.heroCredit ?? null,
       sortOrder: r?.sortOrder ?? i,
     } satisfies DestinationView;
   }).sort((a, b) => a.sortOrder - b.sortOrder);
@@ -42,6 +44,7 @@ export async function destinationView(db: Db, id: string): Promise<DestinationVi
     active: r?.active ?? true,
     mode: r?.mode === "enquiry" ? "enquiry" : "live",
     heroImageUrl: r?.heroImageUrl ?? null,
+    heroCredit: r?.heroCredit ?? null,
     sortOrder: r?.sortOrder ?? 0,
   };
 }

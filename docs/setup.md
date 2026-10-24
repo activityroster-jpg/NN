@@ -50,6 +50,7 @@ Workers & Pages → `nn` → Settings → Variables and Secrets → Add, type **
 | `RESEND_API_KEY` | Resend → API Keys → create (sending access, domain nauticalnomads.com) |
 | `STRIPE_SECRET_KEY` | Stripe → Developers → API keys → restricted key with Checkout Sessions write |
 | `STRIPE_WEBHOOK_SECRET` | Stripe → Developers → Webhooks → add endpoint `https://nauticalnomads.com/api/stripe/webhook`, events `checkout.session.completed` and `checkout.session.async_payment_succeeded` → copy the signing secret |
+| `PEXELS_API_KEY` | Free key from pexels.com/api: lets Admin → Photos search stock photos for destinations |
 | `MMK_API_TOKEN` | When MMK issues API access |
 | `NAUSYS_USERNAME`, `NAUSYS_PASSWORD` | When NauSYS issues API credentials |
 
