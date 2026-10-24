@@ -8,7 +8,7 @@ export interface BoardSlot {
   key: string;
   label: string;
   query: string;
-  group: "home" | "featured" | "other";
+  group: "home" | "featured" | "other" | "gallery";
   url: string | null;
   credit: string | null;
 }
@@ -91,6 +91,7 @@ export function PhotoBoard({ slots: initial, gapSec, sourceLabel }: { slots: Boa
     ["Home page", "home"],
     ["Featured destinations", "featured"],
     ["Other destinations", "other"],
+    ["Destination page galleries", "gallery"],
   ];
 
   return (

@@ -1,7 +1,6 @@
 import type { Db } from "@/lib/db";
 import { audit } from "@/lib/audit";
 import { getCloudflareContext } from "@opennextjs/cloudflare";
-import { revalidatePath } from "next/cache";
 import type { AppEnv } from "@/lib/env";
 import { pickNext, photoSource } from "./picker";
 import { readSlots, SLOTS, writeSlot } from "./slots";
@@ -64,10 +63,7 @@ export function autofillInBackground(env: AppEnv, db: Db): void {
   }
   if (!ctx) return;
   ctx.waitUntil(
-    autofillEmpty(env, db, 1_000)
-      .then((r) => {
-        if (r.filled) revalidatePath("/", "layout");
-      })
-      .catch((e) => console.error("background photo autofill", e)),
+    // Pages read slots from the database on every request, so no cache to purge.
+    autofillEmpty(env, db, 1_000).catch((e) => console.error("background photo autofill", e)),
   );
 }
