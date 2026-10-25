@@ -1,13 +1,21 @@
 import type { Metadata } from "next";
+import { JsonLd } from "@/components/seo/JsonLd";
+import { abs, breadcrumbLd, pageMeta } from "@/lib/seo";
 import Link from "next/link";
 import { IconArrowRight } from "@/components/Icons";
 import { GUIDES, REGIONS, totalMiles } from "@/lib/cruising";
 import { requireLocale } from "@/lib/request";
 
-export const metadata: Metadata = {
-  title: "Essential cruising destinations",
-  description: "The world's best yacht charter areas, region by region: an ideal seven-day route, ports, water, power and fuel, navigation notes and weather, each with a narrated video.",
-};
+export async function generateMetadata({ params }: { params: Promise<{ locale: string }> }): Promise<Metadata> {
+  const locale = await requireLocale(params);
+  return pageMeta({
+    locale,
+    path: "/cruising",
+    englishOnly: true,
+    title: "Sailing guides: essential cruising destinations",
+    description: "Yacht charter sailing guides, region by region: an ideal one-week route from the main charter base, ports, water, power and fuel, mooring, weather and winds, each with a narrated video.",
+  });
+}
 
 const LEVEL = { easy: "Easy sailing", intermediate: "Some experience", experienced: "Experienced crews" } as const;
 
@@ -16,6 +24,20 @@ export default async function CruisingIndex({ params }: { params: Promise<{ loca
   const regions = REGIONS.map((r) => ({ ...r, guides: GUIDES.filter((g) => g.region === r.id) })).filter((r) => r.guides.length > 0);
   return (
     <div className="container-page py-14">
+      <JsonLd
+        data={[
+          breadcrumbLd([
+            { name: "Nautical Nomads", path: `/${locale}` },
+            { name: "Cruising guides", path: "/en/cruising" },
+          ]),
+          {
+            "@context": "https://schema.org",
+            "@type": "ItemList",
+            name: "Essential cruising destinations",
+            itemListElement: GUIDES.map((g, i) => ({ "@type": "ListItem", position: i + 1, name: g.name, url: abs(`/en/cruising/${g.id}`) })),
+          },
+        ]}
+      />
       <p className="text-sm font-semibold tracking-wider text-brand uppercase">Cruising guides</p>
       <h1 className="h-display mt-2 text-5xl">Essential cruising destinations</h1>
       <p className="mt-4 max-w-2xl text-lg text-ink/80">

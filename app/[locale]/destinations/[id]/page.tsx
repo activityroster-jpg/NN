@@ -2,6 +2,8 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { IconArrowRight, IconCalendar, IconCheck, IconHelm, IconPin } from "@/components/Icons";
+import { JsonLd } from "@/components/seo/JsonLd";
+import { abs, breadcrumbLd, charterTitle, pageMeta, snippet } from "@/lib/seo";
 import { getDb } from "@/lib/db";
 import { getEnvAsync } from "@/lib/env";
 import { autofillInBackground } from "@/lib/photos/autofill";
@@ -19,10 +21,18 @@ type DestKey = keyof Dictionary["destinations"];
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { locale: l, id } = await params;
-  const t = getDictionary(await requireLocale(Promise.resolve({ locale: l })));
+  const locale = await requireLocale(Promise.resolve({ locale: l }));
+  const t = getDictionary(locale);
   const c = t.destinations[id as DestKey];
   if (!c) return {};
-  return { title: `${c.name} yacht charter`, description: c.intro.slice(0, 155) };
+  const view = await destinationView(await getDb(), id);
+  return pageMeta({
+    locale,
+    path: `/destinations/${id}`,
+    title: charterTitle(locale, c.name, c.region),
+    description: snippet(`${c.tagline}. ${c.intro}`),
+    image: view?.heroImageUrl ?? undefined,
+  });
 }
 
 export default async function DestinationPage({ params }: Props) {
@@ -40,6 +50,25 @@ export default async function DestinationPage({ params }: Props) {
   const quick = saturdays(todayIso(), 60).filter((s) => def.seasonMonths.includes(Number(s.slice(5, 7)))).slice(0, 6);
   return (
     <>
+      <JsonLd
+        data={[
+          breadcrumbLd([
+            { name: t.meta.siteName, path: `/${locale}` },
+            { name: t.nav.destinations, path: `/${locale}/destinations` },
+            { name: c.name, path: `/${locale}/destinations/${id}` },
+          ]),
+          {
+            "@context": "https://schema.org",
+            "@type": "TouristDestination",
+            name: c.name,
+            description: c.intro,
+            url: abs(`/${locale}/destinations/${id}`),
+            ...(d.heroImageUrl ? { image: abs(d.heroImageUrl) } : {}),
+            geo: { "@type": "GeoCoordinates", latitude: def.center.lat, longitude: def.center.lng },
+            touristType: "Yacht charter",
+          },
+        ]}
+      />
       <section className="relative overflow-hidden text-white" style={d.heroImageUrl ? { backgroundImage: `linear-gradient(rgba(0,0,0,.25),rgba(0,0,0,.35)),url(${d.heroImageUrl})`, backgroundSize: "cover", backgroundPosition: "center" } : { background: def.heroGradient }}>
         <div className="container-page py-20 sm:py-28">
           <p className="text-sm font-semibold tracking-wider uppercase opacity-85">{c.region}</p>

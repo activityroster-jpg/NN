@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { pageMeta } from "@/lib/seo";
 import { notFound } from "next/navigation";
 import { getDictionary } from "@/lib/i18n";
 import { dateLong } from "@/lib/i18n/format";
@@ -14,7 +15,9 @@ export function generateStaticParams() {
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { doc } = await params;
   const d = LEGAL_DOCS[doc as keyof typeof LEGAL_DOCS];
-  return d ? { title: d.title } : {};
+  if (!d) return {};
+  const { locale } = await params;
+  return pageMeta({ locale, path: `/legal/${doc}`, title: d.title, englishOnly: true });
 }
 
 export default async function LegalPage({ params }: Props) {

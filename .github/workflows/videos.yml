@@ -87,9 +87,13 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: ${{ matrix.guide.id }}
-          path: out/${{ matrix.guide.id }}.mp4
+          path: |
+            out/${{ matrix.guide.id }}.mp4
+            out/${{ matrix.guide.id }}.jpg
           retention-days: 14
       - name: Store for Admin → Videos
         run: |
-          npx wrangler r2 object put "$BUCKET/${{ matrix.guide.key }}" --file "out/${{ matrix.guide.id }}.mp4" --content-type video/mp4 --remote --jurisdiction eu \
+          key="${{ matrix.guide.key }}"
+          npx wrangler r2 object put "$BUCKET/${key%.mp4}.jpg" --file "out/${{ matrix.guide.id }}.jpg" --content-type image/jpeg --remote --jurisdiction eu \
+          && npx wrangler r2 object put "$BUCKET/$key" --file "out/${{ matrix.guide.id }}.mp4" --content-type video/mp4 --remote --jurisdiction eu \
             || echo "::warning::Could not store the video in Cloudflare (does the API token have Workers R2 Storage → Edit?). It is attached to this run as a download."

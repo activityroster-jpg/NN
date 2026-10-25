@@ -55,6 +55,9 @@ for (let i = 0; i < frames; i++) {
 ff.stdin.end();
 const [code] = await once(ff, "close");
 if (code !== 0) throw new Error(`ffmpeg (video) exited ${code}`);
+// Thumbnail: the finished week map, for search results and share cards.
+await page.evaluate((t) => window.__seek(t), plan.poster);
+writeFileSync(out.replace(/\.mp4$/, ".jpg"), await page.screenshot({ type: "jpeg", quality: 88 }));
 await browser.close();
 
 // 2. Sound: every clip at its start time with 15 ms / 25 ms edge fades (no

@@ -30,6 +30,8 @@ interface SceneTime {
 }
 export interface RenderPlan {
   duration: number;
+  /** A good still for the thumbnail: the finished week map. */
+  poster: number;
   intro: { url: string; fadeAt: number } | null;
   clips: { url: string; start: number; dur: number }[];
 }
@@ -73,8 +75,10 @@ export default function RenderStage({ guide }: { guide: CruisingGuide }) {
         timeline.push({ start: clock, end, speechEnd: at, min, sentences });
         clock = end;
       }
+      const weekIndex = Math.max(0, scenes.findIndex((s) => s.title === "A sample week"));
       return {
         duration: clock,
+        poster: Math.max(0, timeline[weekIndex]!.end - HOLD - 0.05),
         intro: scenes[0]?.sound ? { url: scenes[0].sound, fadeAt: timeline[0]!.end } : null,
         clips: timeline.flatMap((s) => s.sentences.map(({ url, start, dur }) => ({ url, start, dur }))),
       };

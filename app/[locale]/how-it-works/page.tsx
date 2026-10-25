@@ -1,13 +1,16 @@
 import type { Metadata } from "next";
+import { pageMeta, snippet } from "@/lib/seo";
 import Link from "next/link";
+import { JsonLd } from "@/components/seo/JsonLd";
 import { DESTINATIONS } from "@/lib/domain/destinations";
 import { getDictionary } from "@/lib/i18n";
 import { requireLocale } from "@/lib/request";
 import { destinationName } from "@/lib/services/labels";
 
 export async function generateMetadata({ params }: { params: Promise<{ locale: string }> }): Promise<Metadata> {
-  const t = getDictionary(await requireLocale(params));
-  return { title: t.how.title, description: t.how.sub };
+  const locale = await requireLocale(params);
+  const t = getDictionary(locale);
+  return pageMeta({ locale, path: "/how-it-works", title: t.how.title, description: snippet(`${t.how.sub} ${t.how.s1Text}`) });
 }
 
 export default async function HowItWorks({ params }: { params: Promise<{ locale: string }> }) {
@@ -23,6 +26,14 @@ export default async function HowItWorks({ params }: { params: Promise<{ locale:
   ];
   return (
     <div className="container-page max-w-3xl py-12">
+      <JsonLd
+        data={{
+          "@context": "https://schema.org",
+          "@type": "FAQPage",
+          inLanguage: locale,
+          mainEntity: sections.map(([q, a]) => ({ "@type": "Question", name: q, acceptedAnswer: { "@type": "Answer", text: a } })),
+        }}
+      />
       <h1 className="h-display text-5xl">{t.how.title}</h1>
       <p className="mt-3 text-lg text-ink/75">{t.how.sub}</p>
       <div className="mt-10 space-y-8">
