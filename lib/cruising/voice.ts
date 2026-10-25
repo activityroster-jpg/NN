@@ -43,29 +43,29 @@ export async function synthesize(env: AppEnv, text: string, previous?: string, n
 }
 
 /** Version of the intro sting; bump to regenerate it. */
-export const INTRO_KEY = "narration/intro/v2.mp3";
+export const INTRO_KEY = "narration/intro/v3.mp3";
 
-const INTRO_PROMPT =
-  "Short, warm, uplifting instrumental intro for a sailing travel show: gentle acoustic guitar and soft strings, light ocean waves and a distant seagull, optimistic and relaxed, Mediterranean summer feel, clean ending. No vocals.";
+const STING_PROMPT =
+  "Short, bright logo sting for a sailing travel brand: a soft ocean wave swell rising into a warm, gentle acoustic guitar and chime flourish with a light shimmer tail. Optimistic, relaxed, Mediterranean summer. No voice.";
 
-/** Generate the intro music: Music API first, then the sound-effects API. */
+/** The intro sting (about 3.5 s): sound-effects API, like ActivityRoster's logo sting; music API as fallback. */
 export async function synthesizeIntro(env: AppEnv): Promise<ArrayBuffer> {
   const base = (env.ELEVENLABS_API_BASE ?? "https://api.elevenlabs.io").replace(/\/$/, "");
   const headers = { "xi-api-key": env.ELEVENLABS_API_KEY ?? "", "Content-Type": "application/json", Accept: "audio/mpeg" };
+  const sting = await fetch(`${base}/v1/sound-generation?output_format=mp3_44100_128`, {
+    method: "POST",
+    headers,
+    body: JSON.stringify({ text: STING_PROMPT, duration_seconds: 3.5, prompt_influence: 0.5 }),
+    signal: AbortSignal.timeout(60_000),
+  });
+  if (sting.ok) return sting.arrayBuffer();
+  console.error("intro sting", sting.status, (await sting.text()).slice(0, 200));
   const music = await fetch(`${base}/v1/music?output_format=mp3_44100_128`, {
     method: "POST",
     headers,
-    body: JSON.stringify({ prompt: INTRO_PROMPT, music_length_ms: 7000, force_instrumental: true }),
+    body: JSON.stringify({ prompt: STING_PROMPT, music_length_ms: 10000, force_instrumental: true }),
     signal: AbortSignal.timeout(90_000),
   });
-  if (music.ok) return music.arrayBuffer();
-  console.error("intro music", music.status, (await music.text()).slice(0, 200));
-  const sfx = await fetch(`${base}/v1/sound-generation?output_format=mp3_44100_128`, {
-    method: "POST",
-    headers,
-    body: JSON.stringify({ text: INTRO_PROMPT, duration_seconds: 7, prompt_influence: 0.4 }),
-    signal: AbortSignal.timeout(60_000),
-  });
-  if (!sfx.ok) throw new Error(`ElevenLabs sound ${sfx.status}: ${(await sfx.text()).slice(0, 200)}`);
-  return sfx.arrayBuffer();
+  if (!music.ok) throw new Error(`ElevenLabs music ${music.status}: ${(await music.text()).slice(0, 200)}`);
+  return music.arrayBuffer(); // longer than the intro: the player fades it out
 }

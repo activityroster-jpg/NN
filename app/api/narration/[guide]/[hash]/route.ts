@@ -1,7 +1,7 @@
 import { getDb } from "@/lib/db";
 import { getEnvAsync } from "@/lib/env";
 import { guideById } from "@/lib/cruising";
-import { guideSentences, sentenceHash } from "@/lib/cruising/narration";
+import { guideSentences, sentenceHash, spokenText } from "@/lib/cruising/narration";
 import { narrationKey, synthesize, voiceEnabled } from "@/lib/cruising/voice";
 import { allow } from "@/lib/rate-limit";
 
@@ -18,19 +18,21 @@ export async function GET(_req: Request, ctx: { params: Promise<{ guide: string;
   const g = guideById(guide);
   if (!g) return new Response("not found", { status: 404 });
 
-  const key = narrationKey(env, hash);
-  const headers = { "Content-Type": "audio/mpeg", "Cache-Control": "public, max-age=86400" };
-  const stored = await env.PHOTOS!.get(key);
-  if (stored) return new Response(stored.body, { headers });
-
+  // The URL names the caption; storage is keyed by what is actually spoken, so
+  // a pronunciation change records the sentence again.
   const sentences = guideSentences(g);
   const i = sentences.findIndex((s) => sentenceHash(s) === hash);
   if (i < 0) return new Response("not found", { status: 404 });
+  const say = (k: number) => (sentences[k] === undefined ? undefined : spokenText(g, sentences[k]!));
+  const key = narrationKey(env, sentenceHash(say(i)!));
+  const headers = { "Content-Type": "audio/mpeg", "Cache-Control": "public, max-age=3600" };
+  const stored = await env.PHOTOS!.get(key);
+  if (stored) return new Response(stored.body, { headers });
 
   // Site-wide guard on generation; the player falls back to the device voice.
   if (!(await allow(await getDb(), "narration-tts", 60, 60))) return new Response("busy", { status: 429 });
   try {
-    const audio = await synthesize(env, sentences[i]!, sentences[i - 1], sentences[i + 1]);
+    const audio = await synthesize(env, say(i)!, say(i - 1), say(i + 1));
     await env.PHOTOS!.put(key, audio, { httpMetadata: { contentType: "audio/mpeg" } });
     return new Response(audio, { headers });
   } catch (e) {

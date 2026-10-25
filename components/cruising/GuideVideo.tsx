@@ -138,7 +138,7 @@ export default function GuideVideo({ guide: g, recorded = false }: { guide: Crui
   scenes.push({
     title: "Nautical Nomads",
     narration: "",
-    seconds: 6.5,
+    seconds: 3.5,
     sound: recorded ? "/api/narration/intro" : undefined,
     render: (t, _s, sec) => {
       return (
@@ -156,20 +156,20 @@ export default function GuideVideo({ guide: g, recorded = false }: { guide: Crui
           ))}
           <defs>
             <clipPath id="nn-intro-reveal">
-              <rect x={800 - 520 * phase(t, 0.05, 0.45)} y={320} width={1040 * phase(t, 0.05, 0.45)} height={120} />
+              <rect x={800 - 520 * phase(t, 0.02, 0.3)} y={320} width={1040 * phase(t, 0.02, 0.3)} height={120} />
             </clipPath>
           </defs>
           <text x={800} y={400} textAnchor="middle" fontSize={64} fontWeight={300} fill="#fff" letterSpacing={22} wordSpacing={40} clipPath="url(#nn-intro-reveal)">
             NAUTICAL NOMADS
           </text>
-          <line x1={800 - 420 * fade(t, 0.45, 0.7)} x2={800 + 420 * fade(t, 0.45, 0.7)} y1={450} y2={450} stroke="#f2b49c" strokeWidth={2} />
-          <text x={800} y={505} textAnchor="middle" fontSize={26} fill="#f2b49c" letterSpacing={8} opacity={fade(t, 0.5, 0.65)}>
+          <line x1={800 - 420 * fade(t, 0.25, 0.45)} x2={800 + 420 * fade(t, 0.25, 0.45)} y1={450} y2={450} stroke="#f2b49c" strokeWidth={2} />
+          <text x={800} y={505} textAnchor="middle" fontSize={26} fill="#f2b49c" letterSpacing={8} opacity={fade(t, 0.3, 0.45)}>
             ESSENTIAL CRUISING GUIDES
           </text>
-          <text x={800} y={600} textAnchor="middle" fontSize={70} fontWeight={800} fill="#fff" opacity={fade(t, 0.65, 0.85)}>
+          <text x={800} y={600} textAnchor="middle" fontSize={70} fontWeight={800} fill="#fff" opacity={fade(t, 0.4, 0.58)}>
             {g.name}
           </text>
-          <text x={800} y={655} textAnchor="middle" fontSize={32} fill="#fff" opacity={fade(t, 0.75, 0.92) * 0.85}>
+          <text x={800} y={655} textAnchor="middle" fontSize={32} fill="#fff" opacity={fade(t, 0.5, 0.65) * 0.85}>
             {g.country}
           </text>
         </Stage>
@@ -546,5 +546,5 @@ export default function GuideVideo({ guide: g, recorded = false }: { guide: Crui
 
   const poster = Math.max(0, scenes.findIndex((sc) => sc.title === "A sample week"));
   const audioUrl = recorded ? (text: string) => `/api/narration/${g.id}/${sentenceHash(text)}` : undefined;
-  return <GuidePlayer title={`${g.name} cruising guide`} scenes={scenes} pronounce={g.say} poster={poster} audioUrl={audioUrl} />;
+  return <GuidePlayer title={`${g.name} cruising guide`} scenes={scenes} pronounce={{ ...g.speak, ...g.say }} poster={poster} audioUrl={audioUrl} />;
 }

@@ -307,7 +307,15 @@ export default function LessonPlayer({
     const m = musicEl.current
     if (!m) return
     if (!src || !e.current.voiceOn) {
-      m.pause()
+      // Fade out over about half a second rather than cutting off.
+      if (m.paused) return
+      const fadeOut = window.setInterval(() => {
+        m.volume = Math.max(0, m.volume - 0.1)
+        if (m.volume <= 0.01) {
+          window.clearInterval(fadeOut)
+          m.pause()
+        }
+      }, 50)
       return
     }
     m.src = src

@@ -21,9 +21,9 @@ export const croatiaSplit: CruisingGuide = {
   baseMarina: {
     name: "Marina Kaštela",
     at: [16.399, 43.545],
-    note: "Most charter companies in central Dalmatia are in two places, both close to Split airport: Marina Kaštela, and Seget just to the west. This week starts in Kaštela. From Seget the loop is the same, with a first leg of a similar length round Čiovo to Šolta.",
-    alsoMain: { name: "Seget", at: [16.235, 43.513] },
-    others: ["Marina Baotić, Seget", "ACI Marina Split"],
+    note: "Most charter companies in central Dalmatia are in two places, both close to Split airport: Marina Kaštela, and Trogir / Seget just to the west. This week starts in Kaštela. From Trogir / Seget the loop is the same, with a first leg of a similar length round Čiovo to Šolta.",
+    alsoMain: { name: "Trogir / Seget", at: [16.235, 43.513] },
+    others: ["Marina Trogir", "Marina Baotić, Seget", "ACI Marina Split"],
   },
   arrival:
     "Saturday is check-in day. Boats are usually ready from late afternoon: do the boat briefing, stow the shopping and spend the first night in the marina. Dinner is a short taxi ride away in Split's old town.",
@@ -35,6 +35,11 @@ export const croatiaSplit: CruisingGuide = {
     { kind: "buoy", note: "Paid buoy fields in many bays. Pick up the line at the bow; someone comes by to collect the fee." },
     { kind: "anchor", note: "Sand and weed in most bays. In narrow coves take a stern line ashore. Some protected areas ban anchoring." },
   ],
+  speak: {
+    "Trogir / Seget": "Trogir and Seget",
+    Bura: "Bora",
+    bura: "bora",
+  },
   say: {
     "Kaštela": "Kashtela",
     "Šolta": "Sholta",
