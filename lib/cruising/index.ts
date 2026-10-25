@@ -1,8 +1,10 @@
+import { bvi } from "./guides/bvi";
 import { corsicaWest } from "./guides/corsica-west";
 import { croatiaSplit } from "./guides/croatia-split";
 import { greeceIonian } from "./guides/greece-ionian";
 import { greeceSaronic } from "./guides/greece-saronic";
 import { mallorca } from "./guides/mallorca";
+import { montenegroKotor } from "./guides/montenegro-kotor";
 import { sardiniaMaddalena } from "./guides/sardinia-maddalena";
 import { seychelles } from "./guides/seychelles";
 import { sicilyAeolian } from "./guides/sicily-aeolian";
@@ -12,7 +14,7 @@ import type { CruisingGuide, RegionId } from "./types";
 
 export type { CruisingGuide, RegionId } from "./types";
 
-export const GUIDES: readonly CruisingGuide[] = [croatiaSplit, greeceSaronic, greeceIonian, sardiniaMaddalena, sicilyAeolian, corsicaWest, mallorca, turkeyGocek, seychelles, thailandPhuket];
+export const GUIDES: readonly CruisingGuide[] = [croatiaSplit, greeceSaronic, greeceIonian, sardiniaMaddalena, sicilyAeolian, corsicaWest, mallorca, montenegroKotor, turkeyGocek, bvi, seychelles, thailandPhuket];
 
 export const REGIONS: { id: RegionId; name: string }[] = [
   { id: "mediterranean", name: "Mediterranean" },
