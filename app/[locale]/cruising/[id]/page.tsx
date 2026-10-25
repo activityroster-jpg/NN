@@ -3,6 +3,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import GuideVideo from "@/components/cruising/GuideVideo";
 import { JsonLd } from "@/components/seo/JsonLd";
+import { narrationComplete } from "@/lib/cruising/prerecord";
 import { storedVideos } from "@/lib/cruising/videos";
 import { abs, breadcrumbLd, pageMeta, snippet } from "@/lib/seo";
 import { guideById, REGIONS, totalMiles } from "@/lib/cruising";
@@ -88,7 +89,15 @@ export default async function GuidePage({ params }: Props) {
       <p className="mt-2 text-lg text-ink/80">{g.country} · a week from {g.baseMarina.name} · about {totalMiles(g)} nautical miles</p>
 
       <div className="mt-8">
-        <GuideVideo guide={g} recorded={voiceEnabled(await getEnvAsync())} />
+        {voiceEnabled(await getEnvAsync()) && !(await narrationComplete(await getEnvAsync(), g.id)) ? (
+          // Shown until every sentence is recorded, so the video never switches voice part way.
+          <div className="flex aspect-video flex-col items-center justify-center rounded-2xl bg-[#13293b] p-8 text-center text-white">
+            <p className="h-display text-3xl">The narrated video for {g.name} is being recorded</p>
+            <p className="mt-3 max-w-lg text-white/75">It will appear here shortly. Everything you need for the week is below: the route, ports, mooring and weather.</p>
+          </div>
+        ) : (
+          <GuideVideo guide={g} recorded={voiceEnabled(await getEnvAsync())} />
+        )}
       </div>
 
       <div id="guide-notes" className="mt-12 grid gap-12 lg:grid-cols-[1fr_320px]">

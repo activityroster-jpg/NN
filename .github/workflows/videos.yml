@@ -13,6 +13,10 @@ on:
   workflow_run:
     workflows: ["Deploy production"]
     types: [completed]
+  # Every six hours too: picks up guides whose narration has since finished
+  # recording (for example after ElevenLabs credits were topped up).
+  schedule:
+    - cron: "17 */6 * * *"
   workflow_dispatch:
     inputs:
       guides:
@@ -30,7 +34,7 @@ env:
 
 jobs:
   plan:
-    if: github.event_name == 'workflow_dispatch' || github.event.workflow_run.conclusion == 'success'
+    if: github.event_name != 'workflow_run' || github.event.workflow_run.conclusion == 'success'
     runs-on: ubuntu-latest
     outputs:
       matrix: ${{ steps.plan.outputs.matrix }}
@@ -42,15 +46,19 @@ jobs:
         run: |
           curl -fsS "$SITE/api/cruising/videos" > guides.json
           python3 - <<'PY' >> "$GITHUB_OUTPUT"
-          import json, os
+          import json, os, sys
           guides = json.load(open("guides.json"))["guides"]
           only = [x.strip() for x in os.environ.get("ONLY", "").split(",") if x.strip()]
+          ready = [g for g in guides if g["ready"]]
+          for g in guides:
+              if not g["ready"]:
+                  print(f"skipping {g['id']}: narration {g['narration']} recorded", file=sys.stderr)
           if only == ["all"]:
-              pick = guides
+              pick = ready
           elif only:
-              pick = [g for g in guides if g["id"] in only]
+              pick = [g for g in ready if g["id"] in only]
           else:
-              pick = [g for g in guides if not g["current"]]
+              pick = [g for g in ready if not g["current"]]
           print("matrix=" + json.dumps([{"id": g["id"], "key": g["key"]} for g in pick]))
           PY
           cat "$GITHUB_OUTPUT"
