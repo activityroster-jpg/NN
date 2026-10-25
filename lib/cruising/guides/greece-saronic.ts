@@ -42,9 +42,9 @@ export const greeceSaronic: CruisingGuide = {
     Methana: "Methuhna",
     Perdika: "Pairdika",
     Aphaia: "Afeya",
+    Galatas: "Gala tass",
   },
   say: {
-    Galatas: "Galatahs",
     Meltemi: "Meltemmy",
     meltemi: "meltemmy",
   },
