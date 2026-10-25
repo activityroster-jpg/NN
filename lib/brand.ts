@@ -26,5 +26,5 @@ export const COMPANY = {
   number: "17505500",
   jurisdiction: "England & Wales",
   address: "71-75 Shelton Street, London WC2H 9JQ, United Kingdom",
-  email: "info@nauticalnomads.com",
+  email: "hello@nauticalnomads.com",
 };

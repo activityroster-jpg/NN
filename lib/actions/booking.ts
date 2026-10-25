@@ -4,6 +4,7 @@ import { and, eq } from "drizzle-orm";
 import { redirect } from "next/navigation";
 import { z } from "zod";
 import { audit } from "@/lib/audit";
+import { COMPANY } from "@/lib/brand";
 import { bookingRef, randomId, randomToken, sha256Hex, safeEqual } from "@/lib/crypto";
 import { getDb } from "@/lib/db";
 import { booking, payment } from "@/lib/db/schema";
@@ -146,7 +147,7 @@ export async function createBooking(_prev: BookState, form: FormData): Promise<B
     ),
   });
   await sendMail(env, {
-    to: "info@nauticalnomads.com",
+    to: COMPANY.email,
     subject: `${v.mode === "hold" ? "HOLD" : "BOOKING"} ${ref} · ${y.model} · ${trip.d} ${offer.weekStart}`,
     ...layout(`New ${v.mode}: ${ref}`, [`${v.name} <${v.email}> ${v.phone}`, `${y.operatorName} · ${y.model} "${y.name}"`, `Total ${q.currency} ${q.total} · payout ${q.payout} · margin ${q.margin}`, `Payment: ${method}`], {
       label: "Open in admin",
