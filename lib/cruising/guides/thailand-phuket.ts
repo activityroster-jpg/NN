@@ -49,7 +49,6 @@ export const thailandPhuket: CruisingGuide = {
     Krabi: "Krahbee",
     "Khao Phing Kan": "Cow Ping Gun",
     "Phra Nang": "Pra Nahng",
-    Maya: "Mah yah",
   },
   say: {
     Tapu: "Tahpoo",
