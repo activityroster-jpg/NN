@@ -1,10 +1,11 @@
 name: Make guide videos
 
-# Renders the cruising guide videos to MP4 (1920×1080, narration, intro sting,
-# captions) from the live site and stores them in the R2 bucket, where
-# Admin → Videos offers them for download. Runs after every successful
-# "Deploy production" and only renders guides that changed. Run it by hand to
-# re-render specific guides ("all" for every guide).
+# Renders the cruising guide videos (1920×1080, narration, intro sting,
+# captions) and the shorts (1080×1920, stock footage, narration) from the
+# live site and stores them in the R2 bucket, where Admin → Videos offers
+# them for download. Runs after every successful "Deploy production" and only
+# renders what changed. Run it by hand to re-render specific guides or shorts
+# ("all" for every one).
 # Uses the same CLOUDFLARE_API_TOKEN / CLOUDFLARE_ACCOUNT_ID secrets as the
 # deploy; the token needs Account → Workers R2 Storage → Edit to store videos.
 # Each video is also attached to the run as a download.
@@ -20,7 +21,11 @@ on:
   workflow_dispatch:
     inputs:
       guides:
-        description: "Guide ids, comma separated; blank = only changed guides; all = every guide"
+        description: "Guide ids, comma separated; blank = only changed guides; all = every guide; none = skip guides"
+        required: false
+        default: ""
+      shorts:
+        description: "Short ids, comma separated; blank = only changed shorts; all = every short; none = skip shorts"
         required: false
         default: ""
 
@@ -38,28 +43,35 @@ jobs:
     runs-on: ubuntu-latest
     outputs:
       matrix: ${{ steps.plan.outputs.matrix }}
+      shorts: ${{ steps.plan.outputs.shorts }}
     steps:
       - name: Which videos to make
         id: plan
         env:
           ONLY: ${{ github.event.inputs.guides }}
+          ONLY_SHORTS: ${{ github.event.inputs.shorts }}
         run: |
           curl -fsS "$SITE/api/cruising/videos" > guides.json
+          curl -fsS "$SITE/api/shorts/videos" > shorts.json
           python3 - <<'PY' >> "$GITHUB_OUTPUT"
           import json, os, sys
-          guides = json.load(open("guides.json"))["guides"]
-          only = [x.strip() for x in os.environ.get("ONLY", "").split(",") if x.strip()]
-          ready = [g for g in guides if g["ready"]]
-          for g in guides:
-              if not g["ready"]:
-                  print(f"skipping {g['id']}: narration {g['narration']} recorded", file=sys.stderr)
-          if only == ["all"]:
-              pick = ready
-          elif only:
-              pick = [g for g in ready if g["id"] in only]
-          else:
-              pick = [g for g in ready if not g["current"]]
-          print("matrix=" + json.dumps([{"id": g["id"], "key": g["key"]} for g in pick]))
+          def plan(items, only, why):
+              only = [x.strip() for x in only.split(",") if x.strip()]
+              ready = [g for g in items if g["ready"]]
+              for g in items:
+                  if not g["ready"]:
+                      print(f"skipping {g['id']}: {why(g)}", file=sys.stderr)
+              if only == ["none"]:
+                  return []
+              if only == ["all"]:
+                  return ready
+              if only:
+                  return [g for g in ready if g["id"] in only]
+              return [g for g in ready if not g["current"]]
+          guides = plan(json.load(open("guides.json"))["guides"], os.environ.get("ONLY", ""), lambda g: f"narration {g['narration']} recorded")
+          shorts = plan(json.load(open("shorts.json"))["shorts"], os.environ.get("ONLY_SHORTS", ""), lambda g: f"narration {g['narration']} recorded, footage {g['footage']} chosen")
+          print("matrix=" + json.dumps([{"id": g["id"], "key": g["key"]} for g in guides]))
+          print("shorts=" + json.dumps([{"id": g["id"], "key": g["key"]} for g in shorts]))
           PY
           cat "$GITHUB_OUTPUT"
 
@@ -104,4 +116,47 @@ jobs:
           key="${{ matrix.guide.key }}"
           npx wrangler r2 object put "$BUCKET/${key%.mp4}.jpg" --file "out/${{ matrix.guide.id }}.jpg" --content-type image/jpeg --remote --jurisdiction eu \
           && npx wrangler r2 object put "$BUCKET/$key" --file "out/${{ matrix.guide.id }}.mp4" --content-type video/mp4 --remote --jurisdiction eu \
+            || echo "::warning::Could not store the video in Cloudflare (does the API token have Workers R2 Storage → Edit?). It is attached to this run as a download."
+
+  render-short:
+    needs: plan
+    if: needs.plan.outputs.shorts != '[]'
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    strategy:
+      fail-fast: false
+      max-parallel: 6
+      matrix:
+        short: ${{ fromJSON(needs.plan.outputs.shorts) }}
+    env:
+      CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+      CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - name: Install the browser and ffmpeg
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq ffmpeg fonts-dejavu-core
+          npm install --no-save --no-package-lock playwright@1.49.1
+          npx playwright install --with-deps chromium
+      - name: Render ${{ matrix.short.id }}
+        run: node scripts/videos/make-short.mjs "$SITE" "${{ matrix.short.id }}" "out/${{ matrix.short.id }}.mp4"
+      - name: Attach the video to this run
+        uses: actions/upload-artifact@v4
+        with:
+          name: short-${{ matrix.short.id }}
+          path: |
+            out/${{ matrix.short.id }}.mp4
+            out/${{ matrix.short.id }}.jpg
+          retention-days: 14
+      - name: Store for Admin → Videos
+        run: |
+          key="${{ matrix.short.key }}"
+          npx wrangler r2 object put "$BUCKET/${key%.mp4}.jpg" --file "out/${{ matrix.short.id }}.jpg" --content-type image/jpeg --remote --jurisdiction eu \
+          && npx wrangler r2 object put "$BUCKET/$key" --file "out/${{ matrix.short.id }}.mp4" --content-type video/mp4 --remote --jurisdiction eu \
             || echo "::warning::Could not store the video in Cloudflare (does the API token have Workers R2 Storage → Edit?). It is attached to this run as a download."

@@ -1,8 +1,8 @@
 import { getEnvAsync } from "@/lib/env";
 
-// Serves self-hosted photos and the guide video MP4s / thumbnails from R2.
+// Serves self-hosted photos, stock footage and the video MP4s / covers from R2.
 // Supports byte ranges so video players and crawlers can seek.
-const ALLOWED = ["photos/", "videos/cruising/"];
+const ALLOWED = ["photos/", "footage/pixabay/", "videos/cruising/", "videos/shorts/"];
 
 export async function GET(req: Request, ctx: { params: Promise<{ key: string[] }> }) {
   const env = await getEnvAsync();

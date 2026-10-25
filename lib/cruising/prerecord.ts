@@ -1,7 +1,7 @@
 import type { AppEnv } from "@/lib/env";
-import { GUIDES } from ".";
-import { guideSentences, sentenceHash, spokenText } from "./narration";
-import { INTRO_KEY, narrationKey, narrationPrefix, synthesize, synthesizeIntro, voiceEnabled } from "./voice";
+import { narrationSources } from "@/lib/narration/sources";
+import { sentenceHash, spokenText } from "./narration";
+import { BED_KEY, INTRO_KEY, narrationKey, narrationPrefix, synthesize, synthesizeBed, synthesizeIntro, voiceEnabled } from "./voice";
 
 // Records any narration not yet in storage, so visitors never wait for it.
 // Called after each deploy (until nothing is left) and hourly. Lists what is
@@ -13,6 +13,8 @@ export interface PrerecordResult {
   /** Sentences still to record (0 when everything is done). */
   remaining: number;
   intro: boolean;
+  /** The quiet sea ambience under the shorts. */
+  bed?: boolean;
   error?: string;
 }
 
@@ -51,11 +53,22 @@ export async function prerecordNarration(env: AppEnv, budgetMs: number): Promise
     }
   }
 
+  out.bed = !!(await env.PHOTOS!.head(BED_KEY));
+  if (!out.bed) {
+    try {
+      await env.PHOTOS!.put(BED_KEY, await synthesizeBed(env), { httpMetadata: { contentType: "audio/mpeg" } });
+      out.bed = true;
+    } catch (e) {
+      out.error = `ambience: ${e instanceof Error ? e.message : String(e)}`;
+      console.error("prerecord bed", e);
+    }
+  }
+
   const stored = await storedKeys(env, narrationPrefix(env));
   const jobs: Job[] = [];
   const queued = new Set<string>();
-  for (const g of GUIDES) {
-    const spoken = guideSentences(g).map((s) => spokenText(g, s));
+  for (const g of narrationSources()) {
+    const spoken = g.sentences.map((s) => spokenText(g, s));
     spoken.forEach((text, i) => {
       const key = narrationKey(env, sentenceHash(text));
       if (stored.has(key) || queued.has(key)) return;
@@ -87,12 +100,12 @@ export async function prerecordNarration(env: AppEnv, budgetMs: number): Promise
   return out;
 }
 
-/** How much of each guide's narration is recorded (guide id → recorded and total sentences). */
+/** How much of each script's narration is recorded (guide or short id → recorded and total sentences). */
 export async function narrationStatus(env: AppEnv): Promise<Map<string, { recorded: number; total: number }>> {
   const out = new Map<string, { recorded: number; total: number }>();
   const stored = voiceEnabled(env) ? await storedKeys(env, narrationPrefix(env)) : new Set<string>();
-  for (const g of GUIDES) {
-    const keys = [...new Set(guideSentences(g).map((s) => narrationKey(env, sentenceHash(spokenText(g, s)))))];
+  for (const g of narrationSources()) {
+    const keys = [...new Set(g.sentences.map((s) => narrationKey(env, sentenceHash(spokenText(g, s)))))];
     out.set(g.id, { recorded: keys.filter((k) => stored.has(k)).length, total: keys.length });
   }
   return out;

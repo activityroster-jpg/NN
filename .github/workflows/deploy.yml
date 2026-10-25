@@ -179,6 +179,19 @@ jobs:
           done
           echo "::warning::Narration still recording; the hourly job will finish it."
 
+      - name: Choose stock footage for the shorts
+        if: success()
+        run: |
+          # Picks and downloads a Pixabay clip for each short scene that lacks
+          # one; stops as soon as everything is chosen, or on an error.
+          for i in $(seq 1 40); do
+            r="$(curl -sS --max-time 90 -X POST "$SITE/api/shorts/footage/warm" || echo '{"error":"request failed"}')"
+            echo "$r"
+            if printf '%s' "$r" | grep -q '"remaining":0' && ! printf '%s' "$r" | grep -q '"error"'; then echo "All footage chosen."; exit 0; fi
+            if printf '%s' "$r" | grep -q '"error"'; then echo "::warning::Footage not fully chosen: $r"; exit 0; fi
+          done
+          echo "::warning::Footage still downloading; the next deploy will finish it."
+
       - name: Roll back if the smoke test failed
         if: failure() && steps.smoke.outcome == 'failure' && steps.prev.outputs.id != ''
         run: |
