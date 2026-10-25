@@ -159,6 +159,7 @@ export default function LessonPlayer({
   // output go idle between sentences and swallow the first syllable.
   const audioCtx = useRef<AudioContext | null>(null)
   const currentClip = useRef<AudioBufferSourceNode | null>(null)
+  const currentGain = useRef<GainNode | null>(null)
   const clipCache = useRef(new Map<string, Promise<AudioBuffer>>())
   const musicEl = useRef<HTMLAudioElement | null>(null)
 
@@ -193,10 +194,22 @@ export default function LessonPlayer({
     e.current.gen++
     e.current.speaking = false
     const clip = currentClip.current
+    const gain = currentGain.current
     currentClip.current = null
+    currentGain.current = null
     if (clip) {
       clip.onended = null
-      try { clip.stop() } catch { /* already stopped */ }
+      // Fade out over 30 ms rather than cutting the waveform mid-cycle (a click).
+      const ctx = audioCtx.current
+      if (ctx && gain) {
+        const now = ctx.currentTime
+        gain.gain.cancelScheduledValues(now)
+        gain.gain.setValueAtTime(gain.gain.value, now)
+        gain.gain.linearRampToValueAtTime(0, now + 0.03)
+        try { clip.stop(now + 0.035) } catch { /* already stopped */ }
+      } else {
+        try { clip.stop() } catch { /* already stopped */ }
+      }
     }
     if (typeof window !== 'undefined' && 'speechSynthesis' in window) window.speechSynthesis.cancel()
   }, [])
@@ -239,15 +252,31 @@ export default function LessonPlayer({
           const clip = ctx.createBufferSource()
           clip.buffer = buf
           clip.playbackRate.value = s.rate
-          clip.connect(ctx.destination)
+          // Every clip goes through its own gain with a 15 ms fade in and a
+          // 25 ms fade out, so no clip starts or stops on a non-zero sample
+          // (the click between sentences).
+          const gain = ctx.createGain()
+          clip.connect(gain)
+          gain.connect(ctx.destination)
+          // A short lead-in: a natural pause between sentences, and the first
+          // sound never lands on an output that is still waking up.
+          const t0 = ctx.currentTime + (s.sentence === 0 ? 0.15 : 0.25)
+          const end = t0 + buf.duration / s.rate
+          gain.gain.setValueAtTime(0, t0)
+          gain.gain.linearRampToValueAtTime(1, t0 + 0.015)
+          gain.gain.setValueAtTime(1, Math.max(t0 + 0.015, end - 0.025))
+          gain.gain.linearRampToValueAtTime(0, end)
           clip.onended = () => {
-            if (currentClip.current === clip) currentClip.current = null
+            if (currentClip.current === clip) {
+              currentClip.current = null
+              currentGain.current = null
+            }
+            gain.disconnect()
             finishRecorded()
           }
           currentClip.current = clip
-          // A short lead-in: a natural pause between sentences, and the first
-          // sound never lands on an output that is still waking up.
-          clip.start(ctx.currentTime + (s.sentence === 0 ? 0.15 : 0.25))
+          currentGain.current = gain
+          clip.start(t0)
         })
         .catch((err) => {
           if (gen !== s.gen) return

@@ -2,7 +2,7 @@
 
 import type { ReactNode } from "react";
 import type { CruisingGuide, LonLat, Port } from "@/lib/cruising/types";
-import { dayLead, guideScript, sentenceHash, listOf, MOOR_LABEL, moorText as moorLine, short, splitSentences, windText } from "@/lib/cruising/narration";
+import { dayLead, guideScript, sentenceHash, spokenText, listOf, MOOR_LABEL, moorText as moorLine, short, splitSentences, windText } from "@/lib/cruising/narration";
 import GuidePlayer, { fade, phase, Stage, type Scene } from "./GuidePlayer";
 
 // Builds the narrated video for a cruising guide from its data: a map of the
@@ -545,6 +545,8 @@ export default function GuideVideo({ guide: g, recorded = false }: { guide: Crui
   });
 
   const poster = Math.max(0, scenes.findIndex((sc) => sc.title === "A sample week"));
-  const audioUrl = recorded ? (text: string) => `/api/narration/${g.id}/${sentenceHash(text)}` : undefined;
+  // The query names the spoken version, so a pronunciation change gets a new
+  // address and browsers never replay an old recording from their cache.
+  const audioUrl = recorded ? (text: string) => `/api/narration/${g.id}/${sentenceHash(text)}?v=${sentenceHash(spokenText(g, text))}` : undefined;
   return <GuidePlayer title={`${g.name} cruising guide`} scenes={scenes} pronounce={{ ...g.speak, ...g.say }} poster={poster} audioUrl={audioUrl} />;
 }

@@ -39,6 +39,8 @@ export const croatiaSplit: CruisingGuide = {
     "Trogir / Seget": "Trogir and Seget",
     Bura: "Bora",
     bura: "bora",
+    Jugo: "Hugo",
+    jugo: "hugo",
   },
   say: {
     "Kaštela": "Kashtela",
