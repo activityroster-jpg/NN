@@ -82,7 +82,9 @@ export interface CruisingGuide {
   /** Friday evening return and Saturday check-out. */
   departure: string;
   mooring: MooringType[];
-  /** Spoken respellings for place names an English voice gets wrong. */
+  /** Pronunciation for every voice (recorded and device): written form → spoken form. Captions keep the written form. */
+  speak?: Record<string, string>;
+  /** Extra respellings for the device voice only (English voices mangle local names; the recorded voice doesn't). */
   say?: Record<string, string>;
   level: "easy" | "intermediate" | "experienced";
   /** Destination on our booking site, for the "Plan my trip" link. */

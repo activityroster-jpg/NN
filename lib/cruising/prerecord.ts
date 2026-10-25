@@ -1,6 +1,6 @@
 import type { AppEnv } from "@/lib/env";
 import { GUIDES } from ".";
-import { guideSentences, sentenceHash } from "./narration";
+import { guideSentences, sentenceHash, spokenText } from "./narration";
 import { INTRO_KEY, narrationKey, synthesize, synthesizeIntro, voiceEnabled } from "./voice";
 
 // Hourly: record any narration not yet in storage, so visitors never wait for
@@ -27,7 +27,7 @@ export async function prerecordNarration(env: AppEnv, budgetMs: number): Promise
     }
   }
   for (const g of GUIDES) {
-    const sentences = guideSentences(g);
+    const sentences = guideSentences(g).map((s) => spokenText(g, s));
     for (let i = 0; i < sentences.length; i++) {
       const key = narrationKey(env, sentenceHash(sentences[i]!));
       if (await env.PHOTOS!.head(key)) continue;
