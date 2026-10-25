@@ -39,6 +39,7 @@ export const seychelles: CruisingGuide = {
     "Baie Sainte Anne": "Bay Sant Ann",
     "Anse Source d'Argent": "Ahns Soorss Darzhon",
     Anse: "Ahns",
+    "Grand Anse": "Grahn Dahns",
     "La Digue": "La Deeg",
     "Félicité": "Faylisseetay",
     Curieuse: "Kooreeyerz",
