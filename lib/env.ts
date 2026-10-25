@@ -5,6 +5,8 @@ export interface AppEnv {
   DB: D1Database;
   /** Self-hosted photos (see wrangler.jsonc). Optional until the bucket exists. */
   PHOTOS?: R2Bucket;
+  /** Workers AI (wrangler.jsonc): writes Instagram captions when no Anthropic key is set. */
+  AI?: Ai;
   SITE_URL?: string;
   ADMIN_EMAILS?: string;
   CRON_SECRET?: string;
@@ -28,6 +30,10 @@ export interface AppEnv {
   ELEVENLABS_VOICE_ID?: string;
   ELEVENLABS_MODEL?: string;
   ELEVENLABS_API_BASE?: string;
+  /** Claude writes the Instagram captions when set (console.anthropic.com). */
+  ANTHROPIC_API_KEY?: string;
+  /** Instagram Graph API version, e.g. v23.0 (override if Meta retires the default). */
+  INSTAGRAM_API_VERSION?: string;
   /** "true" forces the demo fleet even when live credentials are set (staging). */
   DEMO_FLEET?: string;
 }

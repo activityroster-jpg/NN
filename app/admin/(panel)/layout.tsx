@@ -17,6 +17,7 @@ const NAV = [
   ["/admin/destinations", "Destinations"],
   ["/admin/photos", "Photos"],
   ["/admin/videos", "Videos"],
+  ["/admin/instagram", "Instagram"],
   ["/admin/categories", "Categories (B)"],
   ["/admin/settings", "Settings"],
   ["/admin/audit", "Audit log"],

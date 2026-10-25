@@ -279,3 +279,41 @@ export const rateLimit = sqliteTable("rate_limit", {
   windowStart: integer("window_start").notNull(),
   count: integer("count").notNull(),
 });
+
+// ── Social posting (Instagram) ─────────────────────────────────────────────
+/** The connected Instagram professional account and its long-lived token. */
+export const socialAccount = sqliteTable("social_account", {
+  provider: text("provider").primaryKey(), // "instagram"
+  userId: text("user_id").notNull(), // Instagram professional account id (used to publish)
+  username: text("username").notNull(),
+  accessToken: text("access_token").notNull(),
+  expiresAt: text("expires_at").notNull(),
+  refreshedAt: text("refreshed_at"),
+  connectedAt: text("connected_at").notNull().default(now),
+  connectedBy: text("connected_by").notNull(),
+});
+
+/** A photo queued for Instagram: one a day by default, or whenever it is set to. */
+export const socialPost = sqliteTable(
+  "social_post",
+  {
+    id: text("id").primaryKey(),
+    provider: text("provider").notNull().default("instagram"),
+    imageKey: text("image_key").notNull(), // R2 key under social/
+    width: integer("width").notNull(),
+    height: integer("height").notNull(),
+    caption: text("caption").notNull().default(""),
+    note: text("note"), // what the caption writer was told about the photo
+    captionSource: text("caption_source"), // claude | workers-ai | template | edited
+    status: text("status").notNull().default("scheduled"), // scheduled | posting | posted | failed
+    scheduledAt: text("scheduled_at").notNull(),
+    postedAt: text("posted_at"),
+    remoteId: text("remote_id"),
+    permalink: text("permalink"),
+    error: text("error"),
+    createdAt: text("created_at").notNull().default(now),
+    updatedAt: text("updated_at").notNull().default(now),
+    createdBy: text("created_by").notNull(),
+  },
+  (t) => [index("social_post_due_idx").on(t.status, t.scheduledAt)],
+);

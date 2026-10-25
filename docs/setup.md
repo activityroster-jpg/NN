@@ -87,3 +87,23 @@ Then:
    before the manuals were available and are marked UNVERIFIED).
 3. Map bases in Admin → Destinations.
 4. Run a test hold and cancel it, with the operator's knowledge.
+
+## 9. Instagram posting (Admin → Instagram)
+
+Drop a photo in Admin → Instagram: it is cropped in the browser, given the
+house look, captioned, and booked for the next free day at the daily time
+(Settings are on the page). A cron every ten minutes posts what is due.
+
+- **Connecting the account** takes a professional Instagram account and a Meta
+  app. The page lists the four steps; the token pasted there lasts 60 days and
+  the Worker refreshes it before it runs out. Tokens live in the database, not
+  in Cloudflare secrets.
+- **Captions**: set `ANTHROPIC_API_KEY` on the Worker (console.anthropic.com →
+  API keys) and Claude writes them from the photo. Without it, Cloudflare's
+  built-in vision model (the `AI` binding in wrangler.jsonc, free allowance)
+  writes a plainer one; without either, a template is used and the admin edits
+  it.
+- **Local dev** runs from `wrangler.dev.jsonc`, a generated copy of the config
+  without the `AI` binding, because Workers AI has no local simulation and
+  needs a Cloudflare login just to start.
+- Optional: `INSTAGRAM_API_VERSION` (default `v23.0`) if Meta retires a version.

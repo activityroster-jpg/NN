@@ -25,5 +25,12 @@ export default nextConfig;
 // Gives `next dev` the Cloudflare bindings (local D1). Never runs in the Worker.
 if (process.env.NODE_ENV === "development") {
   const { initOpenNextCloudflareForDev } = await import("@opennextjs/cloudflare");
-  await initOpenNextCloudflareForDev();
+  // Workers AI has no local simulation and needs a Cloudflare login just to
+  // start, so dev runs from a copy of the config without it (captions then
+  // fall back to a plain template locally).
+  const { readFileSync, writeFileSync } = await import("node:fs");
+  const config = JSON.parse(readFileSync("wrangler.jsonc", "utf8").replace(/^\s*\/\/.*$/gm, ""));
+  delete config.ai;
+  writeFileSync("wrangler.dev.jsonc", JSON.stringify(config, null, 2));
+  await initOpenNextCloudflareForDev({ configPath: "wrangler.dev.jsonc" });
 }
