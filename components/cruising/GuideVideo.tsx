@@ -105,12 +105,45 @@ export function buildGuideScenes(g: CruisingGuide, recorded = false): Scene[] {
     </>
   );
 
+  // Label placement for the overview: each port label goes above-right of its
+  // dot unless it would overlap the base label or another port's label, then
+  // it tries above-left, below-right and below-left.
+  type Box = [number, number, number, number];
+  const textBox = (x: number, y: number, text: string, size: number, anchor: "start" | "end"): Box => {
+    const w = text.length * size * 0.58;
+    return anchor === "start" ? [x, y - size, x + w, y + 4] : [x - w, y - size, x, y + 4];
+  };
+  const overlaps = (a: Box, b: Box) => a[0] < b[2] && b[0] < a[2] && a[1] < b[3] && b[1] < a[3];
+  const labelSpots = (() => {
+    const [bx, by] = P(g.baseMarina.at);
+    const taken: Box[] = [textBox(bx + 22, by + 10, g.baseMarina.name, 30, "start"), [bx - 16, by - 16, bx + 16, by + 16]];
+    if (g.baseMarina.alsoMain) {
+      const [ax, ay] = P(g.baseMarina.alsoMain.at);
+      taken.push(textBox(ax - 22, ay + 10, g.baseMarina.alsoMain.name, 30, "end"));
+    }
+    const spots = new globalThis.Map<string, { dx: number; dy: number; anchor: "start" | "end" }>();
+    for (const p of g.ports) {
+      const [x, y] = portXY(p);
+      const options = [
+        { dx: 16, dy: -12, anchor: "start" as const },
+        { dx: -16, dy: -12, anchor: "end" as const },
+        { dx: 16, dy: 30, anchor: "start" as const },
+        { dx: -16, dy: 30, anchor: "end" as const },
+      ];
+      const pick = options.find((o) => !taken.some((b) => overlaps(b, textBox(x + o.dx, y + o.dy, p.name, 24, o.anchor)))) ?? options[0]!;
+      taken.push(textBox(x + pick.dx, y + pick.dy, p.name, 24, pick.anchor), [x - 10, y - 10, x + 10, y + 10]);
+      spots.set(p.name, pick);
+    }
+    return spots;
+  })();
+
   const PortDot = ({ p, o = 1, big = false }: { p: Port; o?: number; big?: boolean }) => {
     const [x, y] = portXY(p);
+    const spot = big ? { dx: 16, dy: -12, anchor: "start" as const } : (labelSpots.get(p.name) ?? { dx: 16, dy: -12, anchor: "start" as const });
     return (
       <g opacity={o}>
         <circle cx={x} cy={y} r={big ? 11 : 8} fill={BRAND} stroke="#fff" strokeWidth={3} />
-        <text x={x + 16} y={y - 12} fontSize={big ? 30 : 24} fontWeight={700} fill="#fff" stroke={SEA} strokeWidth={6} paintOrder="stroke">
+        <text x={x + spot.dx} y={y + spot.dy} textAnchor={spot.anchor} fontSize={big ? 30 : 24} fontWeight={700} fill="#fff" stroke={SEA} strokeWidth={6} paintOrder="stroke">
           {p.name}
         </text>
       </g>
