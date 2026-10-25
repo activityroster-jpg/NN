@@ -37,7 +37,7 @@ export const thailandPhuket: CruisingGuide = {
   ],
   speak: {
     "Phang Nga": "Pang Nga",
-    Phuket: "Pooket",
+    Phuket: "Poo ket",
     "Ao Po": "Ow Paw",
     Koh: "Kaw",
     Phanak: "Panak",

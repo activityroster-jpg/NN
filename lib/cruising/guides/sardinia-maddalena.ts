@@ -44,6 +44,7 @@ export const sardiniaMaddalena: CruisingGuide = {
     Spargi: "Sparjee",
     Budelli: "Boodelli",
     Lavezzi: "Lavetsee",
+    Bonifacio: "Bonifahcho",
     Maestrale: "Maestrahleh",
     maestrale: "maestrahleh",
     Levante: "Levantay",
@@ -51,8 +52,7 @@ export const sardiniaMaddalena: CruisingGuide = {
   },
   say: {
     Portisco: "Porteesco",
-    Caprera: "Caprayra",
-    Bonifacio: "Bonifahcho",
+    Caprera: "Caprairra",
     "Cala Gavetta": "Kahla Gavetta",
     "Cala Lazarina": "Kahla Lazzareena",
     Pertusato: "Pertoosahto",
