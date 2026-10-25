@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { pageMeta, snippet } from "@/lib/seo";
 import { EnquiryForm } from "@/components/forms/EnquiryForm";
 import { DESTINATION_IDS } from "@/lib/domain/destinations";
 import { isIsoDate } from "@/lib/domain/dates";
@@ -7,8 +8,9 @@ import { displayCurrency, requireLocale } from "@/lib/request";
 import { destinationOptions, enquiryText } from "@/lib/services/labels";
 
 export async function generateMetadata({ params }: { params: Promise<{ locale: string }> }): Promise<Metadata> {
-  const t = getDictionary(await requireLocale(params));
-  return { title: t.enquiry.title, description: t.enquiry.sub };
+  const locale = await requireLocale(params);
+  const t = getDictionary(locale);
+  return pageMeta({ locale, path: "/enquire", title: t.enquiry.title, description: snippet(t.enquiry.sub) });
 }
 
 export default async function Enquire({ params, searchParams }: { params: Promise<{ locale: string }>; searchParams: Promise<Record<string, string | undefined>> }) {

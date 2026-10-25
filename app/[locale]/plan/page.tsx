@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { pageMeta, snippet } from "@/lib/seo";
 import { Planner } from "@/components/plan/Planner";
 import { DESTINATIONS } from "@/lib/domain/destinations";
 import { isIsoDate } from "@/lib/domain/dates";
@@ -7,8 +8,9 @@ import { INTL_LOCALE } from "@/lib/i18n/config";
 import { requireLocale, todayIso } from "@/lib/request";
 
 export async function generateMetadata({ params }: { params: Promise<{ locale: string }> }): Promise<Metadata> {
-  const t = getDictionary(await requireLocale(params));
-  return { title: t.plan.title };
+  const locale = await requireLocale(params);
+  const t = getDictionary(locale);
+  return pageMeta({ locale, path: "/plan", title: t.plan.title, description: snippet(t.home.heroSub) });
 }
 
 export default async function PlanPage({ params, searchParams }: { params: Promise<{ locale: string }>; searchParams: Promise<Record<string, string | undefined>> }) {

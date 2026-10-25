@@ -9,7 +9,7 @@ import { allow } from "@/lib/rate-limit";
 // ever records our own script, each sentence once.
 export async function POST() {
   const env = await getEnvAsync();
-  if (!(await allow(await getDb(), "narration-warm", 30, 600))) return Response.json({ error: "busy, try again later" }, { status: 429 });
+  if (!(await allow(await getDb(), "narration-warm", 200, 3600))) return Response.json({ error: "busy, try again later" }, { status: 429 });
   const result = await prerecordNarration(env, 25_000);
   return Response.json(result, { headers: { "Cache-Control": "no-store" } });
 }

@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { pageMeta, snippet } from "@/lib/seo";
 import Link from "next/link";
 import { getDb } from "@/lib/db";
 import { getEnvAsync } from "@/lib/env";
@@ -11,8 +12,9 @@ import { destinationViews } from "@/lib/services/destination-settings";
 type DestKey = keyof Dictionary["destinations"];
 
 export async function generateMetadata({ params }: { params: Promise<{ locale: string }> }): Promise<Metadata> {
-  const t = getDictionary(await requireLocale(params));
-  return { title: t.nav.destinations, alternates: { canonical: "destinations" } };
+  const locale = await requireLocale(params);
+  const t = getDictionary(locale);
+  return pageMeta({ locale, path: "/destinations", title: `${t.nav.destinations}: yacht charter destinations`, description: snippet(`${t.home.featuredSub} ${t.meta.description}`) });
 }
 
 export default async function Destinations({ params }: { params: Promise<{ locale: string }> }) {

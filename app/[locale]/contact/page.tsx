@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { pageMeta, snippet } from "@/lib/seo";
 import Link from "next/link";
 import { IconArrowRight, IconChat, IconMail, IconPin, SocialIcon } from "@/components/Icons";
 import { COMPANY, SOCIAL_LINKS } from "@/lib/brand";
@@ -8,8 +9,9 @@ import { requireLocale } from "@/lib/request";
 import { getSettings } from "@/lib/settings";
 
 export async function generateMetadata({ params }: { params: Promise<{ locale: string }> }): Promise<Metadata> {
-  const t = getDictionary(await requireLocale(params));
-  return { title: t.contact.title, description: t.contact.sub };
+  const locale = await requireLocale(params);
+  const t = getDictionary(locale);
+  return pageMeta({ locale, path: "/contact", title: t.contact.title, description: snippet(t.contact.sub) });
 }
 
 export default async function Contact({ params }: { params: Promise<{ locale: string }> }) {

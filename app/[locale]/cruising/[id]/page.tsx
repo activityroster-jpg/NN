@@ -2,6 +2,9 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import GuideVideo from "@/components/cruising/GuideVideo";
+import { JsonLd } from "@/components/seo/JsonLd";
+import { storedVideos } from "@/lib/cruising/videos";
+import { abs, breadcrumbLd, pageMeta, snippet } from "@/lib/seo";
 import { guideById, REGIONS, totalMiles } from "@/lib/cruising";
 import { voiceEnabled } from "@/lib/cruising/voice";
 import { getEnvAsync } from "@/lib/env";
@@ -11,9 +14,19 @@ import { requireLocale } from "@/lib/request";
 type Props = { params: Promise<{ locale: string; id: string }> };
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
-  const g = guideById((await params).id);
+  const { locale, id } = await params;
+  const g = guideById(id);
   if (!g) return {};
-  return { title: `${g.name} sailing guide: a week from ${g.baseMarina.name}`, description: g.intro.slice(0, 155) };
+  const video = (await storedVideos(await getEnvAsync())).get(g.id);
+  return pageMeta({
+    locale,
+    path: `/cruising/${g.id}`,
+    englishOnly: true,
+    type: "article",
+    title: `${g.name} sailing guide: a week from ${g.base}, ${g.country}`,
+    description: snippet(`${g.tagline} A week from ${g.baseMarina.name}: route, ports, fuel, mooring and winds, with a narrated video.`),
+    image: video ? `/media/${video.key.replace(/\.mp4$/, ".jpg")}` : undefined,
+  });
 }
 
 const WEEKDAY = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday"];
@@ -30,8 +43,44 @@ export default async function GuidePage({ params }: Props) {
   const g = guideById(id);
   if (!g) notFound();
   const region = REGIONS.find((r) => r.id === g.region)?.name;
+  const video = (await storedVideos(await getEnvAsync())).get(g.id);
+  const url = abs(`/en/cruising/${g.id}`);
+  const ld: object[] = [
+    breadcrumbLd([
+      { name: "Nautical Nomads", path: `/${locale}` },
+      { name: "Cruising guides", path: "/en/cruising" },
+      { name: g.name, path: `/en/cruising/${g.id}` },
+    ]),
+    {
+      "@context": "https://schema.org",
+      "@type": "Article",
+      headline: `${g.name}: a week's sailing from ${g.baseMarina.name}`,
+      description: g.intro,
+      url,
+      inLanguage: "en",
+      about: { "@type": "TouristDestination", name: `${g.name}, ${g.country}` },
+      author: { "@id": `${abs("")}/#organization` },
+      publisher: { "@id": `${abs("")}/#organization` },
+      ...(video ? { image: abs(`/media/${video.key.replace(/\.mp4$/, ".jpg")}`) } : {}),
+    },
+  ];
+  if (video) {
+    ld.push({
+      "@context": "https://schema.org",
+      "@type": "VideoObject",
+      name: `${g.name} sailing guide`,
+      description: snippet(`${g.tagline} ${g.intro}`, 300),
+      thumbnailUrl: abs(`/media/${video.key.replace(/\.mp4$/, ".jpg")}`),
+      uploadDate: video.uploaded.toISOString(),
+      contentUrl: abs(`/media/${video.key}`),
+      embedUrl: url,
+      inLanguage: "en",
+      publisher: { "@id": `${abs("")}/#organization` },
+    });
+  }
   return (
     <div className="container-page py-12">
+      <JsonLd data={ld} />
       <nav className="text-sm text-muted">
         <Link href={`/${locale}/cruising`} className="hover:underline">Cruising guides</Link> · {region}
       </nav>

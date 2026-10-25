@@ -28,6 +28,9 @@ export function middleware(req: NextRequest) {
     return NextResponse.next();
   }
 
+  // Video render stage for the MP4 workflow: no locale, no cookies.
+  if (pathname.startsWith("/render/")) return NextResponse.next();
+
   const seg = pathname.split("/")[1];
   if (!isLocale(seg)) {
     const locale = matchLocale(req.headers.get("accept-language"));

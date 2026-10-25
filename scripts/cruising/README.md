@@ -9,7 +9,7 @@ Coastline comes from Natural Earth 1:10m (public domain), via the `world-atlas` 
    replaces the guide's `land: [...]` block. Names file:
    `{"rings":[{"name":"Vis","probe":[16.15,43.05],"label":[16.15,43.045]}], "extra":["{ name: \"Pakleni\", shape: [[16.33, 43.165], ...] },"]}`
    A ring gets a name when its probe point is inside it. `extra` adds hand-drawn islands too small for the dataset.
-3. `node --experimental-strip-types scripts/cruising/dump.mjs lib/cruising/guides/<id>.ts > /tmp/g.json && python3 scripts/cruising/routecheck.py /tmp/g.json`
+3. `GUIDE=lib/cruising/guides/<id>.ts npx vitest run tests/cruising-one.test.ts` runs every guide check (routes over land, the week, narration text). It must pass. (`routecheck.py` with `dump.mjs` is a quicker map-only check.)
    reports any route segment or port marker on land. It must say `problems: 0`.
 
 Map bounds should match the 16:9 video frame: lon span = lat span × 1.778 ÷ cos(mid latitude).

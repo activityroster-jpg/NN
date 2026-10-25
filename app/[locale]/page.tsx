@@ -6,10 +6,18 @@ import { requireLocale } from "@/lib/request";
 import { getDb } from "@/lib/db";
 import { getEnvAsync } from "@/lib/env";
 import { autofillInBackground } from "@/lib/photos/autofill";
+import type { Metadata } from "next";
+import { pageMeta } from "@/lib/seo";
 import { getSettings } from "@/lib/settings";
 import { destinationViews } from "@/lib/services/destination-settings";
 
 type DestKey = keyof Dictionary["destinations"];
+
+export async function generateMetadata({ params }: { params: Promise<{ locale: string }> }): Promise<Metadata> {
+  const locale = await requireLocale(params);
+  const t = getDictionary(locale);
+  return pageMeta({ locale, path: "", title: `${t.meta.siteName} · ${t.meta.tagline}`, absoluteTitle: true, description: t.meta.description });
+}
 
 export default async function Home({ params }: { params: Promise<{ locale: string }> }) {
   const locale = await requireLocale(params);

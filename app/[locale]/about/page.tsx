@@ -1,11 +1,13 @@
 import type { Metadata } from "next";
+import { pageMeta, snippet } from "@/lib/seo";
 import { COMPANY } from "@/lib/brand";
 import { getDictionary } from "@/lib/i18n";
 import { requireLocale } from "@/lib/request";
 
 export async function generateMetadata({ params }: { params: Promise<{ locale: string }> }): Promise<Metadata> {
-  const t = getDictionary(await requireLocale(params));
-  return { title: t.about.title };
+  const locale = await requireLocale(params);
+  const t = getDictionary(locale);
+  return pageMeta({ locale, path: "/about", title: t.about.title, description: snippet(`${t.about.text1} ${t.about.text2}`) });
 }
 
 export default async function About({ params }: { params: Promise<{ locale: string }> }) {

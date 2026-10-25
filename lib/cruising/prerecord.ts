@@ -1,16 +1,40 @@
 import type { AppEnv } from "@/lib/env";
 import { GUIDES } from ".";
 import { guideSentences, sentenceHash, spokenText } from "./narration";
-import { INTRO_KEY, narrationKey, synthesize, synthesizeIntro, voiceEnabled } from "./voice";
+import { INTRO_KEY, narrationKey, narrationPrefix, synthesize, synthesizeIntro, voiceEnabled } from "./voice";
 
-// Hourly: record any narration not yet in storage, so visitors never wait for
-// generation. Stops when the time budget runs out and carries on next hour.
+// Records any narration not yet in storage, so visitors never wait for it.
+// Called after each deploy (until nothing is left) and hourly. Lists what is
+// stored in one pass, then records a few sentences at a time until the time
+// budget runs out.
+
 export interface PrerecordResult {
   made: number;
   /** Sentences still to record (0 when everything is done). */
   remaining: number;
   intro: boolean;
   error?: string;
+}
+
+/** Parallel requests to ElevenLabs; their plans allow at least this many. */
+const PARALLEL = 3;
+
+interface Job {
+  key: string;
+  text: string;
+  previous?: string;
+  next?: string;
+}
+
+async function storedKeys(env: AppEnv, prefix: string): Promise<Set<string>> {
+  const keys = new Set<string>();
+  let cursor: string | undefined;
+  do {
+    const page = await env.PHOTOS!.list({ prefix, cursor, limit: 1000 });
+    for (const o of page.objects) keys.add(o.key);
+    cursor = page.truncated ? page.cursor : undefined;
+  } while (cursor);
+  return keys;
 }
 
 export async function prerecordNarration(env: AppEnv, budgetMs: number): Promise<PrerecordResult> {
@@ -26,26 +50,39 @@ export async function prerecordNarration(env: AppEnv, budgetMs: number): Promise
       console.error("prerecord intro", e);
     }
   }
+
+  const stored = await storedKeys(env, narrationPrefix(env));
+  const jobs: Job[] = [];
+  const queued = new Set<string>();
   for (const g of GUIDES) {
-    const sentences = guideSentences(g).map((s) => spokenText(g, s));
-    for (let i = 0; i < sentences.length; i++) {
-      const key = narrationKey(env, sentenceHash(sentences[i]!));
-      if (await env.PHOTOS!.head(key)) continue;
-      if (Date.now() > deadline || (out.error && !out.error.startsWith("intro"))) {
-        out.remaining++;
-        continue;
-      }
+    const spoken = guideSentences(g).map((s) => spokenText(g, s));
+    spoken.forEach((text, i) => {
+      const key = narrationKey(env, sentenceHash(text));
+      if (stored.has(key) || queued.has(key)) return;
+      queued.add(key);
+      jobs.push({ key, text, previous: spoken[i - 1], next: spoken[i + 1] });
+    });
+  }
+
+  let failed = false;
+  let next = 0;
+  const worker = async () => {
+    while (!failed && Date.now() < deadline) {
+      const job = jobs[next++];
+      if (!job) return;
       try {
-        const audio = await synthesize(env, sentences[i]!, sentences[i - 1], sentences[i + 1]);
-        await env.PHOTOS!.put(key, audio, { httpMetadata: { contentType: "audio/mpeg" } });
+        const audio = await synthesize(env, job.text, job.previous, job.next);
+        await env.PHOTOS!.put(job.key, audio, { httpMetadata: { contentType: "audio/mpeg" } });
         out.made++;
       } catch (e) {
-        // Quota or outage: stop calling the API, count what is left, try again later.
+        // Quota or outage: stop calling the API; the rest waits for next time.
+        failed = true;
         out.error = e instanceof Error ? e.message : String(e);
-        out.remaining++;
-        console.error("prerecord", g.id, i, e);
+        console.error("prerecord", job.key, e);
       }
     }
-  }
+  };
+  await Promise.all(Array.from({ length: PARALLEL }, worker));
+  out.remaining = jobs.length - out.made;
   return out;
 }
