@@ -20,7 +20,12 @@ const BRAND = "#c75d3e";
 
 type XY = [number, number];
 
-function projector(g: CruisingGuide, box = { x: 0, y: 0, w: W, h: H }) {
+// The map's area of interest sits above the caption band (bottom ~150 px), so
+// no port or route is ever hidden under the subtitles. Land is drawn well
+// beyond the bounds, so the frame is still filled edge to edge.
+const CAPTION_BAND = 150;
+
+function projector(g: CruisingGuide, box = { x: 0, y: 10, w: W, h: H - CAPTION_BAND - 10 }) {
   const [w, s, e, n] = g.map.bounds;
   const k = Math.cos((((s + n) / 2) * Math.PI) / 180);
   const scale = Math.min(box.w / ((e - w) * k), box.h / (n - s));
@@ -92,6 +97,11 @@ export function buildGuideScenes(g: CruisingGuide, recorded = false): Scene[] {
         ) : null,
       )}
       {dim > 0 && <rect width={W} height={H} fill={SEA} opacity={dim} />}
+      {g.map.credit && (
+        <text x={W - 16} y={H - 14} textAnchor="end" fontSize={16} fill="#fff" opacity={0.55}>
+          {g.map.credit}
+        </text>
+      )}
     </>
   );
 

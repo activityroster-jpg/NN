@@ -5,13 +5,14 @@
 // them with ffmpeg. Needs playwright (chromium) and ffmpeg.
 import { spawn } from "node:child_process";
 import { once } from "node:events";
-import { mkdtempSync, writeFileSync, rmSync } from "node:fs";
+import { mkdirSync, mkdtempSync, writeFileSync, rmSync } from "node:fs";
 import { tmpdir } from "node:os";
-import { join } from "node:path";
+import { dirname, join } from "node:path";
 
 const [, , site, id, out] = process.argv;
 if (!site || !id || !out) throw new Error("usage: make-guide-video.mjs <site> <guide id> <output.mp4>");
 const FPS = 25;
+mkdirSync(dirname(out), { recursive: true });
 const work = mkdtempSync(join(tmpdir(), `guide-${id}-`));
 
 function run(cmd, args, input) {

@@ -36,7 +36,6 @@ export const sicilyAeolian: CruisingGuide = {
   ],
   speak: {
     Panarea: "Panaraya",
-    panarea: "panaraya",
     Sciara: "Shahra",
     Junco: "Yoonko",
     Libeccio: "Libetcho",
@@ -114,7 +113,7 @@ export const sicilyAeolian: CruisingGuide = {
       summary: "A short hop east to Panarea, the smallest and most stylish of the islands, with white houses, bougainvillea and a ring of rocky islets.",
       stop: "Swim among the islets east of Panarea, where volcanic gas bubbles up from the seabed.",
       overnight: "A mooring buoy or anchor off San Pietro, the main village. It is open to the east, so check the forecast.",
-      todo: ["Snorkel in the clear water of Cala Junco", "Walk up to the Bronze Age village on Capo Milazzese", "Sundowner in the waterfront bars of San Pietro"],
+      todo: ["Snorkel in the clear water of Cala Junco", "Walk up to the Bronze Age village on Capo Milazzese", "Have a sundowner in the waterfront bars of San Pietro"],
     },
     {
       day: 4,
@@ -135,7 +134,7 @@ export const sicilyAeolian: CruisingGuide = {
       route: [[15.236, 38.811], [15.252, 38.805], [15.24, 38.77], [15.14, 38.665], [15.125, 38.63], [15.0, 38.52], [14.99, 38.478], [14.962, 38.475]],
       summary: "The longest day of the week, back south-west past Panarea to Lipari, the main island. In the usual north-westerly breeze it is often a fast reach.",
       overnight: "Marina berth at Pignataro or on the pontoons of Marina Lunga, a short walk from the old town.",
-      todo: ["Climb up to the castle and the archaeological museum", "Stroll the lively main street, Corso Vittorio Emanuele", "Last big dinner ashore with local swordfish"],
+      todo: ["Climb up to the castle and the archaeological museum", "Stroll along the lively Corso Vittorio Emanuele", "Have a last big dinner ashore with local swordfish"],
     },
     {
       day: 6,
@@ -145,7 +144,7 @@ export const sicilyAeolian: CruisingGuide = {
       route: [[14.962, 38.475], [14.985, 38.47], [14.985, 38.43], [15.0, 38.415], [15.02, 38.39], [15.1, 38.25], [15.113, 38.142]],
       summary: "Refuel in Lipari if you need to, then south past Vulcano and back across to Sicily, with a last swim on the way.",
       overnight: "Back in Marina di Portorosa by Friday evening for the check-in inspection.",
-      todo: ["Morning swim off the east coast of Vulcano", "Refuel at the marina entrance before the Friday queue", "Final dinner ashore in Portorosa"],
+      todo: ["Take a morning swim off the east coast of Vulcano", "Refuel at the marina entrance before the Friday queue", "Have a final dinner ashore in Portorosa"],
     },
   ],
   ports: [

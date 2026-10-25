@@ -13,10 +13,31 @@ export function splitSentences(text: string): string[] {
 
 export const WEEKDAY = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday"];
 export const short = (s: string) => s.split(",")[0]!;
-const lowerFirst = (s: string) => s.charAt(0).toLowerCase() + s.slice(1);
 const upperFirst = (s: string) => s.charAt(0).toUpperCase() + s.slice(1);
-export const listOf = (items: string[]) =>
-  items.length < 2 ? items.join("") : `${items.slice(0, -1).map(lowerFirst).join(", ")}, and ${lowerFirst(items[items.length - 1]!)}`;
+
+/** Every capitalised word the guide uses as a name (places, bases, islands). */
+function properNouns(g: CruisingGuide): Set<string> {
+  const names = [g.name, g.country, g.base, g.baseMarina.name, g.baseMarina.alsoMain?.name ?? "", ...g.baseMarina.others, ...g.ports.map((p) => p.name), ...g.map.land.map((l) => l.name ?? ""), ...g.legs.flatMap((l) => [l.from, l.to])];
+  const out = new Set<string>();
+  for (const n of names) for (const w of n.split(/[\s,/]+/)) if (/^\p{Lu}/u.test(w)) out.add(w.replace(/'s$|’s$/, ""));
+  return out;
+}
+
+/** Lower-case the first letter of a list item unless it starts with a name. */
+function listItem(s: string, names: Set<string>): string {
+  const first = s.split(/\s+/)[0]!.replace(/'s$|’s$/, "").replace(/[^\p{L}'-]/gu, "");
+  return names.has(first) ? s : s.charAt(0).toLowerCase() + s.slice(1);
+}
+
+/** "A", "A and B", "A, B and C" (British style). Names keep their capitals. */
+export const listOf = (items: string[], names?: Set<string>) => {
+  const xs = names ? items.map((x) => listItem(x, names)) : items;
+  return xs.length < 2 ? xs.join("") : `${xs.slice(0, -1).join(", ")} and ${xs[xs.length - 1]!}`;
+};
+
+const NUMBER_WORDS = ["zero", "one", "two", "three", "four", "five", "six", "seven", "eight", "nine", "ten"];
+/** Small numbers in words, as a narrator would say them. */
+export const numberWord = (n: number) => NUMBER_WORDS[n] ?? String(n);
 
 export const MOOR_LABEL: Record<MooringType["kind"], string> = { marina: "Marinas", "town quay": "Town quays", buoy: "Buoys", anchor: "At anchor" };
 
@@ -35,6 +56,7 @@ export interface ScriptPart {
 export function guideScript(g: CruisingGuide): ScriptPart[] {
   const total = g.legs.reduce((n, l) => n + l.nm, 0);
   const base = g.baseMarina;
+  const names = properNouns(g);
   const parts: ScriptPart[] = [
     { key: "title", title: g.name, narration: `${g.name}, ${g.country}. ${g.tagline}` },
     { key: "base", title: "Where the boats are", narration: base.note },
@@ -51,7 +73,7 @@ export function guideScript(g: CruisingGuide): ScriptPart[] {
     {
       key: "week",
       title: "A sample week",
-      narration: `Now a sample week. It starts and ends in ${short(base.name)}: ${g.legs.length} short sailing days and about ${total} nautical miles, taking in ${upperFirst(
+      narration: `Now a sample week. It starts and ends in ${short(base.name)}: ${numberWord(g.legs.length)} short sailing days and about ${total} nautical miles, taking in ${upperFirst(
         listOf(g.legs.slice(0, -1).map((l) => short(l.to))),
       )}.`,
     },
@@ -59,7 +81,7 @@ export function guideScript(g: CruisingGuide): ScriptPart[] {
     ...g.legs.map((l) => ({
       key: `day-${l.day}`,
       title: `${dayName(l)}: ${short(l.from)} to ${short(l.to)}`,
-      narration: `${dayLead(l)} While you're there: ${listOf(l.todo)}. ${l.overnight}`,
+      narration: `${dayLead(l)} While you're there: ${listOf(l.todo, names)}. ${l.overnight}`,
     })),
     { key: "close", title: "Friday evening: back to base", narration: `${g.departure} No sailing licence? Add a skipper and simply enjoy the week.` },
   ];

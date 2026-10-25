@@ -92,6 +92,8 @@ export interface CruisingGuide {
   map: {
     /** Bounds of the map: [west, south, east, north]. */
     bounds: [number, number, number, number];
+    /** Credit shown on the map when outline data needs it (e.g. OpenStreetMap). */
+    credit?: string;
     /** Land shapes (rough outlines, not for navigation). */
     land: { name?: string; label?: LonLat; shape: LonLat[] }[];
   };
