@@ -5,8 +5,10 @@ import openNextHandler from "./.open-next/worker.js";
 
 export default {
   ...openNextHandler,
-  async scheduled(_event, env, ctx) {
-    const req = new Request("https://cron.internal/api/cron/tick", {
+  async scheduled(event, env, ctx) {
+    // Two schedules (wrangler.jsonc): the ten-minute one only posts due Instagram photos.
+    const job = event.cron === "*/10 * * * *" ? "social" : "tick";
+    const req = new Request(`https://cron.internal/api/cron/tick?job=${job}`, {
       method: "POST",
       headers: { "x-cron-secret": env.CRON_SECRET ?? "" },
     });

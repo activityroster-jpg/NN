@@ -48,6 +48,13 @@ export const SettingsSchema = z.object({
       catamaran: z.object({ url: z.string(), credit: z.string() }).nullable().default(null),
     })
     .default({}),
+  /** Instagram queue: the daily posting time, in the business time zone. */
+  social: z
+    .object({
+      instagramTime: z.string().regex(/^\d{2}:\d{2}$/).default("18:00"),
+      timezone: z.string().default("Europe/London"),
+    })
+    .default({}),
   offeringB: z
     .object({
       enabled: z.boolean().default(false),

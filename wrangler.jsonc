@@ -7,7 +7,8 @@
   "compatibility_flags": ["nodejs_compat"],
   "assets": { "directory": ".open-next/assets", "binding": "ASSETS" },
   // Hourly: expire 24-hour holds, send balance reminders, refresh FX rates.
-  "triggers": { "crons": ["7 * * * *"] },
+  // Hourly housekeeping, and every ten minutes the Instagram queue (worker.js tells them apart).
+  "triggers": { "crons": ["7 * * * *", "*/10 * * * *"] },
   "d1_databases": [
     {
       "binding": "DB",
@@ -21,6 +22,8 @@
   // bucket once: Cloudflare → R2 → Create bucket → "nautical-nomads-photos",
   // location Europe. Served by the Worker at /media/<key>.
   "r2_buckets": [{ "binding": "PHOTOS", "bucket_name": "nautical-nomads-photos", "jurisdiction": "eu" }],
+  // Workers AI: the fallback caption writer for Instagram posts (free allowance).
+  "ai": { "binding": "AI" },
   "observability": { "enabled": true },
   "vars": {
     "SITE_URL": "https://nauticalnomads.com"
