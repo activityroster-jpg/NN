@@ -183,12 +183,19 @@ jobs:
         if: success()
         run: |
           # Picks and downloads a Pixabay clip for each short scene that lacks
-          # one; stops as soon as everything is chosen, or on an error.
+          # one; stops as soon as everything is chosen, or on an error. A
+          # "retry" answer means Pixabay asked us to slow down: wait and go on.
+          stuck=0; last=""
           for i in $(seq 1 40); do
             r="$(curl -sS --max-time 90 -X POST "$SITE/api/shorts/footage/warm" || echo '{"error":"request failed"}')"
             echo "$r"
             if printf '%s' "$r" | grep -q '"remaining":0' && ! printf '%s' "$r" | grep -q '"error"'; then echo "All footage chosen."; exit 0; fi
             if printf '%s' "$r" | grep -q '"error"'; then echo "::warning::Footage not fully chosen: $r"; exit 0; fi
+            rem="$(printf '%s' "$r" | sed -n 's/.*"remaining":\([0-9-]*\).*/\1/p')"
+            if [ "$rem" = "$last" ]; then stuck=$((stuck+1)); else stuck=0; fi
+            last="$rem"
+            if [ "$stuck" -ge 8 ]; then echo "::warning::Footage stopped progressing ($r); the next deploy will retry."; exit 0; fi
+            if printf '%s' "$r" | grep -q '"retry":true'; then sleep 20; fi
           done
           echo "::warning::Footage still downloading; the next deploy will finish it."
 
