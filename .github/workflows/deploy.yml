@@ -164,11 +164,18 @@ jobs:
         # about 25 seconds; repeat until nothing is left. Problems are reported
         # here but never fail the deploy (videos fall back to the device voice).
         run: |
-          for i in $(seq 1 20); do
+          # Up to about an hour (a first run of new guides); stops as soon as
+          # everything is recorded, or on an error, or if nothing progresses.
+          stuck=0; last=""
+          for i in $(seq 1 150); do
             r="$(curl -sS --max-time 90 -X POST "$SITE/api/narration/warm" || echo '{"error":"request failed"}')"
             echo "$r"
             if printf '%s' "$r" | grep -q '"remaining":0' && ! printf '%s' "$r" | grep -q '"error"'; then echo "All narration recorded."; exit 0; fi
             if printf '%s' "$r" | grep -q '"error"'; then echo "::warning::Narration not fully recorded: $r"; exit 0; fi
+            rem="$(printf '%s' "$r" | sed -n 's/.*"remaining":\([0-9-]*\).*/\1/p')"
+            if [ "$rem" = "$last" ]; then stuck=$((stuck+1)); else stuck=0; fi
+            last="$rem"
+            if [ "$stuck" -ge 3 ]; then echo "::warning::Narration stopped progressing ($r); the hourly job will retry."; exit 0; fi
           done
           echo "::warning::Narration still recording; the hourly job will finish it."
 

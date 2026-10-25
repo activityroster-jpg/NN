@@ -16,10 +16,15 @@ export function voiceConfig(env: AppEnv) {
   return { voice: env.ELEVENLABS_VOICE_ID || DEFAULT_VOICE, model: env.ELEVENLABS_MODEL || DEFAULT_MODEL };
 }
 
-export function narrationKey(env: AppEnv, hash: string): string {
+/** Storage folder for the current voice, model and settings. */
+export function narrationPrefix(env: AppEnv): string {
   const { voice, model } = voiceConfig(env);
   // "s2": voice settings version; bump when the settings change so clips are re-recorded.
-  return `narration/${voice}/${model}/s2/${hash}.mp3`;
+  return `narration/${voice}/${model}/s2/`;
+}
+
+export function narrationKey(env: AppEnv, hash: string): string {
+  return `${narrationPrefix(env)}${hash}.mp3`;
 }
 
 /** Generate one sentence. Neighbouring sentences are passed so the delivery flows. */
