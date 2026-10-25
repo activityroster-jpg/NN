@@ -1,8 +1,8 @@
 "use client";
 
-import type { ReactNode } from "react";
+import { useMemo, type ReactNode } from "react";
 import type { CruisingGuide, LonLat, Port } from "@/lib/cruising/types";
-import { dayLead, guideScript, sentenceHash, spokenText, listOf, MOOR_LABEL, moorText as moorLine, short, splitSentences, windText } from "@/lib/cruising/narration";
+import { dayLead, guideScript, narrationUrl, listOf, MOOR_LABEL, moorText as moorLine, short, splitSentences, windText } from "@/lib/cruising/narration";
 import GuidePlayer, { fade, phase, Stage, type Scene } from "./GuidePlayer";
 
 // Builds the narrated video for a cruising guide from its data: a map of the
@@ -72,7 +72,8 @@ function Card({ x, y, w, h, children, opacity = 1 }: { x: number; y: number; w: 
   );
 }
 
-export default function GuideVideo({ guide: g, recorded = false }: { guide: CruisingGuide; /** Recorded narration and intro music are available. */ recorded?: boolean }) {
+/** Every scene of a guide video, shared by the player and the MP4 renderer. */
+export function buildGuideScenes(g: CruisingGuide, recorded = false): Scene[] {
   const P = projector(g);
   const legs = g.legs.map((l) => ({ ...l, xy: l.route.map(P) }));
   const total = g.legs.reduce((n, l) => n + l.nm, 0);
@@ -544,9 +545,12 @@ export default function GuideVideo({ guide: g, recorded = false }: { guide: Crui
     ),
   });
 
+  return scenes;
+}
+
+export default function GuideVideo({ guide: g, recorded = false }: { guide: CruisingGuide; /** Recorded narration and intro music are available. */ recorded?: boolean }) {
+  const scenes = useMemo(() => buildGuideScenes(g, recorded), [g, recorded]);
   const poster = Math.max(0, scenes.findIndex((sc) => sc.title === "A sample week"));
-  // The query names the spoken version, so a pronunciation change gets a new
-  // address and browsers never replay an old recording from their cache.
-  const audioUrl = recorded ? (text: string) => `/api/narration/${g.id}/${sentenceHash(text)}?v=${sentenceHash(spokenText(g, text))}` : undefined;
+  const audioUrl = recorded ? (text: string) => narrationUrl(g, text) : undefined;
   return <GuidePlayer title={`${g.name} cruising guide`} scenes={scenes} pronounce={{ ...g.speak, ...g.say }} poster={poster} audioUrl={audioUrl} />;
 }

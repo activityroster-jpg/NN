@@ -91,3 +91,12 @@ export function spokenText(g: Pick<CruisingGuide, "speak">, text: string): strin
   if (g.speak) for (const k of Object.keys(g.speak).sort((a, b) => b.length - a.length)) out = out.split(k).join(g.speak[k]!);
   return out;
 }
+
+/**
+ * Address of a sentence's recorded audio. The query names the spoken version,
+ * so a pronunciation change gets a new address and browsers never replay an
+ * old recording from their cache.
+ */
+export function narrationUrl(g: Pick<CruisingGuide, "id" | "speak">, text: string): string {
+  return `/api/narration/${g.id}/${sentenceHash(text)}?v=${sentenceHash(spokenText(g, text))}`;
+}

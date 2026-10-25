@@ -1,0 +1,95 @@
+name: Make guide videos
+
+# Renders the cruising guide videos to MP4 (1920×1080, narration, intro sting,
+# captions) from the live site and stores them in the R2 bucket, where
+# Admin → Videos offers them for download. Runs after every successful
+# "Deploy production" and only renders guides that changed. Run it by hand to
+# re-render specific guides ("all" for every guide).
+# Uses the same CLOUDFLARE_API_TOKEN / CLOUDFLARE_ACCOUNT_ID secrets as the
+# deploy; the token needs Account → Workers R2 Storage → Edit to store videos.
+# Each video is also attached to the run as a download.
+
+on:
+  workflow_run:
+    workflows: ["Deploy production"]
+    types: [completed]
+  workflow_dispatch:
+    inputs:
+      guides:
+        description: "Guide ids, comma separated; blank = only changed guides; all = every guide"
+        required: false
+        default: ""
+
+concurrency:
+  group: guide-videos
+  cancel-in-progress: false
+
+env:
+  SITE: https://nauticalnomads.com
+  BUCKET: nautical-nomads-photos
+
+jobs:
+  plan:
+    if: github.event_name == 'workflow_dispatch' || github.event.workflow_run.conclusion == 'success'
+    runs-on: ubuntu-latest
+    outputs:
+      matrix: ${{ steps.plan.outputs.matrix }}
+    steps:
+      - name: Which videos to make
+        id: plan
+        env:
+          ONLY: ${{ github.event.inputs.guides }}
+        run: |
+          curl -fsS "$SITE/api/cruising/videos" > guides.json
+          python3 - <<'PY' >> "$GITHUB_OUTPUT"
+          import json, os
+          guides = json.load(open("guides.json"))["guides"]
+          only = [x.strip() for x in os.environ.get("ONLY", "").split(",") if x.strip()]
+          if only == ["all"]:
+              pick = guides
+          elif only:
+              pick = [g for g in guides if g["id"] in only]
+          else:
+              pick = [g for g in guides if not g["current"]]
+          print("matrix=" + json.dumps([{"id": g["id"], "key": g["key"]} for g in pick]))
+          PY
+          cat "$GITHUB_OUTPUT"
+
+  render:
+    needs: plan
+    if: needs.plan.outputs.matrix != '[]'
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    strategy:
+      fail-fast: false
+      max-parallel: 6
+      matrix:
+        guide: ${{ fromJSON(needs.plan.outputs.matrix) }}
+    env:
+      CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+      CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - name: Install the browser and ffmpeg
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq ffmpeg fonts-dejavu-core
+          npm install --no-save --no-package-lock playwright@1.49.1
+          npx playwright install --with-deps chromium
+      - name: Render ${{ matrix.guide.id }}
+        run: node scripts/videos/make-guide-video.mjs "$SITE" "${{ matrix.guide.id }}" "out/${{ matrix.guide.id }}.mp4"
+      - name: Attach the video to this run
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ matrix.guide.id }}
+          path: out/${{ matrix.guide.id }}.mp4
+          retention-days: 14
+      - name: Store for Admin → Videos
+        run: |
+          npx wrangler r2 object put "$BUCKET/${{ matrix.guide.key }}" --file "out/${{ matrix.guide.id }}.mp4" --content-type video/mp4 --remote --jurisdiction eu \
+            || echo "::warning::Could not store the video in Cloudflare (does the API token have Workers R2 Storage → Edit?). It is attached to this run as a download."
