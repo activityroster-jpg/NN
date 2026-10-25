@@ -65,7 +65,10 @@ export function footageScenes(s: Short, m: FootageManifest): { index: number; fo
   });
 }
 
-async function search(env: AppEnv, q: string) {
+/** Pixabay asked us to slow down and the time budget ran out: try again on the next call. */
+class RateLimited extends Error {}
+
+async function search(env: AppEnv, q: string, deadline: number) {
   const u = new URL("videos/", env.PIXABAY_API_BASE ?? "https://pixabay.com/api/");
   u.searchParams.set("key", env.PIXABAY_API_KEY!);
   u.searchParams.set("q", q);
@@ -74,9 +77,19 @@ async function search(env: AppEnv, q: string) {
   u.searchParams.set("min_width", "1920");
   u.searchParams.set("order", "popular");
   u.searchParams.set("per_page", "40");
-  const res = await fetch(u, { signal: AbortSignal.timeout(15_000) });
-  if (!res.ok) throw new Error(`Pixabay ${res.status}`);
-  return Hits.parse(await res.json()).hits;
+  for (;;) {
+    const res = await fetch(u, { signal: AbortSignal.timeout(15_000) });
+    if (res.status === 429) {
+      // Pixabay allows 100 requests a minute and says when the window resets.
+      const after = Number(res.headers.get("retry-after") || res.headers.get("x-ratelimit-reset") || 0);
+      const wait = Math.min((after > 0 ? after : 8) * 1000, deadline - Date.now());
+      if (wait <= 0) throw new RateLimited("Pixabay 429");
+      await new Promise((r) => setTimeout(r, wait));
+      continue;
+    }
+    if (!res.ok) throw new Error(`Pixabay ${res.status}`);
+    return Hits.parse(await res.json()).hits;
+  }
 }
 
 /** Largest rendition we are willing to store: at least 1080p, under the size cap. */
@@ -102,8 +115,8 @@ async function store(env: AppEnv, key: string, url: string, size: number): Promi
 }
 
 /** Choose and download the clip for one scene. */
-async function pickFor(env: AppEnv, f: Footage, exclude: Set<number>): Promise<FootagePick> {
-  const hits = await search(env, f.q);
+async function pickFor(env: AppEnv, f: Footage, exclude: Set<number>, deadline: number): Promise<FootagePick> {
+  const hits = await search(env, f.q, deadline);
   const usable = hits
     .filter((h) => h.duration >= 4 && !exclude.has(h.id))
     .map((h) => ({ h, r: bestRendition(h.videos) }))
@@ -120,6 +133,8 @@ async function pickFor(env: AppEnv, f: Footage, exclude: Set<number>): Promise<F
 export interface FootageResult {
   made: number;
   remaining: number;
+  /** Pixabay asked us to wait; nothing is wrong, call again. */
+  retry?: boolean;
   error?: string;
 }
 
@@ -134,18 +149,19 @@ export async function warmFootage(env: AppEnv, budgetMs: number): Promise<Footag
     let changed = false;
     for (const sc of footageScenes(s, m)) {
       if (sc.pick) continue;
-      if (out.error || Date.now() > deadline) {
+      if (out.error || out.retry || Date.now() > deadline) {
         out.remaining++;
         continue;
       }
       try {
-        const pick = await pickFor(env, sc.footage, used);
+        const pick = await pickFor(env, sc.footage, used, deadline);
         m[String(sc.index)] = pick;
         used.add(pick.id);
         changed = true;
         out.made++;
       } catch (e) {
-        out.error = `${s.id} scene ${sc.index + 1}: ${e instanceof Error ? e.message : String(e)}`;
+        if (e instanceof RateLimited) out.retry = true;
+        else out.error = `${s.id} scene ${sc.index + 1}: ${e instanceof Error ? e.message : String(e)}`;
         out.remaining++;
         console.error("footage", s.id, sc.index, e);
       }
