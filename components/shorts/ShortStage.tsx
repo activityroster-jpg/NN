@@ -47,7 +47,7 @@ export interface ShortPlan {
   duration: number;
   /** A good still for the cover: the hook with its heading showing. */
   poster: number;
-  scenes: { start: number; end: number; footage: SceneFootage | null; colour: string }[];
+  scenes: { start: number; end: number; kind: "footage" | "diagram" | "end"; footage: SceneFootage | null; colour: string }[];
   clips: { url: string; start: number; dur: number; mock: boolean }[];
   bed: { url: string; gain: number } | null;
 }
@@ -107,7 +107,7 @@ export default function ShortStage({ short, footage, bed }: { short: Short; foot
         poster: Math.min(1.2, Math.max(0, timeline[0]!.end - 0.1)),
         scenes: timeline.map((s, i) => {
           const v = scenes[i]!.visual;
-          return { start: s.start, end: s.end, footage: v.kind === "footage" ? (footage[i] ?? null) : null, colour: v.kind === "end" ? "0x2a2826" : v.kind === "diagram" ? "0xfaf6ec" : "0x4a6b85" };
+          return { start: s.start, end: s.end, kind: v.kind, footage: v.kind === "footage" ? (footage[i] ?? null) : null, colour: v.kind === "end" ? "0x2a2826" : v.kind === "diagram" ? "0xfaf6ec" : "0x4a6b85" };
         }),
         clips: timeline.flatMap((s) => s.sentences.map(({ url, start, dur, mock }) => ({ url, start, dur, mock }))),
         bed: bed ? { url: bed, gain: 0.16 } : null,

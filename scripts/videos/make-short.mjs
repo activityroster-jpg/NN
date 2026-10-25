@@ -4,8 +4,9 @@
 // overlay (wordmark, headings, captions, diagrams) frame by frame from
 // /render/short/<id> as transparent PNGs on top, then mixes the recorded
 // narration over a quiet sea ambience. Needs playwright (chromium) and ffmpeg.
-// Local check without recordings or footage: FOOTAGE_FALLBACK=1 draws a test
-// pattern where footage would be, and unrecorded sentences stay silent.
+// Local checks: FOOTAGE_FILE=<clip.mp4> uses that clip for every footage
+// scene, FOOTAGE_FALLBACK=1 draws a test pattern instead, unrecorded
+// sentences stay silent, and VIDEO_LIMIT_SECONDS=15 renders only the start.
 import { spawn } from "node:child_process";
 import { once } from "node:events";
 import { mkdirSync, mkdtempSync, writeFileSync, rmSync } from "node:fs";
@@ -42,10 +43,17 @@ await page.goto(`${site}/render/short/${id}`, { waitUntil: "load" });
 await page.waitForFunction(() => window.__ready === true, null, { timeout: 60_000 });
 console.log("measuring narration…");
 const plan = await page.evaluate(() => window.__prepare());
+const limit = Number(process.env.VIDEO_LIMIT_SECONDS || 0);
+if (limit > 0 && limit < plan.duration) {
+  plan.duration = limit;
+  plan.scenes = plan.scenes.filter((s) => s.start < limit).map((s) => ({ ...s, end: Math.min(s.end, limit) }));
+  plan.clips = plan.clips.filter((c) => c.start < limit);
+}
 const frames = Math.ceil(plan.duration * FPS);
 const mocked = plan.clips.filter((c) => c.mock).length;
 console.log(`${id}: ${plan.duration.toFixed(1)} s, ${plan.scenes.length} scenes, ${plan.clips.length} sentences${mocked ? ` (${mocked} not recorded)` : ""}, ${frames} frames`);
-if (mocked && !process.env.FOOTAGE_FALLBACK) throw new Error("narration is not fully recorded; the workflow only renders ready shorts");
+const local = !!(process.env.FOOTAGE_FALLBACK || process.env.FOOTAGE_FILE);
+if (mocked && !local) throw new Error("narration is not fully recorded; the workflow only renders ready shorts");
 
 // 1. Background: each scene's footage, cropped to portrait and looped or cut
 // to the scene's length; a solid colour where the overlay covers the frame.
@@ -57,13 +65,17 @@ const bgFile = join(work, "bg.mp4");
   let n = 0;
   for (const [i, sc] of plan.scenes.entries()) {
     const dur = (sc.end - sc.start).toFixed(3);
-    if (sc.footage && !process.env.FOOTAGE_FALLBACK) {
-      const f = join(work, `f${i}.mp4`);
-      await fetchTo(sc.footage.url, f);
-      inputs.push("-stream_loop", "-1", "-ss", String(sc.footage.start || 0), "-t", String(Number(dur) + 1), "-i", f);
-      filters.push(`[${n++}:v]fps=${FPS},scale=${W}:${H}:force_original_aspect_ratio=increase,crop=${W}:${H},setsar=1,format=yuv420p,tpad=stop_mode=clone:stop_duration=${dur},trim=duration=${dur},setpts=PTS-STARTPTS[v${i}]`);
-    } else if (sc.footage) {
+    if (sc.kind === "footage" && process.env.FOOTAGE_FALLBACK) {
       filters.push(`testsrc2=size=${W}x${H}:rate=${FPS}:duration=${dur},format=yuv420p[v${i}]`);
+    } else if (sc.kind === "footage") {
+      let f = process.env.FOOTAGE_FILE;
+      if (!f) {
+        if (!sc.footage) throw new Error(`scene ${i + 1}: no footage chosen yet`);
+        f = join(work, `f${i}.mp4`);
+        await fetchTo(sc.footage.url, f);
+      }
+      inputs.push("-stream_loop", "-1", "-ss", String(sc.footage?.start || 0), "-t", String(Number(dur) + 1), "-i", f);
+      filters.push(`[${n++}:v]fps=${FPS},scale=${W}:${H}:force_original_aspect_ratio=increase,crop=${W}:${H},setsar=1,format=yuv420p,tpad=stop_mode=clone:stop_duration=${dur},trim=duration=${dur},setpts=PTS-STARTPTS[v${i}]`);
     } else {
       filters.push(`color=c=${sc.colour}:size=${W}x${H}:rate=${FPS}:duration=${dur},format=yuv420p[v${i}]`);
     }
