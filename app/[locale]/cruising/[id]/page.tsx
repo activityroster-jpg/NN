@@ -214,7 +214,7 @@ export default async function GuidePage({ params }: Props) {
           </section>
 
           <p className="rounded-xl bg-surface-2 p-4 text-xs text-muted">
-            A planning guide, not a navigational publication. Maps are simplified and distances approximate. Always use official charts, the current pilot book, local notices and the latest forecast, and follow your charter company&apos;s briefing.
+            A planning guide, not a navigational publication. Maps are simplified and distances approximate{g.map.credit ? ` (${g.map.credit})` : ""}. Always use official charts, the current pilot book, local notices and the latest forecast, and follow your charter company&apos;s briefing.
           </p>
         </div>
 
