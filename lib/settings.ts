@@ -1,5 +1,6 @@
 import { eq } from "drizzle-orm";
 import { z } from "zod";
+import { COMPANY } from "@/lib/brand";
 import { DEFAULT_CATEGORY_POLICY } from "@/lib/domain/category-pricing";
 import { DEFAULT_PAYMENT_POLICY } from "@/lib/domain/pricing";
 import type { Db } from "@/lib/db";
@@ -30,7 +31,11 @@ export const SettingsSchema = z.object({
     .default({}),
   contact: z
     .object({
-      email: z.string().default("info@nauticalnomads.com"),
+      // info@ was retired for hello@; a saved copy of the old address reads as the new one.
+      email: z
+        .string()
+        .default(COMPANY.email)
+        .transform((e) => (e === "info@nauticalnomads.com" ? COMPANY.email : e)),
       phone: z.string().default(""),
       whatsapp: z.string().default(""),
     })

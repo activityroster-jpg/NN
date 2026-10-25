@@ -51,7 +51,7 @@ Workers & Pages → `nn` → Settings → Variables and Secrets → Add, type **
 
 | Name | What |
 |---|---|
-| `ADMIN_EMAILS` | Comma-separated admin emails, e.g. `info@nauticalnomads.com,you@gmail.com` |
+| `ADMIN_EMAILS` | Comma-separated admin emails, e.g. `hello@nauticalnomads.com,you@gmail.com` |
 | `CRON_SECRET` | Any long random string (password manager → generate 40 characters) |
 | `RESEND_API_KEY` | Resend → API Keys → create (sending access, domain nauticalnomads.com) |
 | `STRIPE_SECRET_KEY` | Stripe → Developers → API keys → restricted key with Checkout Sessions write |
@@ -67,7 +67,7 @@ Without Stripe, card payment is hidden and customers pay by bank transfer.
 ## 6. Domain
 
 Workers & Pages → `nn` → Domains → add custom domains `nauticalnomads.com` and
-`www.nauticalnomads.com`. Email Routing for info@ is unaffected.
+`www.nauticalnomads.com`. Email Routing for hello@ is unaffected.
 
 ## 7. First sign-in and settings
 

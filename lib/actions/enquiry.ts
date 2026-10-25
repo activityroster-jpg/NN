@@ -12,6 +12,7 @@ import { isLocale } from "@/lib/i18n/config";
 import { allow } from "@/lib/rate-limit";
 import { clientIp } from "@/lib/request";
 import { audit } from "@/lib/audit";
+import { COMPANY } from "@/lib/brand";
 
 export interface EnquiryState {
   ok: boolean;
@@ -110,7 +111,7 @@ export async function submitEnquiry(_prev: EnquiryState, form: FormData): Promis
     v.message ?? "",
   ];
   const internal = layout("New trip request", lines, { label: "Open in admin", href: `${siteUrl(env)}/admin/enquiries/${id}` });
-  await sendMail(env, { to: "info@nauticalnomads.com", subject: `Trip request: ${v.name}${v.destinationId ? ` · ${v.destinationId}` : ""}`, ...internal, replyTo: v.email });
+  await sendMail(env, { to: COMPANY.email, subject: `Trip request: ${v.name}${v.destinationId ? ` · ${v.destinationId}` : ""}`, ...internal, replyTo: v.email });
   const confirm = layout(
     "Thanks, we've got your request",
     [

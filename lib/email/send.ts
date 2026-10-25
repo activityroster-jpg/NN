@@ -1,4 +1,5 @@
 import type { AppEnv } from "@/lib/env";
+import { COMPANY } from "@/lib/brand";
 
 // Transactional email through Resend's HTTP API (no SDK, Workers-friendly).
 // Without RESEND_API_KEY (local dev) the message is printed instead of sent.
@@ -12,7 +13,7 @@ export interface Mail {
 }
 
 export async function sendMail(env: AppEnv, mail: Mail): Promise<boolean> {
-  const from = env.MAIL_FROM ?? "Nautical Nomads <info@nauticalnomads.com>";
+  const from = env.MAIL_FROM ?? `Nautical Nomads <${COMPANY.email}>`;
   if (!env.RESEND_API_KEY) {
     console.log(`[email:dev] to=${String(mail.to)} subject=${mail.subject}\n${mail.text}`);
     return true;
@@ -21,7 +22,7 @@ export async function sendMail(env: AppEnv, mail: Mail): Promise<boolean> {
     const res = await fetch("https://api.resend.com/emails", {
       method: "POST",
       headers: { Authorization: `Bearer ${env.RESEND_API_KEY}`, "Content-Type": "application/json" },
-      body: JSON.stringify({ from, to: mail.to, subject: mail.subject, html: mail.html, text: mail.text, reply_to: mail.replyTo ?? "info@nauticalnomads.com" }),
+      body: JSON.stringify({ from, to: mail.to, subject: mail.subject, html: mail.html, text: mail.text, reply_to: mail.replyTo ?? COMPANY.email }),
       signal: AbortSignal.timeout(10_000),
     });
     if (!res.ok) console.error("resend failed", res.status, (await res.text()).slice(0, 300));

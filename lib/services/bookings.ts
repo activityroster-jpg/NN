@@ -1,5 +1,6 @@
 import { and, asc, eq } from "drizzle-orm";
 import { audit } from "@/lib/audit";
+import { COMPANY } from "@/lib/brand";
 import { randomId, safeEqual, sha256Hex } from "@/lib/crypto";
 import type { Db } from "@/lib/db";
 import { booking, payment, payout } from "@/lib/db/schema";
@@ -99,7 +100,7 @@ export async function confirmWithOperator(db: Db, env: AppEnv, bookingId: string
     console.error("operator confirm failed", b.ref, e);
     await audit(db, actor, "operator_confirm_failed", "booking", b.id, { error: String(e) });
     await sendMail(env, {
-      to: "info@nauticalnomads.com",
+      to: COMPANY.email,
       subject: `ACTION: confirm ${b.ref} with ${b.operatorName} manually`,
       ...layout("Operator confirmation failed", [`Booking ${b.ref} is paid but the booking manager refused the confirmation.`, String(e)], { label: "Open booking", href: `${siteUrl(env)}/admin/bookings/${b.id}` }),
     });
