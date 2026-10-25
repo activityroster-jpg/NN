@@ -25,7 +25,7 @@ function inside(p: LonLat, ring: LonLat[]): boolean {
 }
 
 /** Patterns that break sentence splitting or are read out literally by the voice. */
-const TEXT_RULES: [RegExp, string][] = [
+export const TEXT_RULES: [RegExp, string][] = [
   [/\b(e\.g|i\.e|etc|St|Mt|No|Nr|approx|vs|Dr|Mr|Mrs|Ms|Capt|Ft|ca)\./i, "abbreviation with a full stop (splits the sentence): write it out"],
   [/\d\s?(nm|NM|km|kn|kts|m)\b/, "unit abbreviation after a number: write 'miles', 'knots', 'metres'"],
   [/[°%&@#*_|<>{}[\]~^=+]/, "symbol the voice would read out: write it in words"],

@@ -74,3 +74,21 @@ export async function synthesizeIntro(env: AppEnv): Promise<ArrayBuffer> {
   if (!music.ok) throw new Error(`ElevenLabs music ${music.status}: ${(await music.text()).slice(0, 200)}`);
   return music.arrayBuffer(); // longer than the intro: the player fades it out
 }
+
+/** Version of the ambience under the shorts; bump to regenerate it. */
+export const BED_KEY = "narration/shorts/bed-v1.mp3";
+
+const BED_PROMPT = "Gentle, steady sea ambience in a quiet Mediterranean marina: soft water lapping against hulls, a light breeze, halyards tapping faintly, distant gulls. Calm, continuous, no music, no voices.";
+
+/** Quiet background for the shorts (the sound-effects API's longest clip; the renderer loops it). */
+export async function synthesizeBed(env: AppEnv): Promise<ArrayBuffer> {
+  const base = (env.ELEVENLABS_API_BASE ?? "https://api.elevenlabs.io").replace(/\/$/, "");
+  const res = await fetch(`${base}/v1/sound-generation?output_format=mp3_44100_128`, {
+    method: "POST",
+    headers: { "xi-api-key": env.ELEVENLABS_API_KEY ?? "", "Content-Type": "application/json", Accept: "audio/mpeg" },
+    body: JSON.stringify({ text: BED_PROMPT, duration_seconds: 22, prompt_influence: 0.3 }),
+    signal: AbortSignal.timeout(90_000),
+  });
+  if (!res.ok) throw new Error(`ElevenLabs ambience ${res.status}: ${(await res.text()).slice(0, 200)}`);
+  return res.arrayBuffer();
+}
