@@ -15,4 +15,6 @@ export const LESSON_CONTENT: Record<string, () => Promise<{ default: LessonConte
   "weather-for-a-charter-week": () => import("./weather-for-a-charter-week"),
   "plotter-apps-and-the-plan": () => import("./plotter-apps-and-the-plan"),
   "charter-navigation-quiz": () => import("./charter-navigation-quiz"),
+  "lights-at-night": () => import("./lights-at-night"),
+  "rules-of-the-road": () => import("./rules-of-the-road"),
 };

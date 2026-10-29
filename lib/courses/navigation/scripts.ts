@@ -11,6 +11,8 @@ import { anchoringAndMooring } from "@/components/courses/lessons/anchoring-and-
 import { weatherForACharterWeek } from "@/components/courses/lessons/weather-for-a-charter-week/script";
 import { plotterAppsAndThePlan } from "@/components/courses/lessons/plotter-apps-and-the-plan/script";
 import { charterNavigationQuiz } from "@/components/courses/lessons/charter-navigation-quiz/script";
+import { lightsAtNight } from "@/components/courses/lessons/lights-at-night/script";
+import { rulesOfTheRoad } from "@/components/courses/lessons/rules-of-the-road/script";
 import { publishedLessons } from "./outline";
 
 // The spoken script of every lesson video, as plain data (no React), so the
@@ -41,6 +43,8 @@ export const LESSON_SCRIPTS: Record<string, LessonScript> = {
   "weather-for-a-charter-week": weatherForACharterWeek,
   "plotter-apps-and-the-plan": plotterAppsAndThePlan,
   "charter-navigation-quiz": charterNavigationQuiz,
+  "lights-at-night": lightsAtNight,
+  "rules-of-the-road": rulesOfTheRoad,
 };
 
 export const lessonNarrationId = (slug: string) => `lesson-${slug}`;
