@@ -37,6 +37,8 @@ export default async function Home({ params }: { params: Promise<{ locale: strin
       <section className="relative isolate overflow-hidden text-white">
         <picture className="absolute inset-0 -z-10 block">
           {!settings.images.hero && <source media="(max-width: 640px)" srcSet="/photos/home-hero-sm.jpg" />}
+          {/* House photos ship with a phone-sized copy beside them (name-sm.jpg). */}
+          {settings.images.hero?.url.startsWith("/photos/house/") && <source media="(max-width: 640px)" srcSet={settings.images.hero.url.replace(/\.jpg$/, "-sm.jpg")} />}
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img src={settings.images.hero?.url ?? "/photos/home-hero.jpg"} alt="" className="h-full w-full object-cover object-[60%_center]" fetchPriority="high" />
         </picture>
