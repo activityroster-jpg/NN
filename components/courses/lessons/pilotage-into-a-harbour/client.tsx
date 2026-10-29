@@ -230,7 +230,7 @@ const SCENES: Scene[] = [
       <StageCard x={460} y={540} w={680} h={150} icon={Undo2} title={`Way out: ${formatBearing(ABORT_MAG, "M")}`} body="back down the line you came in on" accent={ART.port} opacity={on(n, 4)} />
     </Stage>
   )),
-  // Sentences: 0 call ahead, 1 what to say, 2 the marinero, 3 stern-to, 4 the Med mooring video.
+  // Sentences: 0 call ahead, 1 what to say, 2 the marinero, 3 stern-to, 4 take it slowly.
   scene(7, (t, n) => {
     const backing = n >= 3 ? phase(t, 0.6, 0.95) : 0;
     return (
@@ -253,7 +253,7 @@ const SCENES: Scene[] = [
             <text x={1260} y={760} fontSize={30} fill={ART.amber}>lazy line</text>
           </g>
         )}
-        {n >= 4 && <Tag x={250} y={830} text="Med mooring video" size={36} anchor="middle" />}
+        {n >= 4 && <Tag x={250} y={830} text="Ask the marinero, take it slowly" size={36} anchor="middle" />}
       </Stage>
     );
   }),

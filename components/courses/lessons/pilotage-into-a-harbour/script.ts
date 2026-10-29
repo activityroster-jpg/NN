@@ -87,7 +87,7 @@ export const pilotageIntoAHarbour: LessonScript = {
         "Give the boat's name, her length, and how many nights you want. " +
         "They will tell you where to go, and often a marinero comes out in a dinghy to guide you in. " +
         "In most Mediterranean marinas you then go in stern-to, using the lazy line they hand you. " +
-        "Stern-to mooring is a skill of its own, and our Med mooring video shows it step by step.",
+        "Stern-to mooring is a skill of its own, so ask the marinero for help and take it slowly.",
     },
     {
       title: "Arrive with daylight",

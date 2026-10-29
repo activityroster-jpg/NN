@@ -227,8 +227,8 @@ function Body() {
         <p>
           They will tell you where to go and which side to have the fenders. In many Mediterranean marinas a marinero comes out
           in a dinghy, leads you to the berth and hands you the lazy line: a line from a sunken mooring that you take forward to
-          the bow while you go in stern-to and the crew pass the stern lines ashore. Stern-to mooring is a skill of its own, and
-          our Med mooring video takes you through it step by step. In busy towns in July and August the quays fill by
+          the bow while you go in stern-to and the crew pass the stern lines ashore. Stern-to mooring is a skill of its own: take it
+          slowly, and let the marinero help. In busy towns in July and August the quays fill by
           mid-afternoon: another reason to arrive early.
         </p>
       </Section>

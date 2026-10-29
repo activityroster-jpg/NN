@@ -36,6 +36,9 @@ describe("narrated figures match the practice chart", () => {
   it("pilotage into a harbour", () => {
     expect([LEAD_BRG, toMagnetic(LEAD_BRG), SPIRE_CLEAR, SPIRE_CLEAR_MAG]).toEqual([0, 3, 27, 30]);
     expect([LEGS[0]!.distance.toFixed(1), LEGS[0]!.minutes, SPEED]).toEqual(["1.6", 19, 5]);
+  });
+});
+
 describe("final check", () => {
   it("every question belongs to exactly one topic, forty in all", async () => {
     const { TOPICS, QUESTION_COUNT } = await import("@/components/courses/lessons/charter-navigation-quiz/data");
