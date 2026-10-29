@@ -26,7 +26,7 @@ const MODULES: ModuleMeta[] = [
     title: "Module 2 — Finding your way",
     description: "Bearings, the two buoyage regions, and what the marks and lights mean.",
     lessons: [
-      lesson("bearings-and-the-compass", "Bearings and the compass", "True and magnetic, the hand-bearing compass, transits, and a quick fix when the plotter and your eyes disagree.", "Day Skipper", 18),
+      lesson("bearings-and-the-compass", "Bearings and the compass", "The 360 degree system, true and magnetic, the steering and hand-bearing compasses, two and three bearing fixes, transits, and a quick check when the plotter and your eyes disagree.", "Day Skipper", 20, true),
       lesson("lateral-marks-a-and-b", "Lateral marks: Region A and Region B", "Red to port in the Mediterranean, red to starboard in the Caribbean: the one rule that catches charter skippers out.", "Day Skipper", 15),
       lesson("cardinal-and-other-marks", "Cardinal, danger and safe-water marks", "Yellow and black marks that say which side the danger is, and the rest of the IALA family.", "Day Skipper", 15),
       lesson("lights-at-night", "Lights at night", "Light characteristics, what a harbour looks like after dark, and why charter companies say arrive by daylight.", "Day Skipper", 15),
@@ -37,7 +37,7 @@ const MODULES: ModuleMeta[] = [
     title: "Module 3 — Close to land",
     description: "Pilotage into harbours and bays, anchoring, and the rules of the road.",
     lessons: [
-      lesson("pilotage-into-a-harbour", "Pilotage into a harbour or bay", "Planning the approach, clearing bearings and leading lines, and the last mile into a marina stern-to.", "Day Skipper", 18),
+      lesson("pilotage-into-a-harbour", "Pilotage into a harbour or bay", "Reading the pilot book page, planning the approach, leading lines and clearing bearings, picking the gap, the last mile into a marina, and arriving with daylight.", "Day Skipper", 20, true),
       lesson("anchoring-and-mooring", "Anchoring and mooring buoys", "Choosing the spot, depth and scope, swinging room, seagrass, lazy lines and the anchor watch.", "Day Skipper", 18),
       lesson("rules-of-the-road", "Rules of the road for charter skippers", "Who gives way, ferries and fishing boats, narrow channels and the sound signals you will actually hear.", "Day Skipper", 18),
     ],
