@@ -451,9 +451,9 @@ export function WeekPlanner({ weeks }: { weeks: Week[] }) {
   return (
     <div className="space-y-3">
       <div className="flex flex-wrap items-end gap-3">
-        <label className="text-sm font-semibold text-text-primary">
+        <label className="min-w-0 max-w-full text-sm font-semibold text-text-primary">
           Cruising area
-          <select value={week.id} onChange={(e) => { setId(e.target.value); setStay(DAYS.map(() => false)); }} className="mt-1 block rounded-md border border-border bg-white px-2 py-2 text-sm text-text-primary focus:border-teal focus:ring-2 focus:ring-teal/30 focus:outline-none">
+          <select value={week.id} onChange={(e) => { setId(e.target.value); setStay(DAYS.map(() => false)); }} className="mt-1 block w-full max-w-full rounded-md border border-border bg-white px-2 py-2 text-sm text-text-primary focus:border-teal focus:ring-2 focus:ring-teal/30 focus:outline-none">
             {weeks.map((w) => <option key={w.id} value={w.id}>{w.name}, {w.country} (from {w.base})</option>)}
           </select>
         </label>
