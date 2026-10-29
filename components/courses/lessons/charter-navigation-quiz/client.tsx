@@ -37,7 +37,7 @@ const SHORT: Record<string, string> = {
 };
 const GREEN = "#1f9d55";
 
-const SCENES: Scene[] = [
+export const SCENES: Scene[] = [
   // Sentences: 0 intro, 1 forty questions, 2 not an exam, 3 what to read again, 4 half an hour.
   scene(0, (t, n) => (
     <Stage>

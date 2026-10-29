@@ -159,7 +159,7 @@ const OWN_LABEL = ["Sunset to sunrise", "Under sail: sidelights and sternlight",
 /* Scenes                                                              */
 /* ------------------------------------------------------------------ */
 
-const SCENES: Scene[] = [
+export const SCENES: Scene[] = [
   // Sentences: 0 lights take over, 1 characteristic, 2 three flashes, 3 Gull Point, 4 this lesson, 5 before dark.
   scene(0, (t, n, s) => {
     const lit = lightOn(GULL_LIGHT, s);

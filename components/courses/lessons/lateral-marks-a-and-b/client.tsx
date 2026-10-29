@@ -166,7 +166,7 @@ const KERRAN_LIGHTS = Object.fromEntries(KERRAN_IDS.map((id) => [id, parseLight(
 /* Scenes                                                              */
 /* ------------------------------------------------------------------ */
 
-const SCENES: Scene[] = [
+export const SCENES: Scene[] = [
   // Sentences: 0 road signs, 1 what they do, 2 one scheme, 3 two regions.
   scene(0, (t, n) => {
     const marks: MarkType[] = ["port", "starboard", "north", "safe-water", "special"];

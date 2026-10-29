@@ -53,7 +53,7 @@ function roseBearing(n: number, t: number): number {
   return 45;
 }
 
-const SCENES: Scene[] = [
+export const SCENES: Scene[] = [
   // Sentences: 0 what a bearing is, 1 check without a screen, 2 what the lesson covers, 3 the plotter check.
   scene(0, (t, n) => (
     <Stage>

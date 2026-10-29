@@ -78,6 +78,49 @@ function Card({ x, y, w, h, children, opacity = 1 }: { x: number; y: number; w: 
 }
 
 /** Every scene of a guide video, shared by the player and the MP4 renderer. */
+/** The 3.5-second wordmark opening shared by every narrated video (guides, lessons). */
+export function brandIntroScene(kicker: string, name: string, sub: string, sound?: string): Scene {
+  return {
+    title: "Nautical Nomads",
+    narration: "",
+    seconds: 3.5,
+    sound,
+    render: (t, _s, sec) => (
+      <Stage background="#13293b">
+        {/* Slow swell lines */}
+        {[0, 1, 2, 3].map((k) => (
+          <path
+            key={k}
+            d={`M -50 ${700 + k * 45} ${Array.from({ length: 18 }, (_, i) => `Q ${i * 100} ${700 + k * 45 + (i % 2 ? -14 : 14) * Math.sin(sec * 1.2 + k)} ${i * 100 + 50} ${700 + k * 45}`).join(" ")}`}
+            fill="none"
+            stroke="#f2b49c"
+            strokeWidth={2}
+            opacity={0.12 + k * 0.05}
+          />
+        ))}
+        <defs>
+          <clipPath id="nn-intro-reveal">
+            <rect x={800 - 520 * phase(t, 0.02, 0.3)} y={320} width={1040 * phase(t, 0.02, 0.3)} height={120} />
+          </clipPath>
+        </defs>
+        <text x={800} y={400} textAnchor="middle" fontSize={64} fontWeight={300} fill="#fff" letterSpacing={22} wordSpacing={40} clipPath="url(#nn-intro-reveal)">
+          NAUTICAL NOMADS
+        </text>
+        <line x1={800 - 420 * fade(t, 0.25, 0.45)} x2={800 + 420 * fade(t, 0.25, 0.45)} y1={450} y2={450} stroke="#f2b49c" strokeWidth={2} />
+        <text x={800} y={505} textAnchor="middle" fontSize={26} fill="#f2b49c" letterSpacing={8} opacity={fade(t, 0.3, 0.45)}>
+          {kicker}
+        </text>
+        <text x={800} y={600} textAnchor="middle" fontSize={name.length > 30 ? 56 : 70} fontWeight={800} fill="#fff" opacity={fade(t, 0.4, 0.58)}>
+          {name}
+        </text>
+        <text x={800} y={655} textAnchor="middle" fontSize={32} fill="#fff" opacity={fade(t, 0.5, 0.65) * 0.85}>
+          {sub}
+        </text>
+      </Stage>
+    ),
+  };
+}
+
 export function buildGuideScenes(g: CruisingGuide, recorded = false): Scene[] {
   const P = projector(g);
   const legs = g.legs.map((l) => ({ ...l, xy: l.route.map(P) }));
@@ -179,47 +222,7 @@ export function buildGuideScenes(g: CruisingGuide, recorded = false): Scene[] {
   );
 
   // 0. Brand intro: the wordmark over the intro music.
-  scenes.push({
-    title: "Nautical Nomads",
-    narration: "",
-    seconds: 3.5,
-    sound: recorded ? "/api/narration/intro" : undefined,
-    render: (t, _s, sec) => {
-      return (
-        <Stage background="#13293b">
-          {/* Slow swell lines */}
-          {[0, 1, 2, 3].map((k) => (
-            <path
-              key={k}
-              d={`M -50 ${700 + k * 45} ${Array.from({ length: 18 }, (_, i) => `Q ${i * 100} ${700 + k * 45 + (i % 2 ? -14 : 14) * Math.sin(sec * 1.2 + k)} ${i * 100 + 50} ${700 + k * 45}`).join(" ")}`}
-              fill="none"
-              stroke="#f2b49c"
-              strokeWidth={2}
-              opacity={0.12 + k * 0.05}
-            />
-          ))}
-          <defs>
-            <clipPath id="nn-intro-reveal">
-              <rect x={800 - 520 * phase(t, 0.02, 0.3)} y={320} width={1040 * phase(t, 0.02, 0.3)} height={120} />
-            </clipPath>
-          </defs>
-          <text x={800} y={400} textAnchor="middle" fontSize={64} fontWeight={300} fill="#fff" letterSpacing={22} wordSpacing={40} clipPath="url(#nn-intro-reveal)">
-            NAUTICAL NOMADS
-          </text>
-          <line x1={800 - 420 * fade(t, 0.25, 0.45)} x2={800 + 420 * fade(t, 0.25, 0.45)} y1={450} y2={450} stroke="#f2b49c" strokeWidth={2} />
-          <text x={800} y={505} textAnchor="middle" fontSize={26} fill="#f2b49c" letterSpacing={8} opacity={fade(t, 0.3, 0.45)}>
-            ESSENTIAL CRUISING GUIDES
-          </text>
-          <text x={800} y={600} textAnchor="middle" fontSize={70} fontWeight={800} fill="#fff" opacity={fade(t, 0.4, 0.58)}>
-            {g.name}
-          </text>
-          <text x={800} y={655} textAnchor="middle" fontSize={32} fill="#fff" opacity={fade(t, 0.5, 0.65) * 0.85}>
-            {g.country}
-          </text>
-        </Stage>
-      );
-    },
-  });
+  scenes.push(brandIntroScene("ESSENTIAL CRUISING GUIDES", g.name, g.country, recorded ? "/api/narration/intro" : undefined));
 
   // 1. Title
   scenes.push({

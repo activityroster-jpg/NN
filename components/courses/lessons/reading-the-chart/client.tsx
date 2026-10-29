@@ -286,7 +286,7 @@ const T7 = timing(7);
 const T8 = timing(8);
 const CONTOUR_WORDS = ["two", "five", "ten", "twenty"];
 
-const SCENES: Scene[] = [
+export const SCENES: Scene[] = [
   // Sentences: 0 intro, 1 depth, rocks and seabed, 2 rose and position, 3 reading a bay.
   scene(0, (t, n) => {
     const m = mapView(FULL_VIEW);
