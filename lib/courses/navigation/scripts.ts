@@ -1,6 +1,8 @@
 import { TEXT_RULES } from "@/lib/cruising/validate";
 import { splitSentences, spokenText } from "@/lib/cruising/narration";
 import { navigatingOnACharter } from "@/components/courses/lessons/navigating-on-a-charter/script";
+import { lightsAtNight } from "@/components/courses/lessons/lights-at-night/script";
+import { rulesOfTheRoad } from "@/components/courses/lessons/rules-of-the-road/script";
 import { publishedLessons } from "./outline";
 
 // The spoken script of every lesson video, as plain data (no React), so the
@@ -21,6 +23,8 @@ export interface LessonScript {
 
 export const LESSON_SCRIPTS: Record<string, LessonScript> = {
   "navigating-on-a-charter": navigatingOnACharter,
+  "lights-at-night": lightsAtNight,
+  "rules-of-the-road": rulesOfTheRoad,
 };
 
 export const lessonNarrationId = (slug: string) => `lesson-${slug}`;

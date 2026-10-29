@@ -29,7 +29,7 @@ const MODULES: ModuleMeta[] = [
       lesson("bearings-and-the-compass", "Bearings and the compass", "True and magnetic, the hand-bearing compass, transits, and a quick fix when the plotter and your eyes disagree.", "Day Skipper", 18),
       lesson("lateral-marks-a-and-b", "Lateral marks: Region A and Region B", "Red to port in the Mediterranean, red to starboard in the Caribbean: the one rule that catches charter skippers out.", "Day Skipper", 15),
       lesson("cardinal-and-other-marks", "Cardinal, danger and safe-water marks", "Yellow and black marks that say which side the danger is, and the rest of the IALA family.", "Day Skipper", 15),
-      lesson("lights-at-night", "Lights at night", "Light characteristics, what a harbour looks like after dark, and why charter companies say arrive by daylight.", "Day Skipper", 15),
+      lesson("lights-at-night", "Lights at night", "Light characteristics, what a harbour looks like after dark, why charter companies say arrive by daylight, and your own yacht's lights.", "Day Skipper", 18, true),
     ],
   },
   {
@@ -39,7 +39,7 @@ const MODULES: ModuleMeta[] = [
     lessons: [
       lesson("pilotage-into-a-harbour", "Pilotage into a harbour or bay", "Planning the approach, clearing bearings and leading lines, and the last mile into a marina stern-to.", "Day Skipper", 18),
       lesson("anchoring-and-mooring", "Anchoring and mooring buoys", "Choosing the spot, depth and scope, swinging room, seagrass, lazy lines and the anchor watch.", "Day Skipper", 18),
-      lesson("rules-of-the-road", "Rules of the road for charter skippers", "Who gives way, ferries and fishing boats, narrow channels and the sound signals you will actually hear.", "Day Skipper", 18),
+      lesson("rules-of-the-road", "Rules of the road for charter skippers", "Who gives way, ferries and fishing boats, narrow channels, and the sound signals and day shapes you will actually meet.", "Day Skipper", 20, true),
     ],
   },
   {
