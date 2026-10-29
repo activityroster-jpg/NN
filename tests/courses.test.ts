@@ -23,3 +23,18 @@ describe("navigation course", () => {
     });
   }
 });
+
+// The narration speaks figures from the practice chart; if the chart data
+// changes, these catch a video that would say the wrong bearing.
+import { WORKED } from "@/components/courses/lessons/bearings-and-the-compass/lines";
+import { LEAD_BRG, LEGS, SPIRE_CLEAR, SPIRE_CLEAR_MAG, SPEED, toMagnetic } from "@/components/courses/lessons/pilotage-into-a-harbour/data";
+
+describe("narrated figures match the practice chart", () => {
+  it("bearings and the compass", () => {
+    expect([WORKED.magnetic, WORKED.trueBrg]).toEqual([336, 333]);
+  });
+  it("pilotage into a harbour", () => {
+    expect([LEAD_BRG, toMagnetic(LEAD_BRG), SPIRE_CLEAR, SPIRE_CLEAR_MAG]).toEqual([0, 3, 27, 30]);
+    expect([LEGS[0]!.distance.toFixed(1), LEGS[0]!.minutes, SPEED]).toEqual(["1.6", 19, 5]);
+  });
+});

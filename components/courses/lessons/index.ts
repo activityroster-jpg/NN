@@ -7,4 +7,6 @@ export const LESSON_CONTENT: Record<string, () => Promise<{ default: LessonConte
   "navigating-on-a-charter": () => import("./navigating-on-a-charter"),
   "reading-the-chart": () => import("./reading-the-chart"),
   "distance-speed-and-time": () => import("./distance-speed-and-time"),
+  "bearings-and-the-compass": () => import("./bearings-and-the-compass"),
+  "pilotage-into-a-harbour": () => import("./pilotage-into-a-harbour"),
 };
