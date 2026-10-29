@@ -105,7 +105,7 @@ const DROP_AT: P = { x: 900, y: 360 };
 const DROP_SCALE = 1.5;
 const BOW = 60 * DROP_SCALE;
 
-const SCENES: Scene[] = [
+export const SCENES: Scene[] = [
   scene(0, (t) => (
     <Stage>
       <path d="M0 600 Q 400 570 800 600 T 1600 600 V900 H0 Z" fill="#123a5a" />

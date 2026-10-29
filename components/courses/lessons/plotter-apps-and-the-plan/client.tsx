@@ -81,7 +81,7 @@ const TRACK_VIEW = viewAround(km(3.9, 11.5), 5, 16 / 9);
 
 const DAY_LABELS = ["Sat", "Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
 
-const SCENES: Scene[] = [
+export const SCENES: Scene[] = [
   // Sentences: 0 intro, 1 plotter and apps, 2 AIS and radio, 3 the week.
   scene(0, (t, n) => (
     <Stage>

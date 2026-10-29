@@ -72,7 +72,7 @@ function StageCard({ x, y, w, h, title, body, opacity = 1, accent = ART.tealBrig
   return <Card x={x} y={y} w={w} h={h} title={title} body={body} opacity={opacity} accent={accent} icon={icon} titleSize={44} bodySize={32} />;
 }
 
-const SCENES: Scene[] = [
+export const SCENES: Scene[] = [
   // Sentences: 0 the last mile, 1 pilotage by eye, 2 no time for the chart, 3 think first, then look, compare, tick.
   scene(0, (t, n) => (
     <Stage>

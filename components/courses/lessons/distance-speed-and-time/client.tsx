@@ -168,7 +168,7 @@ const LEAVE_BY = Math.floor(LEAVE / 10) * 10; // 1020
 /* Scenes                                                              */
 /* ------------------------------------------------------------------ */
 
-const SCENES: Scene[] = [
+export const SCENES: Scene[] = [
   // Sentences: 0 the three questions, 1 dividers and one rule, 2 a day that works.
   scene(0, (t, n) => {
     const lp = n === 0 ? Math.min(1, t * 3) : 1;

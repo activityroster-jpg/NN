@@ -162,7 +162,7 @@ const SPECIAL_LIGHT = pattern("Fl Y 5s");
 /* Scenes                                                              */
 /* ------------------------------------------------------------------ */
 
-const SCENES: Scene[] = [
+export const SCENES: Scene[] = [
   // Sentences: 0 dangers in open water, 1 the compass, 2 the four lines, 3 four quadrants, 4 the mark and its named side.
   scene(0, (t, n) => {
     const cx = 800;

@@ -64,7 +64,7 @@ const Island = ({ x, y, rx, ry, rot = 0, label, size = 30 }: { x: number; y: num
   </g>
 );
 
-const SCENES: Scene[] = [
+export const SCENES: Scene[] = [
   scene(0, (t) => (
     <Stage background="#2b6c99">
       <circle cx={1350} cy={170} r={70} fill="#fbbf24" opacity={0.9} />

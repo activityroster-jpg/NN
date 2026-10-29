@@ -814,7 +814,7 @@ function sceneSounds(t: number, s: number, seconds: number) {
 
 const scene = (i: number, render: (t: number, s: number, seconds: number) => ReactNode): Scene => ({ ...SCRIPT.scenes[i]!, render })
 
-const SCENES: Scene[] = [
+export const SCENES: Scene[] = [
   scene(0, sceneRules),
   scene(1, sceneRisk),
   scene(2, sceneHeadOn),

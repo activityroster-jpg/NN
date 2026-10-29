@@ -16,7 +16,7 @@ const scene = (i: number, render: Scene["render"]): Scene => ({ ...SCRIPT.scenes
 
 const ISLAND_VIEW = viewAround(km(6.6, 11.5), 13, 16 / 9);
 
-const SCENES: Scene[] = [
+export const SCENES: Scene[] = [
   scene(0, (t) => (
     <Stage>
       <path d="M0 640 Q 400 600 800 640 T 1600 640 V900 H0 Z" fill="#123a5a" />
