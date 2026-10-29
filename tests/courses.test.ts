@@ -23,3 +23,15 @@ describe("navigation course", () => {
     });
   }
 });
+
+describe("final check", () => {
+  it("every question belongs to exactly one topic, forty in all", async () => {
+    const { TOPICS, QUESTION_COUNT } = await import("@/components/courses/lessons/charter-navigation-quiz/data");
+    const { QUESTION_IDS, QUESTIONS } = await import("@/components/courses/lessons/charter-navigation-quiz/client");
+    const topicIds = TOPICS.flatMap((t) => t.ids);
+    expect(new Set(topicIds).size).toBe(topicIds.length);
+    expect([...topicIds].sort()).toEqual([...QUESTION_IDS].sort());
+    expect(QUESTIONS.length).toBe(QUESTION_COUNT);
+    expect(QUESTION_COUNT).toBe(40);
+  });
+});

@@ -48,8 +48,8 @@ const MODULES: ModuleMeta[] = [
     description: "Weather windows, the plotter and apps, and planning seven days that work.",
     lessons: [
       lesson("weather-for-a-charter-week", "Weather for a charter week", "Reading a forecast, the local winds (meltemi, bora, mistral, trade winds), and knowing when to stay put.", "Coastal Skipper", 18),
-      lesson("plotter-apps-and-the-plan", "The plotter, the apps and the week's plan", "Chartplotters and phone apps, their limits, waypoints and tracks, VHF basics, and a passage plan for seven days.", "Coastal Skipper", 20),
-      lesson("charter-navigation-quiz", "Final check: the charter navigation quiz", "Forty questions across the course, marked instantly, to see whether you are ready for the briefing.", "Coastal Skipper", 30),
+      lesson("plotter-apps-and-the-plan", "The plotter, the apps and the week's plan", "Chart plotters and phone apps and their limits, waypoints, routes and tracks, AIS, VHF basics, and a plan for seven days that gets you back to base on Friday.", "Coastal Skipper", 25, true),
+      lesson("charter-navigation-quiz", "Final check: the charter navigation quiz", "Forty questions across the course, marked instantly, to see whether you are ready for the briefing.", "Coastal Skipper", 30, true),
     ],
   },
 ];
