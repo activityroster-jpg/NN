@@ -17,8 +17,8 @@ const MODULES: ModuleMeta[] = [
     description: "What a charter skipper actually navigates with, how to read the chart, and how long a day's sail really takes.",
     lessons: [
       lesson("navigating-on-a-charter", "Navigating on a charter: what the skipper does", "The plotter, the paper chart and the pilot book on a charter yacht, who does what on board, and the five-minute plan that keeps a day simple.", "Foundations", 12, true),
-      lesson("reading-the-chart", "Reading the chart", "Depths, contours, rocks and the compass rose; latitude and longitude; what the chart tells you about a bay before you arrive.", "Foundations", 18),
-      lesson("distance-speed-and-time", "Distance, speed and time", "Nautical miles and knots, the 60D = ST rule, and how to size a day so you arrive with the sun still up.", "Foundations", 15),
+      lesson("reading-the-chart", "Reading the chart", "Depths, contours, rocks and the compass rose; latitude and longitude; what the chart tells you about a bay before you arrive.", "Foundations", 20, true),
+      lesson("distance-speed-and-time", "Distance, speed and time", "Nautical miles and knots, the 60D = ST rule, and how to size a day so you arrive with the sun still up.", "Foundations", 18, true),
     ],
   },
   {
