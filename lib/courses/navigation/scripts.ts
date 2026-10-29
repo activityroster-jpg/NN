@@ -5,6 +5,8 @@ import { readingTheChart } from "@/components/courses/lessons/reading-the-chart/
 import { distanceSpeedAndTime } from "@/components/courses/lessons/distance-speed-and-time/script";
 import { bearingsAndTheCompass } from "@/components/courses/lessons/bearings-and-the-compass/script";
 import { pilotageIntoAHarbour } from "@/components/courses/lessons/pilotage-into-a-harbour/script";
+import { lateralMarksAAndB } from "@/components/courses/lessons/lateral-marks-a-and-b/script";
+import { cardinalAndOtherMarks } from "@/components/courses/lessons/cardinal-and-other-marks/script";
 import { publishedLessons } from "./outline";
 
 // The spoken script of every lesson video, as plain data (no React), so the
@@ -29,6 +31,8 @@ export const LESSON_SCRIPTS: Record<string, LessonScript> = {
   "distance-speed-and-time": distanceSpeedAndTime,
   "bearings-and-the-compass": bearingsAndTheCompass,
   "pilotage-into-a-harbour": pilotageIntoAHarbour,
+  "lateral-marks-a-and-b": lateralMarksAAndB,
+  "cardinal-and-other-marks": cardinalAndOtherMarks,
 };
 
 export const lessonNarrationId = (slug: string) => `lesson-${slug}`;
