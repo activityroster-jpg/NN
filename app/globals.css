@@ -50,6 +50,9 @@
   --color-warning: var(--warn);
   --color-warning-text: #7a5410;
   --color-warning-bg: #fbf3e2;
+  --color-error: var(--danger);
+  --color-error-text: #8f1f18;
+  --color-error-bg: #fbe9e7;
   --radius-card: 14px;
   --radius-control: 8px;
 }

@@ -1,6 +1,16 @@
 import { TEXT_RULES } from "@/lib/cruising/validate";
 import { splitSentences, spokenText } from "@/lib/cruising/narration";
 import { navigatingOnACharter } from "@/components/courses/lessons/navigating-on-a-charter/script";
+import { readingTheChart } from "@/components/courses/lessons/reading-the-chart/script";
+import { distanceSpeedAndTime } from "@/components/courses/lessons/distance-speed-and-time/script";
+import { bearingsAndTheCompass } from "@/components/courses/lessons/bearings-and-the-compass/script";
+import { pilotageIntoAHarbour } from "@/components/courses/lessons/pilotage-into-a-harbour/script";
+import { lateralMarksAAndB } from "@/components/courses/lessons/lateral-marks-a-and-b/script";
+import { cardinalAndOtherMarks } from "@/components/courses/lessons/cardinal-and-other-marks/script";
+import { anchoringAndMooring } from "@/components/courses/lessons/anchoring-and-mooring/script";
+import { weatherForACharterWeek } from "@/components/courses/lessons/weather-for-a-charter-week/script";
+import { plotterAppsAndThePlan } from "@/components/courses/lessons/plotter-apps-and-the-plan/script";
+import { charterNavigationQuiz } from "@/components/courses/lessons/charter-navigation-quiz/script";
 import { publishedLessons } from "./outline";
 
 // The spoken script of every lesson video, as plain data (no React), so the
@@ -21,6 +31,16 @@ export interface LessonScript {
 
 export const LESSON_SCRIPTS: Record<string, LessonScript> = {
   "navigating-on-a-charter": navigatingOnACharter,
+  "reading-the-chart": readingTheChart,
+  "distance-speed-and-time": distanceSpeedAndTime,
+  "bearings-and-the-compass": bearingsAndTheCompass,
+  "pilotage-into-a-harbour": pilotageIntoAHarbour,
+  "lateral-marks-a-and-b": lateralMarksAAndB,
+  "cardinal-and-other-marks": cardinalAndOtherMarks,
+  "anchoring-and-mooring": anchoringAndMooring,
+  "weather-for-a-charter-week": weatherForACharterWeek,
+  "plotter-apps-and-the-plan": plotterAppsAndThePlan,
+  "charter-navigation-quiz": charterNavigationQuiz,
 };
 
 export const lessonNarrationId = (slug: string) => `lesson-${slug}`;

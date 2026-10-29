@@ -23,3 +23,30 @@ describe("navigation course", () => {
     });
   }
 });
+
+// The narration speaks figures from the practice chart; if the chart data
+// changes, these catch a video that would say the wrong bearing.
+import { WORKED } from "@/components/courses/lessons/bearings-and-the-compass/lines";
+import { LEAD_BRG, LEGS, SPIRE_CLEAR, SPIRE_CLEAR_MAG, SPEED, toMagnetic } from "@/components/courses/lessons/pilotage-into-a-harbour/data";
+
+describe("narrated figures match the practice chart", () => {
+  it("bearings and the compass", () => {
+    expect([WORKED.magnetic, WORKED.trueBrg]).toEqual([336, 333]);
+  });
+  it("pilotage into a harbour", () => {
+    expect([LEAD_BRG, toMagnetic(LEAD_BRG), SPIRE_CLEAR, SPIRE_CLEAR_MAG]).toEqual([0, 3, 27, 30]);
+    expect([LEGS[0]!.distance.toFixed(1), LEGS[0]!.minutes, SPEED]).toEqual(["1.6", 19, 5]);
+  });
+});
+
+describe("final check", () => {
+  it("every question belongs to exactly one topic, forty in all", async () => {
+    const { TOPICS, QUESTION_COUNT } = await import("@/components/courses/lessons/charter-navigation-quiz/data");
+    const { QUESTION_IDS, QUESTIONS } = await import("@/components/courses/lessons/charter-navigation-quiz/client");
+    const topicIds = TOPICS.flatMap((t) => t.ids);
+    expect(new Set(topicIds).size).toBe(topicIds.length);
+    expect([...topicIds].sort()).toEqual([...QUESTION_IDS].sort());
+    expect(QUESTIONS.length).toBe(QUESTION_COUNT);
+    expect(QUESTION_COUNT).toBe(40);
+  });
+});
