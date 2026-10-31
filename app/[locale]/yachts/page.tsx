@@ -10,7 +10,7 @@ import { abs, breadcrumbLd, pageMeta } from "@/lib/seo";
 import { displayCurrency, requireLocale, todayIso } from "@/lib/request";
 import { getRates } from "@/lib/fx";
 import { money } from "@/lib/i18n/format";
-import { ESTIMATE_NOTE, estimateIn, estimateRanges } from "@/lib/pricing";
+import { ESTIMATE_NOTE, estimateIn, estimateRanges, productOf } from "@/lib/pricing";
 import { destinationViews } from "@/lib/services/destination-settings";
 
 export async function generateMetadata({ params }: { params: Promise<{ locale: string }> }): Promise<Metadata> {
@@ -35,7 +35,7 @@ function Card({ m, cover, from }: { m: ModelSpecs; cover?: string; from: string 
         <p className="mt-1 text-sm text-ink/75">
           {[ft ? `${ft} ft` : null, m.cabins.length ? `${options(m.cabins)} cabins` : null, m.berthsMax ? `up to ${m.berthsMax} guests` : null].filter(Boolean).join(" · ")}
         </p>
-        {from && <p className="mt-2 text-sm"><span className="text-muted">Estimated from</span> <span className="font-semibold">{from}</span> <span className="text-muted">/ week</span></p>}
+        {from && <p className="mt-2 text-sm"><span className="text-muted">Estimated from</span> <span className="font-semibold">{from}</span> <span className="text-muted">/ week{productOf(m.id) === "crewed" ? ", with crew" : ""}</span></p>}
         <span className="mt-3 inline-flex items-center gap-1 text-sm font-semibold text-brand">See the {m.name} <IconArrowRight className="h-4 w-4" /></span>
       </div>
     </Link>

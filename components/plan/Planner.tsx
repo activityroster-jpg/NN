@@ -56,6 +56,7 @@ export interface PlannerText {
   estimate: string;
   estimateNote: string;
   details: string;
+  withCrew: string;
   back: string;
   next: string;
 }
@@ -71,6 +72,8 @@ export interface PlannerModel {
   cabins: string;
   berthsMax: number | null;
   cover: string | null;
+  /** Crewed charter: the estimate includes the crew, APA on top. */
+  crewed: boolean;
 }
 
 const MAX_MODELS = 3;
@@ -418,7 +421,12 @@ export function Planner({
                       {[m.feet ? `${m.feet} ft` : null, m.cabins, m.berthsMax ? text.sleeps.replace("{n}", String(m.berthsMax)) : null].filter(Boolean).join(" · ")}
                       {small && <span className="text-warn"> · {text.tooSmall.replace("{n}", String(people))}</span>}
                     </span>
-                    {estimateFor(m.id) && <span className="mt-1 block text-sm font-semibold">{estimateFor(m.id)}</span>}
+                    {estimateFor(m.id) && (
+                      <span className="mt-1 block text-sm font-semibold">
+                        {estimateFor(m.id)}
+                        {m.crewed && <span className="font-normal text-ink/70"> · {text.withCrew}</span>}
+                      </span>
+                    )}
                   </span>
                   <span className="flex shrink-0 flex-col items-end justify-between gap-2">
                     {on ? <IconCheck className="h-5 w-5 text-brand" /> : <span className="h-5 w-5" aria-hidden="true" />}

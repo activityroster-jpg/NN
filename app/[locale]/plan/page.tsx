@@ -4,6 +4,7 @@ import { Planner, type PlannerModel } from "@/components/plan/Planner";
 import { getDb } from "@/lib/db";
 import { FLEET_CLASSES, feet, modelById } from "@/lib/fleet";
 import { modelCovers } from "@/lib/photos/slots";
+import { productOf } from "@/lib/pricing";
 import { destinationViews } from "@/lib/services/destination-settings";
 import { isIsoDate } from "@/lib/domain/dates";
 import { getDictionary, type Dictionary } from "@/lib/i18n";
@@ -34,7 +35,7 @@ export default async function PlanPage({ params, searchParams }: { params: Promi
   const models: PlannerModel[] = FLEET_CLASSES.flatMap((c) => [...c.models, ...c.alternatives])
     .map(modelById)
     .filter((m) => !!m)
-    .map((m) => ({ id: m!.id, name: m!.name, builder: m!.builder, kind: m!.kind, feet: feet(m!.lengthOverallM), cabins: m!.cabins.length ? `${Math.min(...m!.cabins)}${m!.cabins.length > 1 ? `–${Math.max(...m!.cabins)}` : ""} ${t.plan.cabinsWord}` : "", berthsMax: m!.berthsMax, cover: covers[m!.id] ?? null }));
+    .map((m) => ({ id: m!.id, name: m!.name, builder: m!.builder, kind: m!.kind, feet: feet(m!.lengthOverallM), cabins: m!.cabins.length ? `${Math.min(...m!.cabins)}${m!.cabins.length > 1 ? `–${Math.max(...m!.cabins)}` : ""} ${t.plan.cabinsWord}` : "", berthsMax: m!.berthsMax, cover: covers[m!.id] ?? null, crewed: productOf(m!.id) === "crewed" }));
   return (
     <div className="container-page py-10 sm:py-14">
       <Planner

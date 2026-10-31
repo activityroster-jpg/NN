@@ -5,7 +5,7 @@ import { getDb } from "@/lib/db";
 import { yachtWeekPrice } from "@/lib/db/schema";
 import { DESTINATIONS } from "@/lib/domain/destinations";
 import { FLEET_CLASSES, modelById } from "@/lib/fleet";
-import { destName, getYachtPricing, MARKET, PRICED_SEASONS, seasonPrice } from "@/lib/pricing";
+import { defaultRange, destName, getYachtPricing, MARKET } from "@/lib/pricing";
 import { todayIso } from "@/lib/request";
 import { and, eq, gte } from "drizzle-orm";
 
@@ -29,7 +29,7 @@ export default async function YachtPrices({ searchParams }: { searchParams: Prom
     <div className="space-y-6">
       <PageTitle
         title="Yacht prices"
-        sub="Weekly estimates shown on the website (boat only, per week, in euros). Every week starts at the market price plus your markup; set any week's own price on the yacht's page."
+        sub="Weekly estimates shown on the website (per week, in euros; boat only unless marked crewed). Every week starts at the market price for that destination and week plus your markup; set any week&apos;s own price on the yacht&apos;s page."
       />
       {sp.saved && <p className="rounded-lg bg-ok/10 p-3 text-sm text-ok">Saved.</p>}
       {sp.error && <p className="rounded-lg bg-danger/10 p-3 text-sm text-danger">That value was out of range. Nothing was saved.</p>}
@@ -42,7 +42,7 @@ export default async function YachtPrices({ searchParams }: { searchParams: Prom
           </label>
           <button className="btn-primary px-5 py-2 text-sm">Save markup</button>
           <p className="basis-full text-xs text-muted">
-            Applies to every week that has no price of its own. Market prices researched {MARKET.researchedAt}; weeks you price yourself are never changed by the markup.
+            Applies to every week that has no price of its own; weeks you price yourself are never changed by it. Market prices are operators&apos; published 2027 lists (researched {MARKET.researchedAt}), which already include VAT and the agency&apos;s 15–20% commission: 0% shows the same list price as every other agency, before early-booking discounts of 10–20%.
           </p>
         </form>
       </Card>
@@ -52,21 +52,26 @@ export default async function YachtPrices({ searchParams }: { searchParams: Prom
             <Link key={d.id} href={`/admin/yacht-prices?d=${d.id}`} className={`chip ${d.id === dest.id ? "chip-on" : ""}`}>{destName(d.id)}</Link>
           ))}
         </div>
-        <Table head={["Yacht", "Low season", "Shoulder", "Peak", "Own prices", ""]}>
+        <Table head={["Yacht", "Cheapest week", "Peak week", "Own prices", ""]}>
           {ids.map((id) => {
             const model = modelById(id);
             if (!model) return null;
             const n = count.get(id) ?? 0;
+            const mk = MARKET.models[id];
+            const range = defaultRange(MARKET, { id, kind: model.kind }, dest.id, markupPct);
             return (
               <tr key={id}>
                 <td>
                   <span className="font-medium">{model.name}</span>
-                  <span className="block text-xs text-muted">{model.kind === "catamaran" ? "Catamaran" : "Monohull"}{MARKET.models[id]?.estimated ? " · market price estimated" : ""}</span>
+                  <span className="block text-xs text-muted">
+                    {model.kind === "catamaran" ? "Catamaran" : "Monohull"}
+                    {mk?.product === "crewed" ? " · crewed, APA extra" : mk?.product === "skippered" ? " · skippered" : ""}
+                    {mk?.successor ? ` · priced as the ${mk.successor}` : ""}
+                    {mk?.confidence === "Guessing" ? " · thin data, check" : ""}
+                  </span>
                 </td>
-                {PRICED_SEASONS.map((s) => {
-                  const p = seasonPrice(MARKET, { id, kind: model.kind }, dest.id, s, markupPct);
-                  return <td key={s} className="tabular-nums">{p == null ? "–" : m(p, "EUR")}</td>;
-                })}
+                <td className="tabular-nums">{range ? m(range.low, "EUR") : "–"}</td>
+                <td className="tabular-nums">{range ? m(range.peak, "EUR") : "–"}</td>
                 <td>{n ? `${n} week${n === 1 ? "" : "s"}` : <span className="text-muted">none</span>}</td>
                 <td><Link href={`/admin/yacht-prices/${id}?d=${dest.id}`} className="text-sm font-medium text-brand underline">Set weekly prices</Link></td>
               </tr>
