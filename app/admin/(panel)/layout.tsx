@@ -12,6 +12,7 @@ const NAV = [
   ["/admin/enquiries", "Enquiries"],
   ["/admin/payouts", "Payouts"],
   ["/admin/operators", "Operators"],
+  ["/admin/yacht-prices", "Yacht prices"],
   ["/admin/pricing", "Pricing"],
   ["/admin/crew", "Crew pool"],
   ["/admin/destinations", "Destinations"],

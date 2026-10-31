@@ -317,3 +317,19 @@ export const socialPost = sqliteTable(
   },
   (t) => [index("social_post_due_idx").on(t.status, t.scheduledAt)],
 );
+
+// Weekly price overrides per yacht model and destination, set in Admin → Yacht prices.
+// The final price shown as an estimate (EUR, boat only, per week). A week without a
+// row falls back to the market default plus the markup (lib/pricing).
+export const yachtWeekPrice = sqliteTable(
+  "yacht_week_price",
+  {
+    modelId: text("model_id").notNull(),
+    destinationId: text("destination_id").notNull(),
+    /** Saturday the charter week starts, ISO date. */
+    weekStart: text("week_start").notNull(),
+    priceEur: integer("price_eur").notNull(),
+    updatedAt: text("updated_at").notNull().default(now),
+  },
+  (t) => [uniqueIndex("yacht_week_price_pk").on(t.modelId, t.destinationId, t.weekStart), index("yacht_week_price_dest_week_idx").on(t.destinationId, t.weekStart)],
+);

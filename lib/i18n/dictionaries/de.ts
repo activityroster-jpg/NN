@@ -223,6 +223,13 @@ const de: Dictionary = {
     tooSmall: "zu klein für {n}",
     requestQuote: "Angebot anfordern",
     cabinsWord: "Kabinen",
+    estimate: "ca. {price} / Woche",
+    estimateNote: "Geschätzte Preise, nur das Boot, pro Woche. Skipper, Extras, Kaution und lokale Abgaben sind nicht enthalten; Ihr Angebot bestätigt den Preis.",
+    details: "Details",
+    pricesTitle: "Geschätzte Yachtpreise",
+    catsFrom: "Katamarane ab {price} pro Woche",
+    monosFrom: "Segelyachten ab {price} pro Woche",
+    seeYachts: "Die Yachten und ihre Preise",
   },
   results: {
     title: "Yachten – {destination}",
@@ -370,6 +377,9 @@ const de: Dictionary = {
   enquiry: {
     title: "Erzählen Sie uns von Ihrer Reise",
     yachtsChosen: "Ihre Wunschyachten (oder gleichwertige, falls vergeben)",
+    estimateTitle: "Geschätzter Preis für Ihre Woche",
+    estimatePerWeek: "{price} pro Woche, nur das Boot",
+    estimateNote: "Geschätzter Preis für Ihre Woche, nur das Boot. Skipper, Extras, Kaution und lokale Abgaben sind nicht enthalten; Ihr Angebot bestätigt den Preis.",
     sub: "Wir antworten innerhalb eines Werktags mit passenden Yachten, echten Preisen und ehrlicher Beratung.",
     destination: "Reiseziel",
     anyDestination: "Noch offen",

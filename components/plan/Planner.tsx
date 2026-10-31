@@ -1,7 +1,7 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { IconArrowLeft, IconArrowRight, IconCheck, IconChef, IconHelm, IconUsers } from "@/components/Icons";
 
 export interface PlannerDestination {
@@ -12,6 +12,8 @@ export interface PlannerDestination {
   seasonMonths: number[];
   peakMonths: number[];
   gradient: string;
+  /** Hero photo (Admin → Photos); the gradient shows until there is one. */
+  image: string | null;
 }
 
 export interface PlannerText {
@@ -51,6 +53,9 @@ export interface PlannerText {
   sleeps: string;
   tooSmall: string;
   requestQuote: string;
+  estimate: string;
+  estimateNote: string;
+  details: string;
   back: string;
   next: string;
 }
@@ -98,6 +103,29 @@ export function Planner({
   const [skipper, setSkipper] = useState<Skipper>("unsure");
   const [chef, setChef] = useState(false);
   const [kind, setKind] = useState<"" | "monohull" | "catamaran">("");
+  // Weekly estimates for the chosen destination and week (yacht step).
+  const [est, setEst] = useState<{ key: string; currency: string; prices: Record<string, number | null> } | undefined>();
+  const estKey = dest && week ? `${dest.id}|${week}` : "";
+  useEffect(() => {
+    if (step !== 3 || !estKey || est?.key === estKey) return;
+    const [d, w] = estKey.split("|") as [string, string];
+    let live = true;
+    fetch(`/api/estimates?d=${encodeURIComponent(d)}&w=${encodeURIComponent(w)}`)
+      .then((r) => (r.ok ? (r.json() as Promise<{ currency: string; prices: Record<string, number | null> }>) : null))
+      .then((j) => {
+        if (live && j) setEst({ key: estKey, currency: j.currency, prices: j.prices });
+      })
+      .catch(() => {});
+    return () => {
+      live = false;
+    };
+  }, [step, estKey, est?.key]);
+  const estimateFor = (id: string) => {
+    const p = est?.key === estKey ? est.prices[id] : null;
+    if (p == null || !est) return null;
+    const price = new Intl.NumberFormat(intlLocale, { style: "currency", currency: est.currency, maximumFractionDigits: 0 }).format(p);
+    return text.estimate.replace("{price}", price);
+  };
 
   // The next 15 months from this month.
   const months = useMemo(() => {
@@ -195,7 +223,7 @@ export function Planner({
                   setStep(1);
                 }}
                 className={`group relative flex h-40 flex-col justify-end overflow-hidden rounded-2xl p-5 text-left text-white ring-offset-2 transition hover:shadow-lg ${dest?.id === d.id ? "ring-2 ring-brand" : ""}`}
-                style={{ background: d.gradient }}
+                style={d.image ? { backgroundImage: `linear-gradient(rgba(0,0,0,.05),rgba(0,0,0,.55)), url(${d.image})`, backgroundSize: "cover", backgroundPosition: "center" } : { background: d.gradient }}
               >
                 <span className="text-xs font-semibold tracking-wider uppercase opacity-85">{d.region}</span>
                 <span className="h-display text-3xl leading-tight">{d.name}</span>
@@ -390,12 +418,19 @@ export function Planner({
                       {[m.feet ? `${m.feet} ft` : null, m.cabins, m.berthsMax ? text.sleeps.replace("{n}", String(m.berthsMax)) : null].filter(Boolean).join(" · ")}
                       {small && <span className="text-warn"> · {text.tooSmall.replace("{n}", String(people))}</span>}
                     </span>
+                    {estimateFor(m.id) && <span className="mt-1 block text-sm font-semibold">{estimateFor(m.id)}</span>}
                   </span>
-                  {on && <IconCheck className="h-5 w-5 shrink-0 text-brand" />}
+                  <span className="flex shrink-0 flex-col items-end justify-between gap-2">
+                    {on ? <IconCheck className="h-5 w-5 text-brand" /> : <span className="h-5 w-5" aria-hidden="true" />}
+                    <a href={`/${locale}/yachts/${m.id}`} target="_blank" rel="noopener" className="text-sm font-semibold text-brand underline-offset-2 hover:underline" onClick={(e) => e.stopPropagation()}>
+                      {text.details} ↗
+                    </a>
+                  </span>
                 </label>
               );
             })}
           </div>
+          {est?.key === estKey && <p className="mt-4 text-xs text-muted">{text.estimateNote}</p>}
           <div className="mt-10 flex flex-wrap items-center justify-between gap-3">
             <button type="button" className="btn-ghost" onClick={() => setStep(2)}>
               <IconArrowLeft className="h-4 w-4" /> {text.back}

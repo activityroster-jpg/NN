@@ -223,6 +223,13 @@ const fr: Dictionary = {
     tooSmall: "trop petit pour {n}",
     requestQuote: "Demander un devis",
     cabinsWord: "cabines",
+    estimate: "env. {price} / semaine",
+    estimateNote: "Prix estimés, bateau seul, à la semaine. Skipper, options, caution et taxes locales non compris ; votre devis confirme le prix.",
+    details: "Détails",
+    pricesTitle: "Prix estimés des bateaux",
+    catsFrom: "Catamarans à partir de {price} la semaine",
+    monosFrom: "Voiliers à partir de {price} la semaine",
+    seeYachts: "Voir les bateaux et leurs prix",
   },
   results: {
     title: "Bateaux : {destination}",
@@ -370,6 +377,9 @@ const fr: Dictionary = {
   enquiry: {
     title: "Parlez-nous de votre voyage",
     yachtsChosen: "Bateaux choisis (ou équivalents s'ils sont pris)",
+    estimateTitle: "Prix estimé pour votre semaine",
+    estimatePerWeek: "{price} la semaine, bateau seul",
+    estimateNote: "Prix estimé pour votre semaine, bateau seul. Skipper, options, caution et taxes locales non compris ; votre devis confirme le prix.",
     sub: "Nous vous répondons sous un jour ouvré avec des bateaux adaptés, de vrais prix et des conseils honnêtes.",
     destination: "Destination",
     anyDestination: "Pas encore décidé",

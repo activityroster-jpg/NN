@@ -224,6 +224,13 @@ const en = {
     tooSmall: "too small for {n}",
     requestQuote: "Request a quote",
     cabinsWord: "cabins",
+    estimate: "about {price} / week",
+    estimateNote: "Estimated prices, boat only, per week. Skipper, extras, deposit and local taxes are not included; your quote confirms the price.",
+    details: "Details",
+    pricesTitle: "Estimated yacht prices",
+    catsFrom: "Catamarans from {price} a week",
+    monosFrom: "Sailing yachts from {price} a week",
+    seeYachts: "See the yachts and their prices",
   },
   results: {
     title: "Yachts in {destination}",
@@ -371,6 +378,9 @@ const en = {
   enquiry: {
     title: "Tell us about your trip",
     yachtsChosen: "Yachts you chose (or equals if they're taken)",
+    estimateTitle: "Estimated price for your week",
+    estimatePerWeek: "{price} a week, boat only",
+    estimateNote: "Estimated price for your week, boat only. Skipper, extras, deposit and local taxes are not included; your quote confirms the price.",
     sub: "We'll reply within one working day with yachts that fit, real prices and honest advice.",
     destination: "Destination",
     anyDestination: "Not sure yet",

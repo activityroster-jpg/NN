@@ -2,7 +2,11 @@ import Link from "next/link";
 import { IconAnchor, IconArrowRight, IconCalendar, IconChat, IconCheck, IconClock, IconHelm, IconShield } from "@/components/Icons";
 import { getDictionary } from "@/lib/i18n";
 import type { Dictionary } from "@/lib/i18n";
-import { requireLocale } from "@/lib/request";
+import { displayCurrency, requireLocale, todayIso } from "@/lib/request";
+import { MODELS } from "@/lib/fleet";
+import { getRates } from "@/lib/fx";
+import { fmt, money } from "@/lib/i18n/format";
+import { estimateIn, estimateRanges } from "@/lib/pricing";
 import { getDb } from "@/lib/db";
 import { getEnvAsync } from "@/lib/env";
 import { autofillInBackground } from "@/lib/photos/autofill";
@@ -26,6 +30,11 @@ export default async function Home({ params }: { params: Promise<{ locale: strin
   const [settings, views] = await Promise.all([getSettings(db), destinationViews(db)]);
   autofillInBackground(await getEnvAsync(), db);
   const active = views.filter((d) => d.active);
+  const [ranges, currency, rates] = await Promise.all([estimateRanges(db, todayIso(), active.map((d) => d.id)), displayCurrency(), getRates(db)]);
+  const fromFor = (kind: "catamaran" | "monohull") => {
+    const mins = MODELS.filter((m) => m.kind === kind).flatMap((m) => (ranges[m.id] ? [ranges[m.id]!.min] : []));
+    return mins.length ? fmt(kind === "catamaran" ? t.plan.catsFrom : t.plan.monosFrom, { price: money(estimateIn(Math.min(...mins), currency, rates), currency, locale) }) : null;
+  };
   const featured = active.filter((d) => d.featured);
   const others = active.filter((d) => !d.featured);
   const bg = (d: (typeof views)[number]) =>
@@ -183,6 +192,11 @@ export default async function Home({ params }: { params: Promise<{ locale: strin
               <div className="p-6">
                 <h3 className="text-xl font-semibold">{title}</h3>
                 <p className="mt-2 text-ink/75">{text}</p>
+                {fromFor(kind) && (
+                  <Link href={`/${locale}/yachts`} className="mt-3 inline-flex items-center gap-1 text-sm font-semibold text-brand hover:underline">
+                    {fromFor(kind)} <IconArrowRight className="h-4 w-4" />
+                  </Link>
+                )}
               </div>
             </div>
           ))}

@@ -4,7 +4,7 @@ import { Planner, type PlannerModel } from "@/components/plan/Planner";
 import { getDb } from "@/lib/db";
 import { FLEET_CLASSES, feet, modelById } from "@/lib/fleet";
 import { modelCovers } from "@/lib/photos/slots";
-import { DESTINATIONS } from "@/lib/domain/destinations";
+import { destinationViews } from "@/lib/services/destination-settings";
 import { isIsoDate } from "@/lib/domain/dates";
 import { getDictionary, type Dictionary } from "@/lib/i18n";
 import { INTL_LOCALE } from "@/lib/i18n/config";
@@ -20,12 +20,16 @@ export default async function PlanPage({ params, searchParams }: { params: Promi
   const locale = await requireLocale(params);
   const sp = await searchParams;
   const t = getDictionary(locale);
-  const destinations = DESTINATIONS.map((d) => {
-    const c = t.destinations[d.id as keyof Dictionary["destinations"]];
-    return { id: d.id, name: c.name, region: c.region, featured: d.featured, seasonMonths: d.seasonMonths, peakMonths: d.peakMonths, gradient: d.heroGradient };
-  });
+  const db = await getDb();
+  // Same source as the home page: Admin's active/featured choices and hero photos.
+  const [views, covers] = await Promise.all([destinationViews(db), modelCovers(db)]);
+  const destinations = views
+    .filter((d) => d.active)
+    .map((d) => {
+      const c = t.destinations[d.id as keyof Dictionary["destinations"]];
+      return { id: d.id, name: c.name, region: c.region, featured: d.featured, seasonMonths: d.seasonMonths, peakMonths: d.peakMonths, gradient: d.heroGradient, image: d.heroImageUrl };
+    });
   const g = Number(sp.g);
-  const covers = await modelCovers(await getDb());
   // Every model we offer, smallest first within catamarans, then monohulls.
   const models: PlannerModel[] = FLEET_CLASSES.flatMap((c) => [...c.models, ...c.alternatives])
     .map(modelById)
