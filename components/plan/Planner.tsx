@@ -382,7 +382,7 @@ export function Planner({
                 <label key={m.id} className={`flex cursor-pointer gap-3 rounded-xl border p-3 transition ${on ? "border-brand bg-brand-soft" : "border-line bg-card hover:border-ink/30"} ${full ? "opacity-60" : ""}`}>
                   <input type="checkbox" className="sr-only" checked={on} disabled={full} onChange={() => toggle(m.id)} />
                   {/* eslint-disable-next-line @next/next/no-img-element */}
-                  <img src={m.cover ?? `/demo/${m.kind}-1.svg`} alt="" loading="lazy" className="h-16 w-24 shrink-0 rounded-lg object-cover" />
+                  <img src={m.cover ?? `/art/yacht/${m.id}-profile.svg`} alt="" loading="lazy" className="h-16 w-24 shrink-0 rounded-lg object-cover" />
                   <span className="min-w-0 flex-1">
                     <span className="block text-xs font-semibold tracking-wider text-muted uppercase">{m.builder}</span>
                     <span className="block font-semibold">{m.name}</span>
