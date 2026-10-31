@@ -22,6 +22,12 @@ export interface SlotValue {
   credit: string | null;
 }
 
+// Stock searches for the yacht model slots, by hull type, one per gallery position.
+const MODEL_QUERIES: Record<"catamaran" | "monohull", string[]> = {
+  catamaran: ["catamaran sailing", "catamaran bay", "catamaran aerial", "catamaran yacht", "catamaran sunset"],
+  monohull: ["sailing yacht", "sailboat bay", "sailboat aerial", "yacht deck sailing", "sailboat sunset"],
+};
+
 export const SLOTS: readonly Slot[] = [
   { key: "home:hero", label: "Home page hero", query: "sailing yacht deck mediterranean", group: "home" },
   { key: "home:monohull", label: "Home: sailing yacht card", query: SUGGESTED_QUERIES.monohull!, group: "home" },
@@ -31,13 +37,17 @@ export const SLOTS: readonly Slot[] = [
   ...DESTINATIONS.flatMap((d) =>
     [1, 2, 3].map((n) => ({ key: `destination:${d.id}:g${n}`, label: `${d.id} · gallery ${n}`, query: GALLERY_QUERIES[d.id]?.[n - 1] ?? `${d.id} coast`, group: "gallery" as const })),
   ),
-  // Yacht model pages: the builder's own photos, uploaded by hand. Never filled
-  // from stock (a stock photo would not be that model), so the query is empty.
-  ...MODELS.flatMap((m) => [1, 2, 3, 4, 5].map((n) => ({ key: `model:${m.id}:g${n}`, label: `${m.builder} ${m.name.replace(m.builder, "").trim()} · photo ${n}`, query: "", group: "models" as const }))),
+  // Yacht model pages: real photos of a similar yacht (same hull type) from the
+  // stock library, one view per slot, labelled as similar yachts on the site.
+  // Upload the builder's own photo to replace any of them.
+  ...MODELS.flatMap((m) => [1, 2, 3, 4, 5].map((n) => ({ key: `model:${m.id}:g${n}`, label: `${m.builder} ${m.name.replace(m.builder, "").trim()} · photo ${n}`, query: MODEL_QUERIES[m.kind][n - 1]!, group: "models" as const }))),
 ];
 
-/** Slots that only take uploads: no stock fill, no Refresh. */
-export const uploadOnly = (s: Slot) => s.group === "models";
+/** Slots that only take uploads: no stock fill, no Refresh. (None at present.) */
+export const uploadOnly = (_s: Slot) => false;
+
+/** True when a slot's photo came from the stock library rather than an upload. */
+export const isStockCredit = (credit: string | null | undefined) => /\/ (Pixabay|Unsplash)$/.test(credit ?? "");
 
 export const GALLERY_RE = /^destination:([a-z-]+):g([1-3])$/;
 export const MODEL_RE = /^model:([a-z0-9-]+):g([1-5])$/;

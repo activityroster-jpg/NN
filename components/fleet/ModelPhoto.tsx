@@ -8,3 +8,7 @@ export function ModelPhoto({ url, id, alt, className = "" }: { url?: string; id:
 
 export const PHOTO_NOTE = "Photos are the builder's own and show the model. The yacht you charter is a specific boat: its photos, layout, year and equipment come with your official quote.";
 export const ILLUSTRATION_NOTE = "Computer renders of the model and a typical layout, until the builder's photos are in. The yacht you charter is a specific boat: its photos, layout, year and equipment come with your official quote.";
+
+/** Under library photos of a similar yacht. */
+export const similarNote = (kindPlural: string, name: string) =>
+  `Photos show similar ${kindPlural} from a photo library, not the ${name} itself; the layout drawing is typical of the model. The yacht you charter is a specific boat: its own photos, layout, year and equipment come with your official quote.`;

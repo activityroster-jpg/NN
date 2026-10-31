@@ -86,13 +86,13 @@ export function PhotoBoard({ slots: initial, gapSec, sourceLabel }: { slots: Boa
     } else setS(key, "error", r.error);
   };
 
-  const empty = slots.filter((s) => !s.url && s.group !== "models").map((s) => s.key);
+  const empty = slots.filter((s) => !s.url).map((s) => s.key);
   const groups: [string, BoardSlot["group"]][] = [
     ["Home page", "home"],
     ["Featured destinations", "featured"],
     ["Other destinations", "other"],
     ["Destination page galleries", "gallery"],
-    ["Yacht models (builder photos: upload only)", "models"],
+    ["Yacht models (similar-yacht stock photos; upload the builder\u2019s to replace)", "models"],
   ];
 
   return (
@@ -114,7 +114,7 @@ export function PhotoBoard({ slots: initial, gapSec, sourceLabel }: { slots: Boa
             {slots
               .filter((s) => s.group === g)
               .map((s) => (
-                <Tile key={s.key} slot={s} status={status[s.key] ?? "idle"} message={msg[s.key] ?? ""} canRefresh={!!sourceLabel && s.group !== "models"}
+                <Tile key={s.key} slot={s} status={status[s.key] ?? "idle"} message={msg[s.key] ?? ""} canRefresh={!!sourceLabel}
                   onRefresh={() => enqueue(s.key)}
                   onQuery={(q) => { queries.current[s.key] = q; }}
                   onFiles={(f) => onFiles(s.key, f)}
