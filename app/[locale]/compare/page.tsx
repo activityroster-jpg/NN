@@ -1,3 +1,4 @@
+import { BOOKING_RETIRED } from "@/lib/flags";
 import type { Metadata } from "next";
 import Link from "next/link";
 import { redirect } from "next/navigation";
@@ -23,6 +24,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 }
 
 export default async function ComparePage({ params, searchParams }: Props) {
+  if (BOOKING_RETIRED) redirect(`/${(await params).locale}/plan`);
   const locale = await requireLocale(params);
   const sp = await searchParams;
   const t = getDictionary(locale);

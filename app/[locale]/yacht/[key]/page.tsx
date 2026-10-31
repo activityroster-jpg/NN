@@ -1,3 +1,4 @@
+import { BOOKING_RETIRED } from "@/lib/flags";
 /* eslint-disable @next/next/no-img-element */
 import type { Metadata } from "next";
 import Link from "next/link";
@@ -27,6 +28,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 }
 
 export default async function YachtPage({ params, searchParams }: Props) {
+  if (BOOKING_RETIRED) redirect(`/${(await params).locale}/plan`);
   const locale = await requireLocale(params.then((p) => ({ locale: p.locale })));
   const { key: rawKey } = await params;
   const key = decodeURIComponent(rawKey);
