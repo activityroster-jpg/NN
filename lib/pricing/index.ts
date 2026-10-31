@@ -20,7 +20,7 @@ export const HORIZON_WEEKS = 60;
 const PRICING_KEY = "yacht_pricing";
 export const YachtPricingSchema = z.object({
   /** Added on top of the market price for every default week. */
-  markupPct: z.number().min(-50).max(200).default(10),
+  markupPct: z.number().min(-50).max(200).default(12.5),
 });
 export type YachtPricing = z.infer<typeof YachtPricingSchema>;
 
