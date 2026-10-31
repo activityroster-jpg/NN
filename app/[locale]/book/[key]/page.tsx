@@ -1,3 +1,4 @@
+import { BOOKING_RETIRED } from "@/lib/flags";
 import type { Metadata } from "next";
 import Link from "next/link";
 import { redirect } from "next/navigation";
@@ -24,6 +25,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 }
 
 export default async function BookPage({ params, searchParams }: Props) {
+  if (BOOKING_RETIRED) redirect(`/${(await params).locale}/plan`);
   const locale = await requireLocale(params.then((p) => ({ locale: p.locale })));
   const key = decodeURIComponent((await params).key);
   const sp = await searchParams;

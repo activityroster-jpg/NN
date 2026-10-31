@@ -44,11 +44,31 @@ export interface PlannerText {
   monohull: string;
   catamaran: string;
   seeOptions: string;
+  stepYacht: string;
+  yachtTitle: string;
+  yachtSub: string;
+  yachtSuggest: string;
+  sleeps: string;
+  tooSmall: string;
+  requestQuote: string;
   back: string;
   next: string;
 }
 
 type Skipper = "yes" | "no" | "unsure";
+
+export interface PlannerModel {
+  id: string;
+  name: string;
+  builder: string;
+  kind: "monohull" | "catamaran";
+  feet: number | null;
+  cabins: string;
+  berthsMax: number | null;
+  cover: string | null;
+}
+
+const MAX_MODELS = 3;
 
 export function Planner({
   locale,
@@ -57,6 +77,7 @@ export function Planner({
   text,
   today,
   initial,
+  models,
 }: {
   locale: string;
   intlLocale: string;
@@ -65,10 +86,12 @@ export function Planner({
   /** ISO date. */
   today: string;
   initial: { d?: string; w?: string; g?: number };
+  models: PlannerModel[];
 }) {
   const router = useRouter();
   const startDest = destinations.find((d) => d.id === initial.d);
-  const [step, setStep] = useState<0 | 1 | 2>(startDest ? (initial.w ? 2 : 1) : 0);
+  const [step, setStep] = useState<0 | 1 | 2 | 3>(startDest ? (initial.w ? 2 : 1) : 0);
+  const [picked, setPicked] = useState<string[]>([]);
   const [dest, setDest] = useState<PlannerDestination | undefined>(startDest);
   const [week, setWeek] = useState<string | undefined>(initial.w);
   const [guests, setGuests] = useState(initial.g ?? 4);
@@ -118,12 +141,16 @@ export function Planner({
     new Intl.DateTimeFormat(intlLocale, { weekday: "short", day: "numeric", month: "short", timeZone: "UTC" }).format(new Date(`${iso}T00:00:00Z`));
   const weekEnd = (iso: string) => new Date(Date.parse(`${iso}T00:00:00Z`) + 7 * 86_400_000).toISOString().slice(0, 10);
 
-  const steps = [text.stepWhere, text.stepWhen, text.stepWho];
+  const steps = [text.stepWhere, text.stepWhen, text.stepWho, text.stepYacht];
+  // Crew sleep aboard too: a skipper or chef takes a berth.
+  const people = guests + (skipper === "no" ? 0 : 1) + (chef ? 1 : 0);
+  const shown = models.filter((m) => !kind || m.kind === kind);
+  const toggle = (id: string) => setPicked((p) => (p.includes(id) ? p.filter((x) => x !== id) : p.length < MAX_MODELS ? [...p, id] : p));
   const go = () => {
     if (!dest || !week) return;
-    const q = new URLSearchParams({ d: dest.id, w: week, g: String(guests), s: skipper === "no" ? "0" : "1", c: chef ? "1" : "0" });
-    if (kind) q.set("type", kind);
-    router.push(`/${locale}/charter?${q.toString()}`);
+    const q = new URLSearchParams({ d: dest.id, w: week, g: String(guests), s: skipper, c: chef ? "1" : "0" });
+    if (picked.length) q.set("models", picked.join(","));
+    router.push(`/${locale}/enquire?${q.toString()}`);
   };
 
   const featured = destinations.filter((d) => d.featured);
@@ -137,8 +164,8 @@ export function Planner({
           <li key={s} className="flex items-center gap-2">
             <button
               type="button"
-              disabled={i > step || (i === 1 && !dest) || (i === 2 && !week)}
-              onClick={() => setStep(i as 0 | 1 | 2)}
+              disabled={i > step || (i === 1 && !dest) || (i >= 2 && !week)}
+              onClick={() => setStep(i as 0 | 1 | 2 | 3)}
               className={`flex items-center gap-2 rounded-full px-3 py-1.5 font-medium ${i === step ? "bg-ink text-surface" : i < step ? "bg-brand-soft text-ink" : "text-muted"}`}
             >
               <span className={`flex h-5 w-5 items-center justify-center rounded-full text-xs ${i < step ? "bg-brand text-brand-ink" : "border border-current"}`}>
@@ -317,30 +344,72 @@ export function Planner({
             </div>
           </fieldset>
 
-          <fieldset className="mt-6">
-            <legend className="mb-3 text-lg font-semibold">{text.typeQ}</legend>
-            <div className="flex flex-wrap gap-2">
-              {(
-                [
-                  ["", text.typeAny],
-                  ["catamaran", text.catamaran],
-                  ["monohull", text.monohull],
-                ] as const
-              ).map(([v, label]) => (
-                <button key={v} type="button" onClick={() => setKind(v)} className={`chip ${kind === v ? "chip-on" : ""}`}>
-                  {label}
-                </button>
-              ))}
-            </div>
-          </fieldset>
 
           <div className="mt-10 flex items-center justify-between">
             <button type="button" className="btn-ghost" onClick={() => setStep(1)}>
               <IconArrowLeft className="h-4 w-4" /> {text.back}
             </button>
-            <button type="button" className="btn-primary px-7 py-3.5 text-base" onClick={go}>
+            <button type="button" className="btn-primary px-7 py-3.5 text-base" onClick={() => setStep(3)}>
               {text.seeOptions} <IconArrowRight className="h-4 w-4" />
             </button>
+          </div>
+        </section>
+      )}
+
+      {step === 3 && dest && week && (
+        <section>
+          <h1 className="h-display text-4xl sm:text-5xl">{text.yachtTitle}</h1>
+          <p className="mt-3 text-ink/75">{text.yachtSub}</p>
+          <div className="mt-6 flex flex-wrap gap-2">
+            {(
+              [
+                ["", text.typeAny],
+                ["catamaran", text.catamaran],
+                ["monohull", text.monohull],
+              ] as const
+            ).map(([v, label]) => (
+              <button key={v} type="button" onClick={() => setKind(v)} className={`chip ${kind === v ? "chip-on" : ""}`}>
+                {label}
+              </button>
+            ))}
+          </div>
+          <div className="mt-6 grid gap-3 sm:grid-cols-2">
+            {shown.map((m) => {
+              const on = picked.includes(m.id);
+              const small = m.berthsMax != null && m.berthsMax < people;
+              const full = !on && picked.length >= MAX_MODELS;
+              return (
+                <label key={m.id} className={`flex cursor-pointer gap-3 rounded-xl border p-3 transition ${on ? "border-brand bg-brand-soft" : "border-line bg-card hover:border-ink/30"} ${full ? "opacity-60" : ""}`}>
+                  <input type="checkbox" className="sr-only" checked={on} disabled={full} onChange={() => toggle(m.id)} />
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img src={m.cover ?? `/demo/${m.kind}-1.svg`} alt="" loading="lazy" className="h-16 w-24 shrink-0 rounded-lg object-cover" />
+                  <span className="min-w-0 flex-1">
+                    <span className="block text-xs font-semibold tracking-wider text-muted uppercase">{m.builder}</span>
+                    <span className="block font-semibold">{m.name}</span>
+                    <span className="block text-sm text-ink/70">
+                      {[m.feet ? `${m.feet} ft` : null, m.cabins, m.berthsMax ? text.sleeps.replace("{n}", String(m.berthsMax)) : null].filter(Boolean).join(" · ")}
+                      {small && <span className="text-warn"> · {text.tooSmall.replace("{n}", String(people))}</span>}
+                    </span>
+                  </span>
+                  {on && <IconCheck className="h-5 w-5 shrink-0 text-brand" />}
+                </label>
+              );
+            })}
+          </div>
+          <div className="mt-10 flex flex-wrap items-center justify-between gap-3">
+            <button type="button" className="btn-ghost" onClick={() => setStep(2)}>
+              <IconArrowLeft className="h-4 w-4" /> {text.back}
+            </button>
+            <div className="flex flex-wrap items-center gap-3">
+              {picked.length === 0 && (
+                <button type="button" className="btn-secondary" onClick={go}>
+                  {text.yachtSuggest}
+                </button>
+              )}
+              <button type="button" className="btn-primary px-7 py-3.5 text-base" disabled={picked.length === 0} onClick={go}>
+                {text.requestQuote} <IconArrowRight className="h-4 w-4" />
+              </button>
+            </div>
           </div>
         </section>
       )}

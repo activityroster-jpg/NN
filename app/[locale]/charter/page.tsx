@@ -1,3 +1,4 @@
+import { BOOKING_RETIRED } from "@/lib/flags";
 import type { Metadata } from "next";
 import Link from "next/link";
 import { redirect } from "next/navigation";
@@ -31,6 +32,7 @@ export async function generateMetadata({ params, searchParams }: Props): Promise
 }
 
 export default async function CharterResults({ params, searchParams }: Props) {
+  if (BOOKING_RETIRED) redirect(`/${(await params).locale}/plan`);
   const locale = await requireLocale(params);
   const t = getDictionary(locale);
   const p = parseSearch(await searchParams);

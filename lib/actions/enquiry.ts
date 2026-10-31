@@ -12,6 +12,7 @@ import { isLocale } from "@/lib/i18n/config";
 import { allow } from "@/lib/rate-limit";
 import { clientIp } from "@/lib/request";
 import { audit } from "@/lib/audit";
+import { modelById } from "@/lib/fleet";
 import { COMPANY } from "@/lib/brand";
 
 export interface EnquiryState {
@@ -105,7 +106,7 @@ export async function submitEnquiry(_prev: EnquiryState, form: FormData): Promis
     `Guests: ${v.guests ?? "-"}`,
     `Skipper: ${v.skipper ?? "-"}   Chef: ${v.chef ? "yes" : "no"}`,
     `Budget: ${v.budget ?? "-"}`,
-    `Yacht: ${v.yachtKey ?? "-"}`,
+    `Yachts: ${yachtNames(v.yachtKey)}`,
     `Language: ${v.locale}`,
     "",
     v.message ?? "",
@@ -125,4 +126,12 @@ export async function submitEnquiry(_prev: EnquiryState, form: FormData): Promis
   );
   await sendMail(env, { to: v.email, subject: "We've received your charter request", ...confirm });
   return { ok: true, email: v.email };
+}
+
+/** "models:lagoon-42,lagoon-43" or "model:x" as model names for the office email. */
+function yachtNames(key: string | undefined): string {
+  if (!key) return "-";
+  const m = /^models?:(.+)$/.exec(key);
+  if (!m) return key;
+  return m[1]!.split(",").map((id) => modelById(id)?.name ?? id).join(", ");
 }
