@@ -23,6 +23,11 @@ export interface MarketDestination {
   monoMultiplier: number;
   /** Month number "1".."12" → season. */
   months: Record<string, Season>;
+  /**
+   * Flatter seasons (the tropics): each season's price as a share of the
+   * model's peak price, instead of the model's own low/shoulder figures.
+   */
+  seasonFactors?: Record<PricedSeason, number>;
 }
 
 export interface MarketData {
@@ -53,7 +58,8 @@ export function seasonPrice(market: MarketData, model: PricedModel, destinationI
   const d = market.destinations[destinationId];
   if (!m || !d) return null;
   const mult = model.kind === "catamaran" ? d.catMultiplier : d.monoMultiplier;
-  return round50(m[season] * mult * (1 + markupPct / 100));
+  const base = d.seasonFactors ? m.peak * d.seasonFactors[season] : m[season];
+  return round50(base * mult * (1 + markupPct / 100));
 }
 
 /** The default (market + markup) for a week, or null out of season or without data. */

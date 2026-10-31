@@ -19,6 +19,11 @@ describe("yacht estimates", () => {
     expect(defaultWeekPrice(market, cat, "here", "2027-06-05", 0)).toBe(7_200);
   });
 
+  it("uses a share of the peak price where seasons are flat", () => {
+    const flat: MarketData = { ...market, destinations: { tropic: { catMultiplier: 1, monoMultiplier: 1, months: { "8": "low" }, seasonFactors: { low: 0.75, shoulder: 0.9, peak: 1 } } } };
+    expect(seasonPrice(flat, cat, "tropic", "low", 0)).toBe(6_750); // 9000 × 0.75
+  });
+
   it("has no price out of season or without data", () => {
     expect(seasonOf(market, "here", "2027-11-06")).toBe("closed");
     expect(defaultWeekPrice(market, cat, "here", "2027-11-06", 10)).toBeNull();
