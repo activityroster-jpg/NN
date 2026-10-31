@@ -9,6 +9,7 @@ const nl: Dictionary = {
   },
   nav: {
     destinations: "Bestemmingen",
+    yachts: "Jachten",
     howItWorks: "Zo werkt het",
     plan: "Plan mijn reis",
     about: "Over ons",

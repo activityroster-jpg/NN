@@ -10,6 +10,7 @@ const en = {
   },
   nav: {
     destinations: "Destinations",
+    yachts: "Yachts",
     howItWorks: "How it works",
     plan: "Plan my trip",
     about: "About",
