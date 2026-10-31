@@ -2,46 +2,62 @@ import { describe, expect, it } from "vitest";
 import { MODELS } from "@/lib/fleet";
 import { DESTINATIONS } from "@/lib/domain/destinations";
 import marketFile from "@/lib/pricing/market.json";
-import { defaultWeekPrice, estimateRange, isSaturday, overrideKey, saturdays, seasonOf, seasonPrice, weekEstimate, type MarketData } from "@/lib/pricing/estimate";
+import {
+  defaultRange,
+  defaultWeekPrice,
+  estimateRange,
+  isSaturday,
+  overrideKey,
+  saturdays,
+  seasonOf,
+  seasonRatio,
+  weekEstimate,
+  type MarketData,
+} from "@/lib/pricing/estimate";
 
-const MARKET = marketFile as MarketData;
+const MARKET = marketFile as unknown as MarketData;
+
 const market: MarketData = {
   researchedAt: "test",
-  models: { cat: { low: 4000, shoulder: 6000, peak: 9000 } },
-  destinations: { here: { catMultiplier: 1.2, monoMultiplier: 1, months: { "6": "shoulder", "7": "peak", "11": "closed" } } },
+  models: { cat: { peak: 10_000 } },
+  destinations: {
+    here: { catFactor: 1.2, monoFactor: 1, curve: [["01-01", 0], ["04-01", 0.5], ["06-26", 1], ["08-14", 0.8], ["11-01", 0]] },
+  },
 };
 const cat = { id: "cat", kind: "catamaran" as const };
 
 describe("yacht estimates", () => {
-  it("applies the destination multiplier and markup, rounded to 50", () => {
-    expect(seasonPrice(market, cat, "here", "peak", 10)).toBe(11_900); // 9000 × 1.2 × 1.1 = 11,880
-    expect(defaultWeekPrice(market, cat, "here", "2027-07-03", 10)).toBe(11_900);
-    expect(defaultWeekPrice(market, cat, "here", "2027-06-05", 0)).toBe(7_200);
+  it("prices a week as peak × destination factor × season ratio × markup, to the nearest 50", () => {
+    expect(defaultWeekPrice(market, cat, "here", "2027-07-03", 10)).toBe(13_200); // 10000 × 1.2 × 1 × 1.1
+    expect(defaultWeekPrice(market, cat, "here", "2027-05-01", 0)).toBe(6_000); // × 0.5
+    expect(defaultWeekPrice(market, cat, "here", "2027-08-14", 0)).toBe(9_600); // the step applies from its date
+    expect(defaultWeekPrice(market, cat, "here", "2027-08-07", 0)).toBe(12_000);
   });
 
-  it("uses a share of the peak price where seasons are flat", () => {
-    const flat: MarketData = { ...market, destinations: { tropic: { catMultiplier: 1, monoMultiplier: 1, months: { "8": "low" }, seasonFactors: { low: 0.75, shoulder: 0.9, peak: 1 } } } };
-    expect(seasonPrice(flat, cat, "tropic", "low", 0)).toBe(6_750); // 9000 × 0.75
-  });
-
-  it("has no price out of season or without data", () => {
+  it("has no price when closed or without data", () => {
     expect(seasonOf(market, "here", "2027-11-06")).toBe("closed");
     expect(defaultWeekPrice(market, cat, "here", "2027-11-06", 10)).toBeNull();
     expect(defaultWeekPrice(market, { id: "nope", kind: "monohull" }, "here", "2027-07-03", 10)).toBeNull();
     expect(defaultWeekPrice(market, cat, "elsewhere", "2027-07-03", 10)).toBeNull();
   });
 
-  it("uses the admin's own week price over the default, even out of season", () => {
+  it("names the bands from the ratio", () => {
+    expect(seasonOf(market, "here", "2027-07-03")).toBe("peak");
+    expect(seasonOf(market, "here", "2027-08-21")).toBe("shoulder");
+    expect(seasonOf(market, "here", "2027-04-10")).toBe("low");
+  });
+
+  it("uses the admin's own week price over the default, even when closed", () => {
     const o = new Map([[overrideKey("here", "2027-07-03"), 8_000], [overrideKey("here", "2027-11-06"), 3_000]]);
     expect(weekEstimate(market, cat, "here", "2027-07-03", 10, o)).toBe(8_000);
-    expect(weekEstimate(market, cat, "here", "2027-07-10", 10, o)).toBe(11_900);
+    expect(weekEstimate(market, cat, "here", "2027-07-10", 10, o)).toBe(13_200);
     expect(weekEstimate(market, cat, "here", "2027-11-06", 10, o)).toBe(3_000);
   });
 
-  it("finds the range over in-season weeks", () => {
-    const weeks = saturdays("2027-06-01", 9); // June and July
-    expect(estimateRange(market, cat, ["here"], weeks, 0, undefined)).toEqual({ min: 7_200, max: 10_800 });
+  it("finds ranges", () => {
+    expect(estimateRange(market, cat, ["here"], saturdays("2027-06-01", 9), 0, undefined)).toEqual({ min: 6_000, max: 12_000 });
     expect(estimateRange(market, cat, ["here"], ["2027-11-06"], 0, undefined)).toBeNull();
+    expect(defaultRange(market, cat, "here", 0)).toEqual({ low: 6_000, peak: 12_000 });
   });
 
   it("lists Saturdays", () => {
@@ -50,21 +66,40 @@ describe("yacht estimates", () => {
     expect(isSaturday("2027-06-06")).toBe(false);
     expect(isSaturday("nope")).toBe(false);
   });
+});
 
-  it("has market data for every model and destination we offer", () => {
+describe("market data (docs/research/charter-prices-2027.md)", () => {
+  it("prices every model we offer", () => {
     for (const m of MODELS) {
       const p = MARKET.models[m.id];
       expect(p, m.id).toBeDefined();
-      expect(p!.low, m.id).toBeLessThanOrEqual(p!.shoulder);
-      expect(p!.shoulder, m.id).toBeLessThanOrEqual(p!.peak);
-      expect(p!.low, m.id).toBeGreaterThan(500);
+      expect(p!.peak, m.id).toBeGreaterThan(3_000);
+      if (p!.low != null) expect(p!.low, m.id).toBeLessThan(p!.peak);
+      expect(["bareboat", "skippered", "crewed"], m.id).toContain(p!.product);
     }
+  });
+
+  it("has a valid season curve for every destination, open in every month the planner offers", () => {
     for (const d of DESTINATIONS) {
       const x = MARKET.destinations[d.id];
       expect(x, d.id).toBeDefined();
-      for (let i = 1; i <= 12; i++) expect(["closed", "low", "shoulder", "peak"], `${d.id} ${i}`).toContain(x!.months[String(i)]);
-      // Every month the planner offers must be priced.
-      for (const mo of d.seasonMonths) expect(x!.months[String(mo)], `${d.id} ${mo}`).not.toBe("closed");
+      expect(x!.curve[0]![0], d.id).toBe("01-01");
+      for (let i = 1; i < x!.curve.length; i++) expect(x!.curve[i]![0] > x!.curve[i - 1]![0], `${d.id} sorted`).toBe(true);
+      for (const [, r] of x!.curve) expect(r >= 0 && r <= 1.2, d.id).toBe(true);
+      for (const mo of d.seasonMonths) {
+        const first = `2027-${String(mo).padStart(2, "0")}-15`;
+        expect(seasonRatio(MARKET, d.id, first), `${d.id} month ${mo}`).toBeGreaterThan(0);
+      }
     }
+  });
+
+  it("matches the report's shapes", () => {
+    // Greece holds 0.56 at the floor; Balearics drop to 0.30; Turkey peaks in September.
+    expect(seasonRatio(MARKET, "greece-ionian", "2027-04-03")).toBe(0.56);
+    expect(seasonRatio(MARKET, "balearics", "2027-04-10")).toBe(0.3);
+    expect(seasonOf(MARKET, "turkey", "2027-09-11")).toBe("peak");
+    expect(seasonOf(MARKET, "turkey", "2027-07-10")).toBe("shoulder");
+    // Lagoon 51 in Croatia at peak, no markup: the report's €20,895.
+    expect(defaultWeekPrice(MARKET, { id: "lagoon-51", kind: "catamaran" }, "croatia", "2027-07-10", 0)).toBe(20_900);
   });
 });

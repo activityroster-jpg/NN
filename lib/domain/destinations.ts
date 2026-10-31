@@ -90,7 +90,7 @@ export const DESTINATIONS: readonly DestinationDef[] = [
     featured: false,
     country: "TR",
     seasonMonths: [4, 5, 6, 7, 8, 9, 10],
-    peakMonths: [7, 8],
+    peakMonths: [9, 10],
     currency: "EUR",
     center: { lat: 36.7, lng: 28.9 },
     bases: ["Göcek", "Marmaris", "Bodrum"],

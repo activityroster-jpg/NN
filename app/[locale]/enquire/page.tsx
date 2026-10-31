@@ -9,7 +9,7 @@ import { displayCurrency, requireLocale } from "@/lib/request";
 import { getDb } from "@/lib/db";
 import { getRates } from "@/lib/fx";
 import { fmt, money } from "@/lib/i18n/format";
-import { estimateIn, estimatesForWeek, isSaturday } from "@/lib/pricing";
+import { estimateIn, estimatesForWeek, isSaturday, productOf } from "@/lib/pricing";
 import { destinationOptions, enquiryText } from "@/lib/services/labels";
 
 export async function generateMetadata({ params }: { params: Promise<{ locale: string }> }): Promise<Metadata> {
@@ -30,11 +30,11 @@ export default async function Enquire({ params, searchParams }: { params: Promis
   const g = Number(sp.g);
   const currency = await displayCurrency();
   // Estimates for the chosen yachts when the planner passed a destination and week.
-  let estimates: { name: string; price: string | null }[] = [];
+  let estimates: { name: string; crewed: boolean; price: string | null }[] = [];
   if (picked.length && sp.d && DESTINATION_IDS.includes(sp.d) && sp.w && isSaturday(sp.w)) {
     const db = await getDb();
     const [eur, rates] = await Promise.all([estimatesForWeek(db, sp.d, sp.w), getRates(db)]);
-    estimates = picked.map((m) => ({ name: m!.name, price: eur[m!.id] == null ? null : money(estimateIn(eur[m!.id]!, currency, rates), currency, locale) }));
+    estimates = picked.map((m) => ({ name: m!.name, crewed: productOf(m!.id) === "crewed", price: eur[m!.id] == null ? null : money(estimateIn(eur[m!.id]!, currency, rates), currency, locale) }));
   }
   const priced = estimates.filter((e) => e.price);
   return (
@@ -52,7 +52,7 @@ export default async function Enquire({ params, searchParams }: { params: Promis
           <ul className="mt-1 space-y-0.5">
             {priced.map((e) => (
               <li key={e.name}>
-                {e.name}: <strong>{fmt(t.enquiry.estimatePerWeek, { price: e.price! })}</strong>
+                {e.name}: <strong>{fmt(e.crewed ? t.enquiry.estimatePerWeekCrewed : t.enquiry.estimatePerWeek, { price: e.price! })}</strong>
               </li>
             ))}
           </ul>

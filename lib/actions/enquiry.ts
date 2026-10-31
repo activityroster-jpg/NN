@@ -14,7 +14,7 @@ import { clientIp } from "@/lib/request";
 import { audit } from "@/lib/audit";
 import { modelById } from "@/lib/fleet";
 import { COMPANY } from "@/lib/brand";
-import { estimatesForWeek, isSaturday } from "@/lib/pricing";
+import { estimatesForWeek, isSaturday, PRODUCT_COVER, productOf } from "@/lib/pricing";
 
 export interface EnquiryState {
   ok: boolean;
@@ -143,6 +143,6 @@ async function estimateLines(db: Db, key: string | undefined, destinationId: str
   const ids = /^models?:(.+)$/.exec(key ?? "")?.[1]?.split(",") ?? [];
   if (!ids.length || !destinationId || !weekStart || !isSaturday(weekStart)) return [];
   const eur = await estimatesForWeek(db, destinationId, weekStart).catch(() => ({}) as Record<string, number | null>);
-  const shown = ids.flatMap((id) => (eur[id] != null ? [`${modelById(id)?.name ?? id} €${eur[id]!.toLocaleString("en-GB")}`] : []));
-  return shown.length ? [`Estimates shown (boat only, per week): ${shown.join(" · ")}`] : [];
+  const shown = ids.flatMap((id) => (eur[id] != null ? [`${modelById(id)?.name ?? id} €${eur[id]!.toLocaleString("en-GB")} (${PRODUCT_COVER[productOf(id)]})`] : []));
+  return shown.length ? [`Estimates shown (per week): ${shown.join(" · ")}`] : [];
 }

@@ -8,9 +8,10 @@ import { getDictionary } from "@/lib/i18n";
 import { convert, type FxRates } from "@/lib/domain/money";
 import type { Currency } from "@/lib/domain/types";
 import marketFile from "./market.json";
-import { estimateRange, overrideKey, saturdays, seasonOf, weekEstimate, type MarketData, type Overrides, type Season } from "./estimate";
+import { estimateRange, overrideKey, saturdays, seasonOf, weekEstimate, type MarketData, type Overrides, type Product, type Season } from "./estimate";
 
-export const MARKET = marketFile as MarketData;
+// JSON cannot type the [date, ratio] pairs; the shape is checked in tests/pricing-estimate.test.ts.
+export const MARKET = marketFile as unknown as MarketData;
 
 /** Weeks the site looks ahead when it shows "from" prices. */
 export const HORIZON_WEEKS = 60;
@@ -92,12 +93,31 @@ export async function modelRangesByDestination(db: Db, modelId: string, todayIso
   });
 }
 
-export { seasonOf, defaultWeekPrice, seasonPrice, weekEstimate, saturdays, isSaturday, PRICED_SEASONS, overrideKey } from "./estimate";
-export type { Season, PricedSeason } from "./estimate";
+export { seasonOf, seasonRatio, defaultWeekPrice, defaultRange, peakPrice, weekEstimate, saturdays, isSaturday, overrideKey } from "./estimate";
+export type { Season, Product, MarketModel } from "./estimate";
 
 /** Wording that goes with every estimate. */
 export const ESTIMATE_NOTE =
-  "Estimates are for the boat only, per week, based on typical prices for this model. Skipper, extras, security deposit and local taxes are not included. Your official quote confirms the price for a specific yacht.";
+  "Estimates come from charter operators' published prices for recent boats of each model, per week, before early-booking discounts. Unless marked as crewed they are for the boat only: a skipper adds about €1,500–2,000 a week, the start pack (cleaning, linen, first and last night's berth) about €300–800, and a refundable security deposit of €2,000–5,000 applies. Your official quote confirms the price for a specific yacht.";
+
+/** Wording for what an estimate covers, by product. */
+export const PRODUCT_COVER: Record<Product, string> = {
+  bareboat: "boat only",
+  skippered: "boat price, skipper extra",
+  crewed: "with crew, plus APA",
+};
+
+/** The note under a model's estimates, by product. */
+export function estimateNote(product: Product): string {
+  if (product === "crewed")
+    return "Estimates come from operators' published prices for recent boats of this model, per week. They include the crew. An APA (advance provisioning allowance: food, drinks, fuel and berths, typically 25–40% of the charter fee) is paid on top, and a crew gratuity of 10–20% is customary. Your official quote confirms the price for a specific yacht.";
+  if (product === "skippered")
+    return "Estimates come from operators' published prices for recent boats of this model, per week, before early-booking discounts. Yachts of this size charter with a skipper, about €1,500–2,000 a week on top; the start pack is about €300–800 and a refundable security deposit of €3,000–5,000 applies. Your official quote confirms the price for a specific yacht.";
+  return "Estimates come from operators' published prices for recent boats of this model, per week, before early-booking discounts. They are for the boat only: a skipper adds about €1,500–2,000 a week, the start pack (cleaning, linen, first and last night's berth) about €300–800, and a refundable security deposit of €2,000–5,000 applies. Your official quote confirms the price for a specific yacht.";
+}
+
+/** A model's product type (bareboat unless the research says otherwise). */
+export const productOf = (id: string): Product => MARKET.models[id]?.product ?? "bareboat";
 
 const EN = getDictionary("en");
 /** English destination name, for admin screens and the office email. */

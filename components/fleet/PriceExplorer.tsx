@@ -17,14 +17,14 @@ export interface PriceDestination {
   weeks: PriceWeek[];
 }
 
-const SEASON_LABEL = { low: "Low season", shoulder: "Shoulder season", peak: "Peak season", closed: "" } as const;
+const SEASON_LABEL = { low: "Low season", shoulder: "Mid season", peak: "Peak season", closed: "" } as const;
 const SEASON_TONE = { low: "bg-sea/50", shoulder: "bg-warn/60", peak: "bg-brand", closed: "bg-ink/20" } as const;
 
 /**
  * The model page's price box: pick a destination and week for that week's
  * estimate, and see how the price moves month by month.
  */
-export function PriceExplorer({ modelId, locale, currency, destinations, note }: { modelId: string; locale: string; currency: string; destinations: PriceDestination[]; note: string }) {
+export function PriceExplorer({ modelId, locale, currency, destinations, note, cover = "boat only" }: { modelId: string; locale: string; currency: string; destinations: PriceDestination[]; note: string; cover?: string }) {
   const withWeeks = destinations.filter((d) => d.weeks.length);
   const [destId, setDestId] = useState(withWeeks[0]?.id ?? "");
   const dest = withWeeks.find((d) => d.id === destId) ?? withWeeks[0];
@@ -81,7 +81,7 @@ export function PriceExplorer({ modelId, locale, currency, destinations, note }:
         </label>
       </div>
       <p className="mt-3">
-        <span className="text-3xl font-semibold tabular-nums">{money(chosen.price)}</span> <span className="text-sm text-ink/70">for the week, boat only</span>
+        <span className="text-3xl font-semibold tabular-nums">{money(chosen.price)}</span> <span className="text-sm text-ink/70">for the week, {cover}</span>
       </p>
       <p className="text-xs text-muted">{SEASON_LABEL[chosen.season]} in {dest.name}</p>
       <a href={`/${locale}/enquire?model=${modelId}&d=${dest.id}&w=${chosen.w}`} className="btn-primary mt-3 text-sm">

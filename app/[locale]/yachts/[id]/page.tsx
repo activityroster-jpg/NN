@@ -13,7 +13,7 @@ import { abs, breadcrumbLd, pageMeta, snippet } from "@/lib/seo";
 import { displayCurrency, requireLocale, todayIso } from "@/lib/request";
 import { getRates } from "@/lib/fx";
 import { money } from "@/lib/i18n/format";
-import { ESTIMATE_NOTE, estimateIn, modelRangesByDestination, modelWeekGrid } from "@/lib/pricing";
+import { estimateIn, estimateNote, MARKET, modelRangesByDestination, modelWeekGrid, PRODUCT_COVER, productOf } from "@/lib/pricing";
 import { PriceExplorer } from "@/components/fleet/PriceExplorer";
 import { destinationViews } from "@/lib/services/destination-settings";
 
@@ -60,6 +60,8 @@ export default async function ModelPage({ params }: Props) {
     getRates(db),
   ]);
   const where = views.filter((v) => v.active).map((v) => ({ id: v.id, range: ranges.find((r) => r.destinationId === v.id)?.range ?? null }));
+  const product = productOf(id);
+  const successor = MARKET.models[id]?.successor;
   const grid = await modelWeekGrid(db, id, todayIso(), where.map((w) => w.id));
   const explorer = grid.map((g) => ({
     id: g.destinationId,
@@ -144,10 +146,13 @@ export default async function ModelPage({ params }: Props) {
           </ul>
           {lowest != null && highest != null && (
             <p className="mt-4 text-sm text-ink/75">
-              Estimated <strong className="text-ink">{price(lowest)} to {price(highest)}</strong> a week, boat only, depending on the week and destination.
+              Estimated <strong className="text-ink">{price(lowest)} to {price(highest)}</strong> a week, {PRODUCT_COVER[product]}, depending on the week and destination.
             </p>
           )}
-          <PriceExplorer modelId={id} locale={locale} currency={currency} destinations={explorer} note={ESTIMATE_NOTE} />
+          {successor && (
+            <p className="mt-2 text-sm text-muted">Charter fleets now run the current {successor} in place of this model, so estimates are based on it and your quote may offer it.</p>
+          )}
+          <PriceExplorer modelId={id} locale={locale} currency={currency} destinations={explorer} note={estimateNote(product)} cover={PRODUCT_COVER[product]} />
           <p className="mt-5 text-ink/80">{intro(id)}</p>
           {isAlternative && <p className="mt-3 text-sm text-muted">We offer the {m.name} as an equal to the {c!.models.map((x) => modelById(x)?.name ?? x).join(" or ")} when those are taken.</p>}
           <div className="mt-6 flex flex-wrap gap-3">
@@ -188,7 +193,7 @@ export default async function ModelPage({ params }: Props) {
               ))}
             </tbody>
           </table>
-          <p className="mt-3 text-xs text-muted">{ESTIMATE_NOTE}</p>
+          <p className="mt-3 text-xs text-muted">{estimateNote(product)}</p>
         </div>
       </section>
 

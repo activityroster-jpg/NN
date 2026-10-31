@@ -1,786 +1,742 @@
 {
  "researchedAt": "2026-10-31",
- "currencyNote": "All model prices are EUR per week, boat only (bareboat list price before skipper, extras, mandatory end-cleaning/transit-log fees and before early-booking/last-minute discounts), Croatia basis, for a typical boat roughly 1-5 years old. low = April / late October, shoulder = May-June and September, peak = July-August. Rounded to the nearest 50. Evidence is mostly 2026-season asking prices from aggregator listings (yacht-rent.com, 12knots, happycharter, boatbookings, yachtico, samboat, nautal), read from search snippets because direct fetches were blocked. Destination multipliers apply to the Croatia price for the same season tier. BVI multipliers are expressed in USD: the BVI USD weekly price = Croatia EUR price x multiplier (converted at 1.08 USD per EUR; the EUR-equivalent factor is given in the note). Tropical destinations (BVI, Seychelles, Thailand) have flatter seasonal curves than the Mediterranean, so their low-season prices are relatively higher than a single multiplier implies. Tropical destinations use seasonFactors (share of the peak price) instead of the Croatian low/shoulder curve.",
+ "source": "docs/research/charter-prices-2027.md",
+ "note": "Gross published list prices (VAT and agency commission included), EUR per week, 2023+ hulls, before early-booking discounts. 2027 lists are flat to +6% on 2026.",
  "models": {
   "lagoon-40": {
-   "low": 2700,
-   "shoulder": 4700,
-   "peak": 6600,
-   "estimated": false,
-   "basis": "Several dated 2026 Croatian price tables. Undiscounted Jul-Aug list prices are EUR 6,300-6,900. May is EUR 2,700-2,800 for a 2020 boat and EUR 5,500 for late May-early June on a 2023 boat.",
-   "sources": [
-    {
-     "url": "https://www.yacht-rent.com/croatia-charter/66155-lagoon-40-split-region",
-     "note": "Lagoon 40 2021, Split region, 18 Jul-8 Aug 2026 EUR 6,900; next window EUR 6,600"
-    },
-    {
-     "url": "https://www.yacht-rent.com/croatia-charter/61494-lagoon-40-rogoznica",
-     "note": "Lagoon 40 2025, Rogoznica, 4 Jul-15 Aug 2026 EUR 6,800"
-    },
-    {
-     "url": "https://www.yacht-rent.com/croatia-charter/53737-lagoon-40-split",
-     "note": "Lagoon 40 2023, Split, 23 May-6 Jun 2026 EUR 5,500"
-    },
-    {
-     "url": "https://www.yacht-rent.com/croatia-charter/28934-lagoon-40-biograd-na-moru",
-     "note": "Lagoon 40 2020, Biograd, 2-16 May 2026 EUR 2,700-2,800; early Aug ~EUR 5,400 after 37-50% discount"
-    },
-    {
-     "url": "https://www.yacht-rent.com/boat-models-in-charter/lagoon-400-s2",
-     "note": "Predecessor Lagoon 400 S2: 2026 average EUR 3,980/wk, peak-week average EUR 6,048 (8 Aug)"
-    }
-   ]
+   "peak": 8100,
+   "low": 2680,
+   "product": "bareboat",
+   "confidence": "Likely",
+   "basis": "Lagoon 40, 2023+ builds; 49 observations, 4 sources"
   },
   "lagoon-42": {
-   "low": 3500,
-   "shoulder": 6500,
-   "peak": 9000,
-   "estimated": false,
-   "basis": "This is the best-covered model. Peak list prices for 2022-2025 boats are EUR 8,000-9,700. Late June-early July is EUR 7,200-8,200, early September about EUR 7,800, May EUR 5,000-6,000 and late April EUR 2,200-3,900.",
-   "sources": [
-    {
-     "url": "https://www.yacht-rent.com/croatia-charter/66156-lagoon-42-split-region",
-     "note": "Lagoon 42 2023, Split region, 20 Jun-4 Jul 2026 EUR 7,200; 4-18 Jul 2026 EUR 8,000"
-    },
-    {
-     "url": "https://www.yacht-rent.com/croatia-charter/40760-lagoon-42-sukošan",
-     "note": "Lagoon 42 2022-2023, Sukosan, 2026 range EUR 2,350-9,650 / 2,400-9,700 per week"
-    },
-    {
-     "url": "https://www.yacht-rent.com/croatia-charter/38601-lagoon-42-Šibenik",
-     "note": "Lagoon 42, Sibenik, ~EUR 2,200 late April 2026; a 2024 Sibenik boat lists EUR 9,150 late Jun-late Jul 2026"
-    },
-    {
-     "url": "https://www.yacht-rent.com/boat-models-in-charter/lagoon-42",
-     "note": "All-region 2026 average EUR 5,227/wk (379 boats); highest average week 8 Aug EUR 8,329, lowest 24 Oct EUR 4,024"
-    }
-   ]
+   "peak": 11100,
+   "low": 4623,
+   "product": "bareboat",
+   "confidence": "Likely",
+   "basis": "Lagoon 42, 2023–26 builds; 72 observations, 6 sources"
   },
   "lagoon-43": {
-   "low": 4300,
-   "shoulder": 7800,
-   "peak": 11300,
-   "estimated": false,
-   "basis": "This is a new model, so the fleet is 2025-2026 boats. Ranges are EUR 4,090-11,290 and 4,600-12,100. Mid-June is EUR 8,450, late August EUR 10,000 and the starting rate EUR 3,600-4,100.",
-   "sources": [
-    {
-     "url": "https://www.yacht-rent.com/croatia-charter/77486-lagoon-43-sukošan",
-     "note": "Lagoon 43, Sukosan, 2026 range EUR 4,600-12,100/wk; late Aug 2026 EUR 10,000"
-    },
-    {
-     "url": "https://www.yacht-rent.com/croatia-charter/72308-lagoon-43-dubrovnik",
-     "note": "Lagoon 43 2026, Dubrovnik, 13-20 Jun 2026 EUR 8,450"
-    },
-    {
-     "url": "https://www.yacht-rent.com/croatia-charter/74834-lagoon-43-trogir",
-     "note": "Lagoon 43 2026, Trogir area, range EUR 4,090-11,290/wk"
-    },
-    {
-     "url": "https://www.yacht-rent.com/croatia-charter/75119-lagoon-43-rogoznica",
-     "note": "Lagoon 43 2026, Rogoznica, from EUR 3,600/wk"
-    }
-   ]
+   "peak": 11600,
+   "low": 3781,
+   "product": "bareboat",
+   "confidence": "Likely",
+   "basis": "Lagoon 43, 2025–26 builds. Research peak €14,818 is pulled up by one Palma boat; Croatian and Greek boats list €11,400–11,600 at peak, used here"
   },
   "lagoon-46": {
-   "low": 4800,
-   "shoulder": 8500,
-   "peak": 13000,
-   "estimated": false,
-   "basis": "Croatian ranges are EUR 3,990-13,900 and 5,300-14,000. A Trogir table gives EUR 5,300 to 25 April, EUR 6,300 in May and EUR 8,700 in mid-September. A Rogoznica boat reaches EUR 9,000 by early June. One Dubrovnik listing at EUR 18,000 in Jul-Aug was excluded as an outlier (probably crewed).",
-   "sources": [
-    {
-     "url": "https://www.yacht-rent.com/croatia-charter/49860-lagoon-46-trogir",
-     "note": "Lagoon 46 2021, Trogir, EUR 5,300 (1 Jan-25 Apr 2026), EUR 6,300 (9-23 May), range EUR 5,300-14,000"
-    },
-    {
-     "url": "https://www.yacht-rent.com/croatia-charter/54686-lagoon-46-sukošan",
-     "note": "Lagoon 46 2024, Sukosan, range EUR 3,990-13,900/wk"
-    },
-    {
-     "url": "https://www.yacht-rent.com/croatia-charter/61500-lagoon-46-rogoznica",
-     "note": "Lagoon 46, Rogoznica, EUR 3,800 early season rising to EUR 9,000 by 6-13 Jun 2026"
-    }
-   ]
+   "peak": 11800,
+   "low": 5145,
+   "product": "bareboat",
+   "confidence": "Likely",
+   "basis": "Lagoon 46, 2023+ builds; 47 observations, 4 sources"
   },
   "fp-elba-45": {
-   "low": 4500,
-   "shoulder": 7800,
-   "peak": 11500,
-   "estimated": false,
-   "basis": "Five Croatian listings for 2022-2025 boats have consistent tops of EUR 11,500-12,550 and bottoms of about EUR 4,200-4,950. No dated peak-week row was visible, so peak is taken as about 95% of the range top.",
-   "sources": [
-    {
-     "url": "https://www.yacht-rent.com/croatia-charter/66739-fountaine-pajot-elba-45-trogir",
-     "note": "Elba 45 2023, Trogir, EUR 4,165-11,800/wk"
-    },
-    {
-     "url": "https://www.yacht-rent.com/croatia-charter/15459-fountaine-pajot-elba-45-sukošan",
-     "note": "Elba 45, Sukosan, EUR 4,400-11,500/wk"
-    },
-    {
-     "url": "https://www.yacht-rent.com/croatia-charter/60764-fountaine-pajot-elba-45-Šibenik",
-     "note": "Elba 45 2025, Sibenik, EUR 4,950-12,060/wk"
-    },
-    {
-     "url": "https://www.happycharter.com/en/boat/fountaine-pajot-elba-45-c31525",
-     "note": "Elba 45 2023, Seget Donji, EUR 4,900-12,550/wk"
-    }
-   ]
+   "peak": 11750,
+   "low": 5616,
+   "product": "bareboat",
+   "confidence": "Likely",
+   "basis": "Elba 45 2023–25 and its successor FP44 (2026)"
   },
   "fp-tanna-47": {
-   "low": 5300,
-   "shoulder": 9000,
-   "peak": 13500,
-   "estimated": false,
-   "basis": "The 2025 Sukosan week prices were about USD 12,978 (early July) and USD 14,600 (early August), roughly EUR 12,000-13,500. 2026 listings show EUR 9,542 at the end of May/early June and EUR 5,115-5,400 in May. Ranges are EUR 3,600-14,500 and 4,900-13,500.",
-   "sources": [
-    {
-     "url": "https://www.yacht-rent.com/croatia-charter/59245-fountaine-pajot-tanna-47-pula",
-     "note": "Tanna 47 2025, Pula, 30 May-6 Jun 2026 EUR 9,542; range EUR 4,780-20,350"
-    },
-    {
-     "url": "https://www.yacht-rent.com/croatia-charter/38570-fountaine-pajot-tanna-47-sukošan",
-     "note": "Tanna 47 2023, Sukosan, EUR 4,900-13,500/wk; 2-9 May 2026 EUR 5,400"
-    },
-    {
-     "url": "https://samboat.com/boat-rental/sukosan/catamaran/153913?country=us",
-     "note": "Tanna 47 2023, Sukosan, 2025 season: 5-11 Jul USD 12,978, 2-8 Aug USD 14,600"
-    },
-    {
-     "url": "https://www.yacht-rent.com/croatia-charter/61679-fountaine-pajot-tanna-47-Šibenik",
-     "note": "Tanna 47 2025, Sibenik/Skradin, EUR 3,600-14,500/wk; 3-10 Oct 2026 EUR 6,400"
-    }
-   ]
-  },
-  "lagoon-51": {
-   "low": 6500,
-   "shoulder": 12500,
-   "peak": 20000,
-   "estimated": false,
-   "basis": "Dated 2026 tables for a 2026 boat show EUR 5,900 to 2 May, EUR 6,900-8,900 in May and EUR 19,900 from 27 Jun to 29 Aug. A Kaštela boat peaks at EUR 21,500. The seasonal curve is very steep. Shoulder is a blend of May (about EUR 9k) and June/September (about EUR 14-16k).",
-   "sources": [
-    {
-     "url": "https://www.yacht-rent.com/croatia-charter/70845-lagoon-51-trogir",
-     "note": "Lagoon 51 2026 (Princess Hana), Trogir: 1 Jan-2 May EUR 5,900; May EUR 6,900-8,900; 27 Jun-29 Aug 2026 EUR 19,900"
-    },
-    {
-     "url": "https://www.yacht-rent.com/croatia-charter/62585-lagoon-51-kaštela",
-     "note": "Lagoon 51, Kastela, 27 Jun-22 Aug 2026 EUR 21,500"
-    },
-    {
-     "url": "https://www.denisonyachtsales.com/yacht-charter/Queen-Victoria/Lagoon-Croatia-superyacht-charter/y10411",
-     "note": "Broker quote for the same Lagoon 51: EUR 5,900-19,900/wk plus expenses"
-    }
-   ]
-  },
-  "lagoon-55": {
-   "low": 15500,
-   "shoulder": 22000,
-   "peak": 30000,
-   "estimated": false,
-   "basis": "Few boats are offered bareboat; most Lagoon 55s are crewed. Bareboat Croatian ranges are EUR 12,000-31,000 (Trogir, peaking mid-July) and EUR 15,800-31,000 (Sibenik). A 2026 boat is offered bareboat from EUR 16,950. Mandatory services of about EUR 1,500/wk are extra.",
-   "sources": [
-    {
-     "url": "https://www.yacht-rent.com/croatia-charter/70725-lagoon-55-trogir",
-     "note": "Lagoon 55, Trogir, 2026: EUR 12,000 early Jan to EUR 31,000 mid-July"
-    },
-    {
-     "url": "https://www.yacht-rent.com/croatia-charter/49843-lagoon-55-Šibenik",
-     "note": "Lagoon 55, Sibenik, EUR 15,800-31,000/wk"
-    },
-    {
-     "url": "https://www.sailo.com/boats/Seget_Donji_Croatia/Sail/rental_boat_131024/",
-     "note": "Lagoon 55 2026 bareboat, Seget Donji, from EUR 16,950/wk"
-    }
-   ]
-  },
-  "bali-5-4": {
-   "low": 9500,
-   "shoulder": 15000,
-   "peak": 22000,
-   "estimated": true,
-   "basis": "Most Croatian Bali 5.4s are skipper-obligatory or crewed, so a true bareboat price is rare. Figures are taken from boat-only rates: Gemini 2025 at EUR 6,500-22,000 plus mandatory skipper and hostess, and a Kastela boat at EUR 9,450 in early January rising to EUR 19,680 in early June. Mediterranean peaks elsewhere are EUR 25-28k.",
-   "sources": [
-    {
-     "url": "https://www.yacht-rent.com/croatia-charter/63052-bali-5.4-kaštela",
-     "note": "Bali 5.4 2025 (Gemini), Kastela, EUR 6,500-22,000/wk + skipper & hostess + APA obligatory"
-    },
-    {
-     "url": "https://www.yacht-rent.com/croatia-charter/12976-bali-5.4-kaštela",
-     "note": "Bali 5.4, Kastela, season rates from EUR 9,450 (Jan) to EUR 19,680 (early June)"
-    },
-    {
-     "url": "https://navisyachtcharter.com/bali-5-4-charter-catamaran-croatia",
-     "note": "Bali 5.4 Split area: EUR 12,700 low / EUR 24,200 high (VAT incl.)"
-    },
-    {
-     "url": "https://www.yacht-rent.com/spain/51137-bali-5.4-barcelona",
-     "note": "Comparison: Barcelona 18 Jul-22 Aug 2026 EUR 28,000/wk"
-    }
-   ]
+   "peak": 14350,
+   "low": 6195,
+   "product": "bareboat",
+   "confidence": "Likely",
+   "basis": "Tanna 47, 2023+ builds; 70 observations, 4 sources"
   },
   "fp-saona-47": {
-   "low": 5300,
-   "shoulder": 8500,
-   "peak": 12800,
-   "estimated": false,
-   "basis": "A dated 2026 Kastela table shows EUR 5,490 to 18 April, EUR 5,690 to 9 May and EUR 7,290 in May. Trogir ranges are EUR 4,718-12,350 and 4,718-13,000.",
-   "sources": [
-    {
-     "url": "https://www.yacht-rent.com/croatia-charter/46303-fountaine-pajot-saona-47-kaštela",
-     "note": "Saona 47, Kastela: 1 Jan-18 Apr 2026 EUR 5,490; 18 Apr-9 May EUR 5,690; 9-30 May EUR 7,290"
-    },
-    {
-     "url": "https://www.yacht-rent.com/croatia-charter/66745-fountaine-pajot-saona-47-trogir",
-     "note": "Saona 47 2020, Trogir, EUR 4,718-13,000/wk"
-    },
-    {
-     "url": "https://boatbookings.com/yacht_search/yacht_view.php?pid=32667",
-     "note": "Saona 47 Trogir: EUR 4,600 low / EUR 16,500 high"
-    }
-   ]
+   "peak": 14350,
+   "low": 6195,
+   "product": "bareboat",
+   "confidence": "Likely",
+   "basis": "No 2023+ Saona 47 exists: priced as the Tanna 47, its redesign on the same hull",
+   "successor": "Fountaine Pajot Tanna 47"
+  },
+  "lagoon-51": {
+   "peak": 20900,
+   "low": 7928,
+   "product": "bareboat",
+   "confidence": "Likely",
+   "basis": "Lagoon 51, 2023+ builds; 85 observations, 5 sources"
+  },
+  "lagoon-55": {
+   "peak": 34800,
+   "low": 21335,
+   "product": "crewed",
+   "confidence": "Likely",
+   "basis": "Crewed listings, 2023+ builds: crew included, APA extra"
+  },
+  "bali-5-4": {
+   "peak": 29300,
+   "low": 20834,
+   "product": "crewed",
+   "confidence": "Likely",
+   "basis": "Crewed listings, 2023–24 builds: crew included, APA extra"
   },
   "sun-odyssey-440": {
-   "low": 2400,
-   "shoulder": 3700,
-   "peak": 4900,
-   "estimated": false,
-   "basis": "Dated peak rows exist. Sibenik 2023 is EUR 5,150 late Jul-mid Aug. Kastela 2022 is EUR 4,650 late Jul-Aug. Krk 2018 is EUR 4,500 18 Jul-15 Aug. Starting rates are EUR 1,700-2,990. The model-page average is EUR 3,285 across 145 boats.",
-   "sources": [
-    {
-     "url": "https://www.yacht-rent.com/croatia-charter/38985-sun-odyssey-440-Šibenik",
-     "note": "SO 440 2023, Sibenik, EUR 2,350-5,150; late Jul-mid Aug 2026 EUR 5,150"
-    },
-    {
-     "url": "https://www.yacht-rent.com/croatia-charter/20972-sun-odyssey-440-kaštela",
-     "note": "SO 440 2022, Kastela, EUR 2,990-4,650; late Jul-late Aug 2026 EUR 4,650"
-    },
-    {
-     "url": "https://www.yacht-rent.com/croatia-charter/73538-sun-odyssey-440-krk",
-     "note": "SO 440 2018, Krk/Punat, EUR 1,700 Jan-Apr to EUR 4,500 (18 Jul-15 Aug 2026)"
-    },
-    {
-     "url": "https://www.yacht-rent.com/boat-models-in-charter/sun-odyssey-440",
-     "note": "All-region 2026 average EUR 3,285/wk (145 boats); peak-to-low spread up to 46%"
-    }
-   ]
+   "peak": 5800,
+   "low": 2504,
+   "product": "bareboat",
+   "confidence": "Likely",
+   "basis": "Sun Odyssey 440, 2023–25, 3–4 cabins"
   },
   "bavaria-cruiser-46": {
-   "low": 2100,
-   "shoulder": 3400,
-   "peak": 5000,
-   "estimated": false,
-   "basis": "Combines the current Bavaria C46 (2023-2026, most listings) with the older Cruiser 46 (2014-2019). C46 ranges are EUR 1,555-6,660 (2026, 4 cabins) and EUR 1,645-7,920 (2025, 5 cabins), with EUR 2,920-3,790 in May. Older Cruiser 46s are EUR 1,700-4,400. No dated peak row was visible, so peak is an estimate within the ranges.",
-   "sources": [
-    {
-     "url": "https://www.yacht-rent.com/croatia-charter/62875-bavaria-c46-Šibenik",
-     "note": "Bavaria C46 2025 (5 cab), Sibenik, EUR 1,645-7,920/wk"
-    },
-    {
-     "url": "https://www.yacht-rent.com/croatia-charter/77369-bavaria-c46-pirovac",
-     "note": "Bavaria C46 2026, Pirovac, EUR 1,555-6,660/wk"
-    },
-    {
-     "url": "https://www.yacht-rent.com/croatia-charter/64223-bavaria-c46-biograd-na-moru",
-     "note": "Bavaria C46, Biograd, May 2026 EUR 2,920-3,790"
-    },
-    {
-     "url": "https://www.yacht-rent.com/croatia-charter/62881-bavaria-cruiser-46-pula",
-     "note": "Bavaria Cruiser 46 2024, Pula, EUR 2,070-5,450/wk"
-    },
-    {
-     "url": "https://www.yacht-rent.com/croatia-charter/50193-bavaria-cruiser-46-zadar",
-     "note": "Bavaria Cruiser 46 2016, Zadar, EUR 1,700-3,990/wk"
-    }
-   ]
-  },
-  "oceanis-51-1": {
-   "low": 3400,
-   "shoulder": 5200,
-   "peak": 7700,
-   "estimated": false,
-   "basis": "For 2022-2023 boats the ranges are EUR 3,500-7,950 (Sibenik) and EUR 3,510-7,860 (Dubrovnik), with late May at EUR 4,600-5,100. Older boats are cheaper (Primosten EUR 2,300-5,200).",
-   "sources": [
-    {
-     "url": "https://www.yacht-rent.com/croatia-charter/51889-oceanis-51.1-Šibenik",
-     "note": "Oceanis 51.1 2022, Sibenik, EUR 3,500-7,950/wk; late May 2026 EUR 4,600-5,100"
-    },
-    {
-     "url": "https://www.yacht-rent.com/croatia-charter/49892-oceanis-51.1-dubrovnik",
-     "note": "Oceanis 51.1 2023, Dubrovnik, EUR 3,510-7,860/wk; ~EUR 4,830 late May 2026"
-    },
-    {
-     "url": "https://www.yacht-rent.com/croatia-charter/28971-oceanis-51.1-primošten",
-     "note": "Oceanis 51.1, Primosten, EUR 2,300-5,200/wk"
-    },
-    {
-     "url": "https://www.yacht-rent.com/greece/27779-oceanis-51.1-corfu",
-     "note": "Comparison: Corfu 2019 boat reaches EUR 7,600 late Jul-early Aug 2026"
-    }
-   ]
-  },
-  "dufour-530": {
-   "low": 3300,
-   "shoulder": 5300,
-   "peak": 8000,
-   "estimated": false,
-   "basis": "For 2022-2024 boats the ranges are EUR 3,000-8,236, EUR 3,470-9,440 and EUR 1,050-10,200. October 2026 is EUR 2,930-4,120. Peak weeks after discounts are about EUR 6,300-9,180.",
-   "sources": [
-    {
-     "url": "https://www.yacht-rent.com/croatia-charter/50581-dufour-530-sukošan",
-     "note": "Dufour 530 2024, Sukosan, range EUR 1,050-10,200; 31 Oct 2026-1 Jan 2027 EUR 3,850"
-    },
-    {
-     "url": "https://www.yacht-rent.com/croatia-charter/49276-dufour-530-trogir",
-     "note": "Dufour 530 2024, Trogir, 3-10 Oct 2026 EUR 4,120; 24 Oct EUR 3,415"
-    },
-    {
-     "url": "https://www.happycharter.com/en/boat/dufour-530-402595",
-     "note": "Dufour 530 2022, Croatia, EUR 3,470-9,440/wk"
-    }
-   ]
-  },
-  "hanse-508": {
-   "low": 2800,
-   "shoulder": 4500,
-   "peak": 6900,
-   "estimated": false,
-   "basis": "Ranges are EUR 2,220-6,870 (2023), EUR 3,300-7,200 (2025), EUR 3,600-6,900 and EUR 1,985-8,800. The 2026 tables show EUR 2,410 to 18 April, EUR 3,410-3,520 in late March to April and EUR 4,125 in early May.",
-   "sources": [
-    {
-     "url": "https://www.yacht-rent.com/croatia-charter/48582-hanse-508-trogir",
-     "note": "Hanse 508 2023, Trogir, EUR 2,220-6,870; Jan-18 Apr 2026 EUR 2,410; 9-16 May EUR 3,410"
-    },
-    {
-     "url": "https://www.yacht-rent.com/croatia-charter/60737-hanse-508-krk",
-     "note": "Hanse 508 2025, Krk, EUR 3,300-7,200/wk"
-    },
-    {
-     "url": "https://www.yacht-rent.com/croatia-charter/37501-hanse-508-Šibenik",
-     "note": "Hanse 508 2023 (6 cab), Sibenik, 28 Mar-18 Apr 2026 EUR 3,520; early May EUR 4,125"
-    },
-    {
-     "url": "https://www.happycharter.com/en/boat/hanse-508-c23074",
-     "note": "Hanse 508, Sibenik, EUR 3,600-6,900/wk + EUR 440 final cleaning"
-    }
-   ]
-  },
-  "elan-impression-50-1": {
-   "low": 2500,
-   "shoulder": 4300,
-   "peak": 6500,
-   "estimated": false,
-   "basis": "Two sources only. A 2024 Trogir boat has a range of EUR 1,350-6,520. A 2021 Biograd boat is EUR 2,640 to 18 April, EUR 3,600 in mid-May and EUR 4,840 at the end of May/early June. Peak is the range top and is cross-checked against the Hanse 508.",
-   "sources": [
-    {
-     "url": "https://www.yacht-rent.com/croatia-charter/70207-elan-impression-50.1-trogir",
-     "note": "Elan Impression 50.1 2024, Trogir, EUR 1,350-6,520/wk"
-    },
-    {
-     "url": "https://www.yacht-rent.com/croatia-charter/29751-elan-impression-50.1-biograd-na-moru",
-     "note": "Elan Impression 50.1 2021, Biograd: Jan-18 Apr 2026 EUR 2,640; mid-May EUR 3,600; 30 May-6 Jun EUR 4,840"
-    }
-   ]
-  },
-  "jeanneau-yachts-60": {
-   "low": 7500,
-   "shoulder": 11000,
-   "peak": 14900,
-   "estimated": true,
-   "basis": "Charter listings call this boat the 'Jeanneau 60' (the 2019+ flagship); I found no listing under the 'Jeanneau Yachts 60' name. Croatian 2023 boats list at EUR 7,900-14,900 and EUR 8,100-14,900, which are 2024-dated pages. A Greek 2021 boat's 2026 rates are EUR 6,250 to mid-April, EUR 14,250 from 25 Jul-22 Aug and EUR 8,750-10,630 in late Sep/Oct. Treat as an estimate if the newer model is priced differently.",
-   "sources": [
-    {
-     "url": "https://www.happycharter.com/en/boat/jeanneau-60-c31454",
-     "note": "Jeanneau 60 2023, Sibenik, EUR 8,100-14,900/wk, EUR 7,500 deposit (page dated 2024)"
-    },
-    {
-     "url": "https://www.yachtscroatia.com/luxury-sailing-yacht-charter-croatia/jeanneau-yachts-60",
-     "note": "Jeanneau 60 2023, Sibenik, from EUR 7,000/wk"
-    },
-    {
-     "url": "https://www.yacht-rent.com/greece/31085-jeanneau-60-athens",
-     "note": "Jeanneau 60 2021, Megara/Athens: 1 Jan-18 Apr 2026 EUR 6,250; 25 Jul-22 Aug 2026 EUR 14,250"
-    }
-   ]
-  },
-  "oceanis-yacht-60": {
-   "low": 7000,
-   "shoulder": 10500,
-   "peak": 14500,
-   "estimated": true,
-   "basis": "Very few are in bareboat charter, and listings mostly show the older Oceanis 60 (2015-2017). A 2015 Oceanis 60 in Split is EUR 5,500 / 7,000 / 10,000. The Oceanis Yacht 62 2026 averages EUR 7,464, with a low week of EUR 5,498 and a peak week of EUR 10,450. Prices are set close to the Jeanneau 60 for a recent boat.",
-   "sources": [
-    {
-     "url": "https://www.yacht-rent.com/croatia-charter/73935-oceanis-60-split",
-     "note": "Oceanis 60 2015, Split, 2026: EUR 5,500 early season, EUR 7,000 mid, EUR 10,000 peak"
-    },
-    {
-     "url": "https://www.yacht-rent.com/boat-models-in-charter/oceanis-yacht-62",
-     "note": "Oceanis Yacht 62 2026 average EUR 7,464/wk; low EUR 5,498 (Mar), high EUR 10,450 (mid-Aug)"
-    },
-    {
-     "url": "https://12knots.com/en/yacht-charter/oceanis-60-3-1-cab-infinity-40229/",
-     "note": "Oceanis 60 2024 (3+1 cab), Croatia, listed on 12knots (crewed/skippered offer)"
-    }
-   ]
-  },
-  "hanse-588": {
-   "low": 4600,
-   "shoulder": 7500,
-   "peak": 10700,
-   "estimated": false,
-   "basis": "Croatian ranges are EUR 4,390-10,660 (Kastela, 5+1 cabins), EUR 6,201-10,000 (Biograd) and EUR 8,950-12,950 (Pula 2021 boat). October 2026 is about EUR 3,530 before early-booking discount. No dated peak row was visible.",
-   "sources": [
-    {
-     "url": "https://www.boatbookings.com/yacht/hanse-588-bareboat-sailing-yacht-pid39477",
-     "note": "Hanse 588, Kastela/Split/Trogir, EUR 4,390 low / EUR 10,660 high"
-    },
-    {
-     "url": "https://www.yacht-rent.com/croatia-charter/38180-hanse-588-biograd-na-moru",
-     "note": "Hanse 588, Biograd, EUR 6,201-10,000/wk"
-    },
-    {
-     "url": "https://www.happycharter.com/en/boat/hanse-588-c31508?print=1",
-     "note": "Hanse 588 2021, Pula, EUR 8,950-12,950/wk"
-    }
-   ]
+   "peak": 6700,
+   "low": 4237,
+   "product": "bareboat",
+   "confidence": "Likely",
+   "basis": "No 2023+ Cruiser 46: priced as the Bavaria C46 (2024–25), its successor; the 5-cabin C46 lists 15–25% higher",
+   "successor": "Bavaria C46"
   },
   "hanse-458": {
-   "low": 2300,
-   "shoulder": 3600,
-   "peak": 5500,
-   "estimated": false,
-   "basis": "A 2023 Sibenik boat is EUR 3,428 for 15-22 Aug and EUR 3,482 in July after a 46% discount, implying a list price of about EUR 6,300-6,450. A 2019 boat is EUR 4,136 in early September. A 2025 Biograd boat is EUR 2,300 in January and EUR 3,500 in late May. The 2025 Sibenik range is EUR 1,361-6,560.",
-   "sources": [
-    {
-     "url": "https://www.yacht-rent.com/croatia-charter/64861-hanse-458-Šibenik",
-     "note": "Hanse 458 2025, Sibenik, EUR 1,361-6,560/wk; 1 Jan-28 Mar 2026 EUR 2,720"
-    },
-    {
-     "url": "https://www.yacht-rent.com/croatia-charter/64392-hanse-458-biograd-na-moru",
-     "note": "Hanse 458 2025, Biograd, EUR 2,300 (Jan) to EUR 3,500 (late May 2026)"
-    },
-    {
-     "url": "https://www.yacht-rent.com/croatia-charter/28339-hanse-458-biograd-na-moru",
-     "note": "Hanse 458 2019, Biograd, 5-12 Sep 2026 EUR 4,136"
-    },
-    {
-     "url": "https://www.yacht-rent.com/croatia-charter/37496-hanse-458-Šibenik",
-     "note": "Hanse 458, Sibenik (Mandalina), 15-22 Aug 2026 EUR 3,428 after 46% discount"
-    }
-   ]
+   "peak": 6350,
+   "low": 2812,
+   "product": "bareboat",
+   "confidence": "Likely",
+   "basis": "Hanse 458, 2023–25; 91 observations"
   },
   "elan-impression-45-1": {
-   "low": 2300,
-   "shoulder": 3500,
-   "peak": 5000,
-   "estimated": false,
-   "basis": "The 2026 spring tables are solid: EUR 2,350 / 2,700 / 2,950 (Sibenik 2022), EUR 1,900 rising to 3,890 by early June (Pirovac 2020) and EUR 2,240 (Biograd 2023). The peak row was not visible. Peak is set from Pirovac's EUR 3,000 for 29 Aug-5 Sep, a Trogir range top of EUR 7,370 and parity with the Sun Odyssey 440 and Hanse 458, so it is partly estimated.",
-   "sources": [
-    {
-     "url": "https://www.yacht-rent.com/croatia-charter/24194-elan-impression-45.1-Šibenik",
-     "note": "Elan Impression 45.1 2022, Sibenik: early 2026 EUR 2,350; 18 Apr-9 May EUR 2,700; 9-16 May EUR 2,950"
-    },
-    {
-     "url": "https://www.yacht-rent.com/croatia-charter/28821-elan-impression-45.1-pirovac",
-     "note": "Elan Impression 45.1 2020, Pirovac, EUR 1,900 rising to EUR 3,890 (early June 2026); 29 Aug-5 Sep EUR 3,000"
-    },
-    {
-     "url": "https://www.yacht-rent.com/croatia-charter/48139-elan-impression-45.1-biograd-na-moru",
-     "note": "Elan Impression 45.1 2023, Biograd, 1 Jan-9 May 2026 EUR 2,240"
-    },
-    {
-     "url": "https://www.yacht-rent.com/croatia-charter/70198-elan-impression-45.1-trogir",
-     "note": "Elan Impression 45.1 2022, Trogir, range EUR 775-7,370/wk"
-    }
-   ]
-  },
-  "sun-odyssey-519": {
-   "low": 3200,
-   "shoulder": 4700,
-   "peak": 6200,
-   "estimated": false,
-   "basis": "Fleet boats are 2016-2021, since the model is out of production. Dated 2026 rows: Kastela 2019 is EUR 3,450 (Jan-Apr) to EUR 6,500 (11 Jul-1 Aug). Kastela 2021 is EUR 3,200 (early April) to EUR 5,800 (late Jun-Jul). Frapa is about EUR 3,463 from 1 Jan to 8 May.",
-   "sources": [
-    {
-     "url": "https://www.yacht-rent.com/croatia-charter/28751-sun-odyssey-519-kaštela",
-     "note": "SO 519 2019, Kastela, EUR 3,450 Jan-Apr 2026 to EUR 6,500 (11 Jul-1 Aug 2026)"
-    },
-    {
-     "url": "https://www.yacht-rent.com/croatia-charter/28752-sun-odyssey-519-kaštela",
-     "note": "SO 519 2021, Kastela, EUR 3,200 early Apr 2026 to EUR 5,800 late Jun-Jul"
-    },
-    {
-     "url": "https://www.yachtico.com/charters-2xqq",
-     "note": "SO 519, Marina Frapa, 1 Jan-8 May 2026 ~EUR 3,463/wk incl. mandatory costs"
-    }
-   ]
+   "peak": 6000,
+   "low": 2450,
+   "product": "bareboat",
+   "confidence": "Likely",
+   "basis": "Impression 45.1/45, 2023–25"
   },
   "oceanis-48": {
-   "low": 2300,
-   "shoulder": 3500,
-   "peak": 4700,
-   "estimated": false,
-   "basis": "The model was built about 2013-2017, so charter boats are 9-13 years old; there is no 'few years old' Oceanis 48. Sibenik 2015 is EUR 2,350 early in the year and EUR 4,700 from late July to mid-August. Kastela 2017 is EUR 2,490 to 18 April and EUR 2,790 to 9 May.",
-   "sources": [
-    {
-     "url": "https://www.yacht-rent.com/croatia-charter/27758-oceanis-48-Šibenik",
-     "note": "Oceanis 48 2015, Sibenik, EUR 2,350 early 2026 to EUR 4,700 late Jul-mid Aug 2026"
-    },
-    {
-     "url": "https://www.yacht-rent.com/croatia-charter/46291-oceanis-48-kaštela",
-     "note": "Oceanis 48 2017, Kastela, EUR 2,490 to 18 Apr 2026; EUR 2,790 to 9 May"
-    },
-    {
-     "url": "https://www.yacht-rent.com/croatia-charter/77720-oceanis-48-pula",
-     "note": "Oceanis 48 2015, Pula/Pomer, EUR 1,800-1,950 Mar-Apr 2026"
-    }
-   ]
+   "peak": 6300,
+   "low": 2486,
+   "product": "bareboat",
+   "confidence": "Likely",
+   "basis": "No 2023+ Oceanis 48 (built 2013–18): priced as the Oceanis 46.1 (2024–25), 15–30% above a 2018 Oceanis 48",
+   "successor": "Beneteau Oceanis 46.1"
+  },
+  "oceanis-51-1": {
+   "peak": 8400,
+   "low": 4187,
+   "product": "bareboat",
+   "confidence": "Likely",
+   "basis": "Oceanis 51.1, 2023–25, 5–6 cabins"
+  },
+  "dufour-530": {
+   "peak": 9000,
+   "low": 3137,
+   "product": "bareboat",
+   "confidence": "Likely",
+   "basis": "Dufour 530 2023–24 and its successor Dufour 54 (2026)"
+  },
+  "hanse-508": {
+   "peak": 8350,
+   "low": 3878,
+   "product": "bareboat",
+   "confidence": "Likely",
+   "basis": "Hanse 508 2023–24 and its successor Hanse 510"
+  },
+  "elan-impression-50-1": {
+   "peak": 8300,
+   "low": 2800,
+   "product": "bareboat",
+   "confidence": "Guessing",
+   "basis": "Impression 50.1, 2023–24; research low €1,592 is a distressed week, floor set at €2,800"
+  },
+  "sun-odyssey-519": {
+   "peak": 7400,
+   "low": 3456,
+   "product": "bareboat",
+   "confidence": "Guessing",
+   "basis": "No 2023+ Sun Odyssey 519 (built 2016–21): priced as the Sun Odyssey 490, ~1.5 m shorter; 2019–20 519s list €8,000–8,950 at peak in Greece",
+   "successor": "Jeanneau Sun Odyssey 490"
+  },
+  "jeanneau-yachts-60": {
+   "peak": 12000,
+   "low": 4150,
+   "product": "skippered",
+   "confidence": "Guessing",
+   "basis": "Jeanneau 60, 2023 builds; listed rows carry a ~20–22% early-booking discount, so list peak taken as ~€12,000 (a 2021 boat in Athens lists €14,250)"
+  },
+  "oceanis-yacht-60": {
+   "peak": 16600,
+   "low": 6898,
+   "product": "skippered",
+   "confidence": "Guessing",
+   "basis": "Oceanis Yacht 60, 2024–25 skippered listings, single source; skipper about €230/day extra"
+  },
+  "hanse-588": {
+   "peak": 13600,
+   "low": 6138,
+   "product": "bareboat",
+   "confidence": "Guessing",
+   "basis": "Hanse 588 (2023) and Hanse 590 (2025), which diverge"
   }
  },
  "destinations": {
   "croatia": {
-   "catMultiplier": 1.0,
-   "monoMultiplier": 1.0,
-   "months": {
-    "1": "closed",
-    "2": "closed",
-    "3": "closed",
-    "4": "low",
-    "5": "shoulder",
-    "6": "shoulder",
-    "7": "peak",
-    "8": "peak",
-    "9": "shoulder",
-    "10": "low",
-    "11": "closed",
-    "12": "closed"
-   },
-   "note": "Baseline. Saturday-to-Saturday. Many boats are bookable Nov-Mar at below-April prices, but most fleets don't operate then, so those months are marked closed. Late June is increasingly priced at or near peak (e.g. Lagoon 42 EUR 7,200-9,150 from 20 Jun), and the first week of September is often still near peak."
+   "catFactor": 1.0,
+   "monoFactor": 1.0,
+   "curve": [
+    [
+     "01-01",
+     0
+    ],
+    [
+     "04-01",
+     0.42
+    ],
+    [
+     "05-15",
+     0.56
+    ],
+    [
+     "05-29",
+     0.75
+    ],
+    [
+     "06-12",
+     0.84
+    ],
+    [
+     "06-26",
+     1.0
+    ],
+    [
+     "08-14",
+     0.84
+    ],
+    [
+     "08-28",
+     0.72
+    ],
+    [
+     "09-11",
+     0.6
+    ],
+    [
+     "09-25",
+     0.42
+    ],
+    [
+     "11-01",
+     0
+    ]
+   ],
+   "note": "Near-weekly steps; peak 26 Jun–14 Aug (2027 Trogir list)."
   },
   "greece-athens": {
-   "catMultiplier": 1.12,
-   "monoMultiplier": 1.05,
-   "months": {
-    "1": "closed",
-    "2": "closed",
-    "3": "closed",
-    "4": "low",
-    "5": "shoulder",
-    "6": "shoulder",
-    "7": "peak",
-    "8": "peak",
-    "9": "shoulder",
-    "10": "low",
-    "11": "closed",
-    "12": "closed"
-   },
-   "note": "Lagoon 42 at Athens/Lavrion: EUR 9,000-9,700 from mid-June to 25 July, then EUR 10,300-10,400 (late Jul-mid Aug) for 2022-2024 boats. Croatia's comparable peak is EUR 8,000-9,700. Lagoon 46 Athens is EUR 5,950-13,200 and EUR 7,000-12,000. Sun Odyssey 440: Athens EUR 1,900-5,500 and Lavrion EUR 2,400-4,800, against Croatia's EUR 1,700-5,150. The Meltemi wind blows in Jul-Aug. Sources: yacht-rent.com/greece/73552-lagoon-42-lavrion, /greece/48843-lagoon-42-athens, /greece/71610-sun-odyssey-440-athens."
+   "catFactor": 1.03,
+   "monoFactor": 1.03,
+   "curve": [
+    [
+     "01-01",
+     0
+    ],
+    [
+     "04-01",
+     0.56
+    ],
+    [
+     "04-17",
+     0.61
+    ],
+    [
+     "05-15",
+     0.78
+    ],
+    [
+     "06-12",
+     0.89
+    ],
+    [
+     "07-24",
+     1.0
+    ],
+    [
+     "08-14",
+     0.89
+    ],
+    [
+     "09-11",
+     0.78
+    ],
+    [
+     "09-25",
+     0.61
+    ],
+    [
+     "10-02",
+     0.56
+    ],
+    [
+     "11-01",
+     0
+    ]
+   ],
+   "note": "Coarse 8–9-step calendar; September held high (2027 Lefkas list)."
   },
   "greece-ionian": {
-   "catMultiplier": 1.1,
-   "monoMultiplier": 1.0,
-   "months": {
-    "1": "closed",
-    "2": "closed",
-    "3": "closed",
-    "4": "low",
-    "5": "shoulder",
-    "6": "shoulder",
-    "7": "peak",
-    "8": "peak",
-    "9": "shoulder",
-    "10": "low",
-    "11": "closed",
-    "12": "closed"
-   },
-   "note": "Lagoon 42 at Lefkas, 1-22 Aug 2026: EUR 8,800 (2017 boat), EUR 10,100 (2020) and EUR 11,000 (2024). 20 Jun-1 Aug is EUR 8,800, 22 Aug-12 Sep EUR 8,500, and the starting rate EUR 3,500. Monohulls are on a par with Croatia: SO 440 Ionian 2018 is EUR 1,700-4,900, Corfu 2020 EUR 2,210-5,200 and Zakynthos 2020 EUR 2,600-5,200. Sources: yacht-rent.com/greece/50043-lagoon-42-lefkada, /greece/31157-sun-odyssey-440-ionian-islands, /greece/31169-sun-odyssey-440-corfu."
+   "catFactor": 1.0,
+   "monoFactor": 1.0,
+   "curve": [
+    [
+     "01-01",
+     0
+    ],
+    [
+     "04-01",
+     0.56
+    ],
+    [
+     "04-17",
+     0.61
+    ],
+    [
+     "05-15",
+     0.78
+    ],
+    [
+     "06-12",
+     0.89
+    ],
+    [
+     "07-24",
+     1.0
+    ],
+    [
+     "08-14",
+     0.89
+    ],
+    [
+     "09-11",
+     0.78
+    ],
+    [
+     "09-25",
+     0.61
+    ],
+    [
+     "10-02",
+     0.56
+    ],
+    [
+     "11-01",
+     0
+    ]
+   ],
+   "note": "Coarse 8–9-step calendar; September held high (2027 Lefkas list)."
   },
   "sardinia": {
-   "catMultiplier": 1.12,
-   "monoMultiplier": 1.25,
-   "months": {
-    "1": "closed",
-    "2": "closed",
-    "3": "closed",
-    "4": "low",
-    "5": "shoulder",
-    "6": "shoulder",
-    "7": "peak",
-    "8": "peak",
-    "9": "shoulder",
-    "10": "low",
-    "11": "closed",
-    "12": "closed"
-   },
-   "note": "Lagoon 42 at Portisco: EUR 9,200 (25 Jul-8 Aug), EUR 10,600 (8-22 Aug) and EUR 4,650 (early Oct, Olbia). Lagoon 46 Sardinia is EUR 6,189-14,409 and Olbia EUR 4,500-13,500, against Croatia's EUR 3,990-14,000. Monohulls cost noticeably more than in Croatia: Oceanis 46.1 2024 Olbia is EUR 4,200-7,900 and 2023 EUR 3,330-6,440, against Croatia's 2024 boat at EUR 1,950-5,900. SO 440 2019 Olbia is EUR 3,800-6,700. Sources: yacht-rent.com/italy/49494-lagoon-42-sardegna, /italy/63166-oceanis-46.1-olbia, /italy/11173-sun-odyssey-440-olbia."
+   "catFactor": 1.1,
+   "monoFactor": 1.2,
+   "curve": [
+    [
+     "01-01",
+     0
+    ],
+    [
+     "04-01",
+     0.4
+    ],
+    [
+     "05-08",
+     0.55
+    ],
+    [
+     "05-29",
+     0.65
+    ],
+    [
+     "06-12",
+     0.74
+    ],
+    [
+     "07-03",
+     0.86
+    ],
+    [
+     "07-24",
+     0.97
+    ],
+    [
+     "08-07",
+     1.0
+    ],
+    [
+     "08-21",
+     0.84
+    ],
+    [
+     "09-04",
+     0.74
+    ],
+    [
+     "09-18",
+     0.6
+    ],
+    [
+     "10-02",
+     0.5
+    ],
+    [
+     "10-09",
+     0.4
+    ],
+    [
+     "11-01",
+     0
+    ]
+   ],
+   "note": "Every week priced; steep, top mid-August."
   },
   "sicily": {
-   "catMultiplier": 1.05,
-   "monoMultiplier": 1.1,
-   "months": {
-    "1": "closed",
-    "2": "closed",
-    "3": "closed",
-    "4": "low",
-    "5": "shoulder",
-    "6": "shoulder",
-    "7": "peak",
-    "8": "peak",
-    "9": "shoulder",
-    "10": "low",
-    "11": "closed",
-    "12": "closed"
-   },
-   "note": "Lagoon 42 Portorosa/Palermo (2018 boats): EUR 8,500 (4 Jul-1 Aug), EUR 9,500 (1-21 Aug) and EUR 6,210 (22 Aug-18 Sep). These are older boats, so like-for-like it is about Croatia +5-10%. Lagoon 46 Messina is EUR 6,100 Jan-2 May and EUR 11,700 from 11 Jul-22 Aug, so the low season costs more than Croatia and the peak slightly less. Oceanis 46.1 Portorosa is EUR 3,201-5,820 and EUR 3,420-6,060, against Croatia's EUR 1,950-5,900, so the low season is relatively dear. Sources: nautal.com/en/boat-rental/palermo--20503/catamaran/lagoon-42-b7qyy, yacht-rent.com/italy/49615-lagoon-42-palermo, yachtbooker.com Portorosa Oceanis 46.1 listings."
+   "catFactor": 1.05,
+   "monoFactor": 1.1,
+   "curve": [
+    [
+     "01-01",
+     0
+    ],
+    [
+     "04-01",
+     0.4
+    ],
+    [
+     "05-08",
+     0.55
+    ],
+    [
+     "05-29",
+     0.65
+    ],
+    [
+     "06-12",
+     0.74
+    ],
+    [
+     "07-03",
+     0.86
+    ],
+    [
+     "07-24",
+     0.97
+    ],
+    [
+     "08-07",
+     1.0
+    ],
+    [
+     "08-21",
+     0.84
+    ],
+    [
+     "09-04",
+     0.74
+    ],
+    [
+     "09-18",
+     0.6
+    ],
+    [
+     "10-02",
+     0.5
+    ],
+    [
+     "10-09",
+     0.4
+    ],
+    [
+     "11-01",
+     0
+    ]
+   ],
+   "note": "Italian calendar."
   },
   "corsica": {
-   "catMultiplier": 1.05,
-   "monoMultiplier": 1.1,
-   "months": {
-    "1": "closed",
-    "2": "closed",
-    "3": "closed",
-    "4": "low",
-    "5": "shoulder",
-    "6": "shoulder",
-    "7": "peak",
-    "8": "peak",
-    "9": "shoulder",
-    "10": "low",
-    "11": "closed",
-    "12": "closed"
-   },
-   "note": "The catamaran figure rests on thin evidence. Lagoon 42 2024 in Corsica is EUR 8,000 (25 Jul-1 Aug 2026) and EUR 9,000 (1-22 Aug 2026), roughly on a par with Croatia to +5%. Ajaccio 12knots listings start from USD 2,881-3,955. I found no dated monohull data; the monohull multiplier is estimated, assuming French/Italian west-Med pricing between Croatia and Sardinia. The season is effectively May-Sep, with April and October thin. Sources: yacht-rent.com/france/63830-lagoon-42-corsica, 12knots.com/en/yacht-charter/lagoon-42-mezu-mare-27029/."
+   "catFactor": 1.1,
+   "monoFactor": 1.15,
+   "curve": [
+    [
+     "01-01",
+     0
+    ],
+    [
+     "05-01",
+     0.5
+    ],
+    [
+     "05-29",
+     0.65
+    ],
+    [
+     "06-12",
+     0.74
+    ],
+    [
+     "07-03",
+     0.86
+    ],
+    [
+     "07-24",
+     0.97
+    ],
+    [
+     "08-07",
+     1.0
+    ],
+    [
+     "08-21",
+     0.84
+    ],
+    [
+     "09-04",
+     0.74
+    ],
+    [
+     "09-18",
+     0.6
+    ],
+    [
+     "10-01",
+     0
+    ]
+   ],
+   "note": "Italian-style calendar, May–September season (estimated)."
   },
   "balearics": {
-   "catMultiplier": 1.25,
-   "monoMultiplier": 1.25,
-   "months": {
-    "1": "closed",
-    "2": "closed",
-    "3": "closed",
-    "4": "low",
-    "5": "shoulder",
-    "6": "shoulder",
-    "7": "peak",
-    "8": "peak",
-    "9": "shoulder",
-    "10": "low",
-    "11": "closed",
-    "12": "closed"
-   },
-   "note": "Balearics is the dearest Mediterranean area in this set. Lagoon 42 2022 Balearics is EUR 11,290 from 18 Jul-29 Aug 2026, and Mallorca 2025 EUR 3,900-11,140, against a Croatia peak of about EUR 9,000. SO 440 Mallorca is EUR 4,000-6,500 (2023) and EUR 2,348-6,450 (2020), against Croatia's EUR 2,350-5,150. Oceanis 51.1 Mallorca 2025 is EUR 6,500-10,000. A few Palma fleets operate year-round, but most bases run April-October. Sources: yacht-rent.com/spain/51170-lagoon-42-balearic-islands, /spain/62469-lagoon-42-mallorca, /spain/46243-sun-odyssey-440-mallorca."
+   "catFactor": 1.15,
+   "monoFactor": 1.25,
+   "curve": [
+    [
+     "01-01",
+     0
+    ],
+    [
+     "04-01",
+     0.3
+    ],
+    [
+     "05-01",
+     0.36
+    ],
+    [
+     "05-29",
+     0.55
+    ],
+    [
+     "06-19",
+     0.68
+    ],
+    [
+     "07-17",
+     0.85
+    ],
+    [
+     "07-24",
+     1.0
+    ],
+    [
+     "08-14",
+     0.85
+    ],
+    [
+     "08-21",
+     0.7
+    ],
+    [
+     "09-11",
+     0.58
+    ],
+    [
+     "09-25",
+     0.45
+    ],
+    [
+     "10-02",
+     0.32
+    ],
+    [
+     "11-01",
+     0
+    ]
+   ],
+   "note": "Steepest curve: April at 0.28–0.32 of peak; top 8–15 August. Catamaran factor 1.15: one Palma Lagoon 43 lists ~1.58× the Croatian price, but the crewed Bali 5.4 in Mallorca only ~1.07×."
   },
   "turkey": {
-   "catMultiplier": 0.95,
-   "monoMultiplier": 0.95,
-   "months": {
-    "1": "closed",
-    "2": "closed",
-    "3": "closed",
-    "4": "low",
-    "5": "shoulder",
-    "6": "shoulder",
-    "7": "peak",
-    "8": "peak",
-    "9": "shoulder",
-    "10": "shoulder",
-    "11": "low",
-    "12": "closed"
-   },
-   "note": "Turkey's season curve is flatter than Croatia's: peak is slightly lower and spring/autumn are dearer. Lagoon 42 Marmaris/Gocek 2023-2024 is EUR 7,950-8,200 peak (one Marmaris boat holds EUR 7,950 from 4 Jul to 31 Oct). Lagoon 40 2023 is EUR 5,300 in early April and EUR 5,800 from 25 Apr-6 Jun. SO 440 Marmaris 2022 is EUR 4,540 from 4 Jul-3 Oct, and Oceanis 46.1 Gocek 2020 EUR 4,900 from 18 Jul-29 Aug. The 0.95 is a whole-season blend; the true April figure is about 1.2-1.5 and August about 0.9. Sources: yacht-rent.com/turkey/42853-lagoon-42-marmaris, /turkey/45083-lagoon-42-göcek, /turkey/42847-lagoon-40-mediterranean, /turkey/50698-sun-odyssey-440-marmaris, /turkey/49121-oceanis-46.1-göcek."
+   "catFactor": 0.9,
+   "monoFactor": 0.9,
+   "curve": [
+    [
+     "01-01",
+     0
+    ],
+    [
+     "04-01",
+     0.72
+    ],
+    [
+     "04-17",
+     0.77
+    ],
+    [
+     "04-24",
+     0.82
+    ],
+    [
+     "09-04",
+     1.0
+    ],
+    [
+     "10-23",
+     0.82
+    ],
+    [
+     "11-01",
+     0
+    ]
+   ],
+   "note": "Flat 0.82 April–early September; peak 4 Sep–23 Oct (one 2027 list)."
   },
   "montenegro": {
-   "catMultiplier": 0.95,
-   "monoMultiplier": 0.95,
-   "months": {
-    "1": "closed",
-    "2": "closed",
-    "3": "closed",
-    "4": "low",
-    "5": "shoulder",
-    "6": "shoulder",
-    "7": "peak",
-    "8": "peak",
-    "9": "shoulder",
-    "10": "low",
-    "11": "closed",
-    "12": "closed"
-   },
-   "note": "Low confidence because the fleet is small and data thin. Lagoon 40 2022 Kotor July 2025 is EUR 5,520 list (EUR 4,140 after 25% off), against Croatia's EUR 6,300-6,900. Lagoon 42 2023 Tivat is about USD 6,184 for a mid-October 2026 week, which is dear for October. Bavaria Cruiser 46 2015 Tivat is about EUR 2,300-2,500/wk, or USD 2,541 in November 2026. Treated as roughly Croatia -5%. Sources: bebluesailing.com Kotor listings, 12knots.com/en/yacht-charter/lagoon-42-lyubushka-65241/, 12knots.com/en/yacht-charter/bavaria-cruiser-46-lavanta-65175/."
+   "catFactor": 0.95,
+   "monoFactor": 0.95,
+   "curve": [
+    [
+     "01-01",
+     0
+    ],
+    [
+     "05-01",
+     0.45
+    ],
+    [
+     "05-15",
+     0.56
+    ],
+    [
+     "05-29",
+     0.75
+    ],
+    [
+     "06-12",
+     0.84
+    ],
+    [
+     "06-26",
+     1.0
+    ],
+    [
+     "08-14",
+     0.84
+    ],
+    [
+     "08-28",
+     0.72
+    ],
+    [
+     "09-11",
+     0.6
+    ],
+    [
+     "09-25",
+     0.42
+    ],
+    [
+     "11-01",
+     0
+    ]
+   ],
+   "note": "Croatian-style calendar (estimated)."
   },
   "bvi": {
-   "catMultiplier": 1.15,
-   "monoMultiplier": 1.35,
-   "months": {
-    "1": "peak",
-    "2": "peak",
-    "3": "peak",
-    "4": "peak",
-    "5": "shoulder",
-    "6": "shoulder",
-    "7": "shoulder",
-    "8": "low",
-    "9": "low",
-    "10": "low",
-    "11": "shoulder",
-    "12": "peak"
-   },
-   "note": "These multipliers give a USD price: BVI USD = Croatia EUR x multiplier. Converted at 1.08 USD/EUR, the EUR-equivalent factors are about 1.15 for catamarans and 1.35 for monohulls. Lagoon 42 Tortola 2023 is EUR 5,966-8,522. A 2020 Lagoon 42 is EUR 7,076 from 10 Jul-1 Nov 2026 and EUR 10,026 over Christmas/New Year (18 Dec-5 Jan). Happycharter shows EUR 6,490-11,570. SO 440 Tortola 2024 is EUR 5,206-7,563, against Croatia's EUR 2,350-5,150, so BVI monohulls are relatively dear. The price curve is flat: low season is about 70-80% of peak (Croatia is about 40%), so a straight multiplier undershoots BVI's August-October prices. August-October is hurricane season; some fleet managers close or thin their fleets in September-October, so consider marking September closed. Christmas/New Year weeks carry a further premium of about 15-20%. Prices from the owner-operated Moorings/Sunsail fleets run higher than these aggregator prices. Sources: yacht-rent.com/caribbean/66192-lagoon-42-tortola, /caribbean/64332-lagoon-42-tortola, /caribbean/64357-sun-odyssey-440-tortola, boatbookings.com/yacht_charter/bvi_catamaran_charter.php. Multipliers converted to EUR terms (USD 1.25/1.45 at 1.08 USD per EUR).",
-   "seasonFactors": {
-    "low": 0.75,
-    "shoulder": 0.87,
-    "peak": 1
-   }
+   "catFactor": 0.95,
+   "monoFactor": 1.1,
+   "curve": [
+    [
+     "01-01",
+     1.15
+    ],
+    [
+     "01-03",
+     1.0
+    ],
+    [
+     "05-01",
+     0.87
+    ],
+    [
+     "08-01",
+     0
+    ],
+    [
+     "11-01",
+     0.87
+    ],
+    [
+     "12-01",
+     1.0
+    ],
+    [
+     "12-19",
+     1.15
+    ]
+   ],
+   "note": "Not covered by the 2027 report: flatter tropical season, Christmas and New Year +15%."
   },
   "seychelles": {
-   "catMultiplier": 1.0,
-   "monoMultiplier": 1.0,
-   "months": {
-    "1": "peak",
-    "2": "shoulder",
-    "3": "shoulder",
-    "4": "shoulder",
-    "5": "shoulder",
-    "6": "low",
-    "7": "low",
-    "8": "low",
-    "9": "low",
-    "10": "shoulder",
-    "11": "shoulder",
-    "12": "peak"
-   },
-   "note": "Mainly a catamaran destination; the monohull multiplier is estimated because there are few monohulls. Lagoon 42 Mahe: one listing shows EUR 6,900 in early January and EUR 5,000 from 2 May-3 Oct 2026; another runs EUR 2,600-7,000 with the cheapest tier late May-late September; older boats EUR 4,300 low / EUR 9,000 high; Happycharter EUR 5,900-9,900. Lagoon 46 is EUR 6,400-13,000. The peak is about Croatia level or slightly below, while the low season is dearer than Croatia's April. Sources disagree on high-season months: listing prices are highest at Christmas/New Year and lowest during the SE trade-wind months (Jun-Sep), but some guides call Jul-Aug high because of European holidays. Sources: yacht-rent.com/seychelles-charter/65727-lagoon-42-mahe, boatbookings.com/yacht/lagoon-42-bareboat-catamaran-pid31248, koek.sc/seychelles-sailing-guide/seychelles-sailing-costs.",
-   "seasonFactors": {
-    "low": 0.75,
-    "shoulder": 0.87,
-    "peak": 1
-   }
+   "catFactor": 0.9,
+   "monoFactor": 0.9,
+   "curve": [
+    [
+     "01-01",
+     1.0
+    ],
+    [
+     "02-01",
+     0.87
+    ],
+    [
+     "06-01",
+     0
+    ],
+    [
+     "09-01",
+     0.75
+    ],
+    [
+     "10-01",
+     0.87
+    ],
+    [
+     "12-01",
+     1.0
+    ]
+   ],
+   "note": "Not covered by the 2027 report: flatter tropical season."
   },
   "thailand": {
-   "catMultiplier": 1.2,
-   "monoMultiplier": 1.2,
-   "months": {
-    "1": "peak",
-    "2": "peak",
-    "3": "shoulder",
-    "4": "shoulder",
-    "5": "low",
-    "6": "low",
-    "7": "low",
-    "8": "low",
-    "9": "low",
-    "10": "low",
-    "11": "shoulder",
-    "12": "peak"
-   },
-   "note": "Phuket Lagoon 42 tiers are consistent across three 2018-2021 boats: about EUR 10,740-11,208 over late Dec-early Jan, EUR 9,648 from January to mid-March, EUR 7,980 from mid-March to April (Yachtico EUR 9,017 for 14 Mar-29 Apr 2026, incl. mandatory costs) and EUR 4,410-4,991 for May-October. Against Croatia that is about 1.15 at peak, 1.25 in shoulder and 1.3 in low; 1.2 is the blend. The monohull fleet is small and data thin, so the monohull figure is estimated. Oceans-Evasion averages put sailboats at about 80-85% of catamaran prices, so monohulls are relatively dear compared with Croatia. The NE monsoon (Nov-Apr) is the sailing season; the SW monsoon (May-Oct) brings rougher west-coast seas. Sources: yacht-rent.com/thailand-charter/46128-lagoon-42-phuket, /thailand-charter/46127-lagoon-42-phuket, /thailand-charter/41618-lagoon-42-phuket, yachtico.com/charters-3zrx, oceans-evasion.com/uk/boat-hire/thailand/phuket.",
-   "seasonFactors": {
-    "low": 0.75,
-    "shoulder": 0.87,
-    "peak": 1
-   }
+   "catFactor": 1.05,
+   "monoFactor": 1.05,
+   "curve": [
+    [
+     "01-01",
+     1.0
+    ],
+    [
+     "03-01",
+     0.87
+    ],
+    [
+     "05-01",
+     0
+    ],
+    [
+     "11-01",
+     0.87
+    ],
+    [
+     "12-01",
+     1.0
+    ]
+   ],
+   "note": "Not covered by the 2027 report: flatter tropical season."
   }
  }
 }

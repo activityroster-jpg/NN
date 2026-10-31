@@ -1,37 +1,49 @@
 // Weekly price estimates for the yacht models we offer. Pure: no DB, no I/O.
 //
-// A week's estimate is the admin's override for that model, destination and
-// week if there is one; otherwise the market price for the model in the
-// destination's season for that week, times the destination's multiplier,
-// plus our markup, rounded to the nearest 50. Prices are EUR, boat only, per
-// week: skipper, extras, deposit and local taxes are not included.
+// A week's estimate is the admin's own price for that model, destination and
+// week if there is one; otherwise:
+//   model peak (gross list, 2023+ hull) × destination factor (by hull type)
+//   × the destination's season ratio for that week (1.00 = peak week)
+//   × (1 + markup), rounded to the nearest 50.
+// Each destination has its own week-by-week season curve because operators'
+// calendars differ by country (docs/research/charter-prices-2027.md):
+// Greece steps coarsely and holds September high, Croatia steps almost
+// weekly, Italy and Spain are steep with a mid-August top, Turkey peaks in
+// September and October. Prices are EUR per week before early-booking
+// discounts; bareboat models are the boat only, crewed models include the crew
+// but not the APA.
 
 export type Season = "closed" | "low" | "shoulder" | "peak";
-export type PricedSeason = Exclude<Season, "closed">;
-export const PRICED_SEASONS: PricedSeason[] = ["low", "shoulder", "peak"];
+export type Product = "bareboat" | "skippered" | "crewed";
 
 export interface MarketModel {
-  low: number;
-  shoulder: number;
+  /** Most expensive week, gross published list, EUR. */
   peak: number;
-  estimated?: boolean;
+  /** Cheapest Saturday week April–October in the research, for reference. */
+  low?: number;
+  product?: Product;
+  confidence?: "Certain" | "Likely" | "Guessing";
+  /** What the price is based on (a successor model, a single source, …). */
   basis?: string;
+  /** Set when the research priced a current-production successor instead. */
+  successor?: string;
 }
 
 export interface MarketDestination {
-  catMultiplier: number;
-  monoMultiplier: number;
-  /** Month number "1".."12" → season. */
-  months: Record<string, Season>;
+  catFactor: number;
+  monoFactor: number;
   /**
-   * Flatter seasons (the tropics): each season's price as a share of the
-   * model's peak price, instead of the model's own low/shoulder figures.
+   * Season curve as steps: [MM-DD, ratio] — from that date (by the Saturday a
+   * week starts) the ratio applies until the next step; 0 means no charters.
+   * Sorted by date; the first step should be 01-01.
    */
-  seasonFactors?: Record<PricedSeason, number>;
+  curve: [string, number][];
+  note?: string;
 }
 
 export interface MarketData {
   researchedAt: string;
+  source?: string;
   models: Record<string, MarketModel>;
   destinations: Record<string, MarketDestination>;
 }
@@ -47,26 +59,48 @@ export const overrideKey = (destinationId: string, weekStart: string) => `${dest
 
 const round50 = (n: number) => Math.round(n / 50) * 50;
 
-export function seasonOf(market: MarketData, destinationId: string, weekStart: string): Season {
-  const month = Number(weekStart.slice(5, 7));
-  return market.destinations[destinationId]?.months[String(month)] ?? "closed";
+/** The season ratio (share of the peak week) for a week starting on `weekStart`; 0 when closed. */
+export function seasonRatio(market: MarketData, destinationId: string, weekStart: string): number {
+  const d = market.destinations[destinationId];
+  if (!d) return 0;
+  const md = weekStart.slice(5, 10);
+  let r = 0;
+  for (const [from, ratio] of d.curve) {
+    if (from <= md) r = ratio;
+    else break;
+  }
+  return r;
 }
 
-/** The market price plus markup for one season, or null when we have no data. */
-export function seasonPrice(market: MarketData, model: PricedModel, destinationId: string, season: PricedSeason, markupPct: number): number | null {
+/** A plain-language band for a ratio: peak from 0.95, shoulder from 0.65. */
+export function seasonOf(market: MarketData, destinationId: string, weekStart: string): Season {
+  const r = seasonRatio(market, destinationId, weekStart);
+  return r <= 0 ? "closed" : r >= 0.95 ? "peak" : r >= 0.65 ? "shoulder" : "low";
+}
+
+/** Peak-week price in a destination with the markup, or null without data. */
+export function peakPrice(market: MarketData, model: PricedModel, destinationId: string, markupPct: number): number | null {
   const m = market.models[model.id];
   const d = market.destinations[destinationId];
   if (!m || !d) return null;
-  const mult = model.kind === "catamaran" ? d.catMultiplier : d.monoMultiplier;
-  const base = d.seasonFactors ? m.peak * d.seasonFactors[season] : m[season];
-  return round50(base * mult * (1 + markupPct / 100));
+  return m.peak * (model.kind === "catamaran" ? d.catFactor : d.monoFactor) * (1 + markupPct / 100);
 }
 
 /** The default (market + markup) for a week, or null out of season or without data. */
 export function defaultWeekPrice(market: MarketData, model: PricedModel, destinationId: string, weekStart: string, markupPct: number): number | null {
-  const season = seasonOf(market, destinationId, weekStart);
-  if (season === "closed") return null;
-  return seasonPrice(market, model, destinationId, season, markupPct);
+  const r = seasonRatio(market, destinationId, weekStart);
+  const peak = peakPrice(market, model, destinationId, markupPct);
+  return r > 0 && peak != null ? round50(peak * r) : null;
+}
+
+/** Cheapest and dearest default week in a destination over a year (ignores the admin's own prices). */
+export function defaultRange(market: MarketData, model: PricedModel, destinationId: string, markupPct: number): { low: number; peak: number } | null {
+  const peak = peakPrice(market, model, destinationId, markupPct);
+  const d = market.destinations[destinationId];
+  if (peak == null || !d) return null;
+  const open = d.curve.map(([, r]) => r).filter((r) => r > 0);
+  if (!open.length) return null;
+  return { low: round50(peak * Math.min(...open)), peak: round50(peak * Math.max(...open)) };
 }
 
 /** The estimate shown to customers: the admin's override, else the default. */
