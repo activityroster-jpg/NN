@@ -224,8 +224,12 @@ const it: Dictionary = {
     requestQuote: "Richiedi un preventivo",
     cabinsWord: "cabine",
     estimate: "circa {price} / settimana",
-    estimateNote: "Prezzo stimato per la tua settimana, solo barca. Skipper, extra, cauzione e tasse locali esclusi; il preventivo conferma il prezzo.",
+    estimateNote: "Prezzi stimati, solo barca, a settimana. Skipper, extra, cauzione e tasse locali esclusi; il preventivo conferma il prezzo.",
     details: "Dettagli",
+    pricesTitle: "Prezzi stimati delle barche",
+    catsFrom: "Catamarani da {price} a settimana",
+    monosFrom: "Barche a vela da {price} a settimana",
+    seeYachts: "Vedi le barche e i prezzi",
   },
   results: {
     title: "Barche: {destination}",

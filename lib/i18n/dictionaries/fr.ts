@@ -224,8 +224,12 @@ const fr: Dictionary = {
     requestQuote: "Demander un devis",
     cabinsWord: "cabines",
     estimate: "env. {price} / semaine",
-    estimateNote: "Prix estimé pour votre semaine, bateau seul. Skipper, options, caution et taxes locales non compris ; votre devis confirme le prix.",
+    estimateNote: "Prix estimés, bateau seul, à la semaine. Skipper, options, caution et taxes locales non compris ; votre devis confirme le prix.",
     details: "Détails",
+    pricesTitle: "Prix estimés des bateaux",
+    catsFrom: "Catamarans à partir de {price} la semaine",
+    monosFrom: "Voiliers à partir de {price} la semaine",
+    seeYachts: "Voir les bateaux et leurs prix",
   },
   results: {
     title: "Bateaux : {destination}",

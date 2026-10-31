@@ -13,7 +13,11 @@ import { saturdays } from "@/lib/domain/dates";
 import { destinationById } from "@/lib/domain/destinations";
 import { getDictionary, type Dictionary } from "@/lib/i18n";
 import { dateShort, monthName } from "@/lib/i18n/format";
-import { requireLocale, todayIso } from "@/lib/request";
+import { displayCurrency, requireLocale, todayIso } from "@/lib/request";
+import { MODELS } from "@/lib/fleet";
+import { getRates } from "@/lib/fx";
+import { fmt, money } from "@/lib/i18n/format";
+import { estimateIn, estimateRanges } from "@/lib/pricing";
 import { destinationView } from "@/lib/services/destination-settings";
 
 type Props = { params: Promise<{ locale: string; id: string }> };
@@ -44,7 +48,14 @@ export default async function DestinationPage({ params }: Props) {
   const d = def ? await destinationView(db, id) : undefined;
   if (!def || !d || !d.active) notFound();
   autofillInBackground(await getEnvAsync(), db);
-  const gallery = await galleryFor(db, id);
+  const [gallery, ranges, currency, rates] = await Promise.all([galleryFor(db, id), estimateRanges(db, todayIso(), [id]), displayCurrency(), getRates(db)]);
+  // Lowest weekly estimate for each hull type here.
+  const fromFor = (kind: "catamaran" | "monohull") => {
+    const mins = MODELS.filter((m) => m.kind === kind).flatMap((m) => (ranges[m.id] ? [ranges[m.id]!.min] : []));
+    return mins.length ? money(estimateIn(Math.min(...mins), currency, rates), currency, locale) : null;
+  };
+  const catsFrom = fromFor("catamaran");
+  const monosFrom = fromFor("monohull");
   const c = t.destinations[id as DestKey];
   // Next few in-season Saturdays as quick starts.
   const quick = saturdays(todayIso(), 60).filter((s) => def.seasonMonths.includes(Number(s.slice(5, 7)))).slice(0, 6);
@@ -124,6 +135,17 @@ export default async function DestinationPage({ params }: Props) {
             <h2 className="flex items-center gap-2 font-semibold"><IconPin className="h-5 w-5 text-sea" />{t.common.base}</h2>
             <p className="mt-2 text-sm text-ink/80">{def.bases.join(" · ")}</p>
           </div>
+          {(catsFrom || monosFrom) && (
+            <div className="mt-6 card p-5">
+              <h2 className="font-semibold">{t.plan.pricesTitle}</h2>
+              <ul className="mt-2 space-y-1 text-sm text-ink/80">
+                {catsFrom && <li>{fmt(t.plan.catsFrom, { price: catsFrom })}</li>}
+                {monosFrom && <li>{fmt(t.plan.monosFrom, { price: monosFrom })}</li>}
+              </ul>
+              <p className="mt-2 text-xs text-muted">{t.plan.estimateNote}</p>
+              <Link href={`/${locale}/yachts`} className="mt-3 inline-flex items-center gap-1 text-sm font-semibold text-brand hover:underline">{t.plan.seeYachts} <IconArrowRight className="h-4 w-4" /></Link>
+            </div>
+          )}
         </div>
         <aside className="lg:sticky lg:top-24 lg:self-start">
           <div className="card p-5">

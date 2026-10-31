@@ -224,8 +224,12 @@ const nl: Dictionary = {
     requestQuote: "Offerte aanvragen",
     cabinsWord: "hutten",
     estimate: "ca. {price} / week",
-    estimateNote: "Geschatte prijs voor uw week, alleen de boot. Schipper, extra's, borg en lokale belastingen niet inbegrepen; uw offerte bevestigt de prijs.",
+    estimateNote: "Geschatte prijzen, alleen de boot, per week. Schipper, extra's, borg en lokale belastingen niet inbegrepen; uw offerte bevestigt de prijs.",
     details: "Details",
+    pricesTitle: "Geschatte jachtprijzen",
+    catsFrom: "Catamarans vanaf {price} per week",
+    monosFrom: "Zeiljachten vanaf {price} per week",
+    seeYachts: "Bekijk de jachten en hun prijzen",
   },
   results: {
     title: "Jachten – {destination}",

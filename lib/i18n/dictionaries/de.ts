@@ -224,8 +224,12 @@ const de: Dictionary = {
     requestQuote: "Angebot anfordern",
     cabinsWord: "Kabinen",
     estimate: "ca. {price} / Woche",
-    estimateNote: "Geschätzter Preis für Ihre Woche, nur das Boot. Skipper, Extras, Kaution und lokale Abgaben sind nicht enthalten; Ihr Angebot bestätigt den Preis.",
+    estimateNote: "Geschätzte Preise, nur das Boot, pro Woche. Skipper, Extras, Kaution und lokale Abgaben sind nicht enthalten; Ihr Angebot bestätigt den Preis.",
     details: "Details",
+    pricesTitle: "Geschätzte Yachtpreise",
+    catsFrom: "Katamarane ab {price} pro Woche",
+    monosFrom: "Segelyachten ab {price} pro Woche",
+    seeYachts: "Die Yachten und ihre Preise",
   },
   results: {
     title: "Yachten – {destination}",

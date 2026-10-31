@@ -225,8 +225,12 @@ const en = {
     requestQuote: "Request a quote",
     cabinsWord: "cabins",
     estimate: "about {price} / week",
-    estimateNote: "Estimated price for your week, boat only. Skipper, extras, deposit and local taxes are not included; your quote confirms the price.",
+    estimateNote: "Estimated prices, boat only, per week. Skipper, extras, deposit and local taxes are not included; your quote confirms the price.",
     details: "Details",
+    pricesTitle: "Estimated yacht prices",
+    catsFrom: "Catamarans from {price} a week",
+    monosFrom: "Sailing yachts from {price} a week",
+    seeYachts: "See the yachts and their prices",
   },
   results: {
     title: "Yachts in {destination}",
