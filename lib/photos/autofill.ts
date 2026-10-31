@@ -3,7 +3,7 @@ import { audit } from "@/lib/audit";
 import { getCloudflareContext } from "@opennextjs/cloudflare";
 import type { AppEnv } from "@/lib/env";
 import { pickNext, photoSource } from "./picker";
-import { readSlots, SLOTS, writeSlot } from "./slots";
+import { readSlots, SLOTS, uploadOnly, writeSlot } from "./slots";
 import { storageEnabled } from "./storage";
 
 // Fills empty photo slots on its own so the site gets photos without anyone
@@ -25,7 +25,7 @@ export async function autofillEmpty(env: AppEnv, db: Db, budgetMs: number): Prom
   if (!autofillEnabled(env)) return { filled, remaining: 0 };
   const slots = await readSlots(db);
   const used = new Set(Object.values(slots).map((v) => v.url ?? "").filter(Boolean));
-  const empty = SLOTS.filter((s) => !slots[s.key]?.url);
+  const empty = SLOTS.filter((s) => !uploadOnly(s) && !slots[s.key]?.url);
   let i = 0;
   while (i < empty.length && Date.now() < deadline) {
     const s = empty[i]!;

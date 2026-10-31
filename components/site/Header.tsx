@@ -9,6 +9,7 @@ import { CurrencySwitcher, LocaleSwitcher } from "./Switchers";
 export function Header({ locale, t, currency }: { locale: Locale; t: Dictionary; currency: Currency }) {
   const links = [
     { href: `/${locale}/destinations`, label: t.nav.destinations },
+    { href: `/${locale}/yachts`, label: t.nav.yachts },
     { href: `/${locale}/how-it-works`, label: t.nav.howItWorks },
     { href: `/${locale}/about`, label: t.nav.about },
     { href: `/${locale}/enquire`, label: t.nav.enquire },

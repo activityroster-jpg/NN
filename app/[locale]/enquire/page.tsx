@@ -1,3 +1,4 @@
+import { modelById } from "@/lib/fleet";
 import type { Metadata } from "next";
 import { pageMeta, snippet } from "@/lib/seo";
 import { EnquiryForm } from "@/components/forms/EnquiryForm";
@@ -17,10 +18,12 @@ export default async function Enquire({ params, searchParams }: { params: Promis
   const locale = await requireLocale(params);
   const sp = await searchParams;
   const t = getDictionary(locale);
+  const model = sp.model ? modelById(sp.model) : undefined;
   return (
     <div className="container-page max-w-3xl py-12">
       <h1 className="h-display text-5xl">{t.enquiry.title}</h1>
       <p className="mt-3 mb-8 text-lg text-ink/75">{t.enquiry.sub}</p>
+      {model && <p className="-mt-4 mb-8 rounded-xl border border-line bg-card px-4 py-3 text-sm">Yacht: <strong>{model.builder} {model.name.replace(model.builder, "").trim()}</strong>, or an equal if it&apos;s taken.</p>}
       <EnquiryForm
         text={enquiryText(t)}
         destinations={destinationOptions(t, DESTINATION_IDS)}
@@ -29,6 +32,7 @@ export default async function Enquire({ params, searchParams }: { params: Promis
         defaults={{
           destinationId: sp.d && DESTINATION_IDS.includes(sp.d) ? sp.d : undefined,
           weekStart: sp.w && isIsoDate(sp.w) ? sp.w : undefined,
+          yachtKey: model ? `model:${model.id}` : undefined,
           sourcePath: `/${locale}/enquire`,
         }}
       />

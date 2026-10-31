@@ -9,6 +9,7 @@ const es: Dictionary = {
   },
   nav: {
     destinations: "Destinos",
+    yachts: "Barcos",
     howItWorks: "Cómo funciona",
     plan: "Planear mi viaje",
     about: "Quiénes somos",

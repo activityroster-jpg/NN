@@ -6,11 +6,11 @@ import { audit } from "@/lib/audit";
 import { getDb } from "@/lib/db";
 import { getEnvAsync } from "@/lib/env";
 import { pickNext, type PickResult } from "@/lib/photos/picker";
-import { readSlots, slotByKey, writeSlot } from "@/lib/photos/slots";
+import { readSlots, slotByKey, uploadOnly, writeSlot } from "@/lib/photos/slots";
 import { storePhoto } from "@/lib/photos/storage";
 import { requireAdmin } from "./auth";
 
-const Key = z.string().regex(/^(destination:[a-z-]+(:g[1-3])?|home:(hero|monohull|catamaran))$/);
+const Key = z.string().regex(/^(destination:[a-z-]+(:g[1-3])?|home:(hero|monohull|catamaran)|model:[a-z0-9-]+:g[1-4])$/);
 
 /** Replace a slot's photo with the next matching one. Called by the board, one slot at a time. */
 export async function refreshSlot(key: string, seen: string[], query?: string): Promise<PickResult & { key: string }> {
@@ -18,6 +18,7 @@ export async function refreshSlot(key: string, seen: string[], query?: string): 
   const k = Key.parse(key);
   const slot = slotByKey(k);
   if (!slot) return { key: k, ok: false, error: "Unknown slot" };
+  if (uploadOnly(slot)) return { key: k, ok: false, error: "Upload the builder's photo for this one." };
   const env = await getEnvAsync();
   const db = await getDb();
   // Never repeat a photo already used in another slot.
