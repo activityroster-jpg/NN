@@ -13,7 +13,8 @@ import { abs, breadcrumbLd, pageMeta, snippet } from "@/lib/seo";
 import { displayCurrency, requireLocale, todayIso } from "@/lib/request";
 import { getRates } from "@/lib/fx";
 import { money } from "@/lib/i18n/format";
-import { ESTIMATE_NOTE, estimateIn, modelRangesByDestination } from "@/lib/pricing";
+import { ESTIMATE_NOTE, estimateIn, modelRangesByDestination, modelWeekGrid } from "@/lib/pricing";
+import { PriceExplorer } from "@/components/fleet/PriceExplorer";
 import { destinationViews } from "@/lib/services/destination-settings";
 
 type Props = { params: Promise<{ locale: string; id: string }> };
@@ -59,6 +60,12 @@ export default async function ModelPage({ params }: Props) {
     getRates(db),
   ]);
   const where = views.filter((v) => v.active).map((v) => ({ id: v.id, range: ranges.find((r) => r.destinationId === v.id)?.range ?? null }));
+  const grid = await modelWeekGrid(db, id, todayIso(), where.map((w) => w.id));
+  const explorer = grid.map((g) => ({
+    id: g.destinationId,
+    name: t.destinations[g.destinationId as keyof typeof t.destinations]?.name ?? g.destinationId,
+    weeks: g.weeks.map((x) => ({ w: x.w, season: x.season, price: estimateIn(x.eur, currency, rates) })),
+  }));
   const shown = where.flatMap((w) => (w.range ? [w.range] : []));
   const lowest = shown.length ? Math.min(...shown.map((r) => r.min)) : null;
   const highest = shown.length ? Math.max(...shown.map((r) => r.max)) : null;
@@ -136,12 +143,11 @@ export default async function ModelPage({ params }: Props) {
             {m.berthsMax && <li className="flex items-center gap-2"><IconUsers className="h-5 w-5 text-sea" /> up to {m.berthsMax} guests</li>}
           </ul>
           {lowest != null && highest != null && (
-            <p className="mt-5 rounded-xl bg-brand-soft px-4 py-3">
-              <span className="block text-xs font-semibold tracking-wider text-brand uppercase">Estimated price</span>
-              <span className="text-2xl font-semibold">{price(lowest)} to {price(highest)}</span> <span className="text-sm text-ink/70">per week, boat only</span>
-              <span className="mt-1 block text-xs text-muted">Depends on the week and destination: see the table below.</span>
+            <p className="mt-4 text-sm text-ink/75">
+              Estimated <strong className="text-ink">{price(lowest)} to {price(highest)}</strong> a week, boat only, depending on the week and destination.
             </p>
           )}
+          <PriceExplorer modelId={id} locale={locale} currency={currency} destinations={explorer} note={ESTIMATE_NOTE} />
           <p className="mt-5 text-ink/80">{intro(id)}</p>
           {isAlternative && <p className="mt-3 text-sm text-muted">We offer the {m.name} as an equal to the {c!.models.map((x) => modelById(x)?.name ?? x).join(" or ")} when those are taken.</p>}
           <div className="mt-6 flex flex-wrap gap-3">

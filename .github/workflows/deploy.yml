@@ -142,6 +142,17 @@ jobs:
           fi
           echo "production healthy"
 
+      - name: Check a yacht page's images
+        # Informational: lists every image on one model page and whether it loads.
+        if: steps.smoke.outcome == 'success'
+        continue-on-error: true
+        run: |
+          page="$(curl -fsSL "$SITE/en/yachts/lagoon-46" || true)"
+          printf '%s' "$page" | grep -oE '<img[^>]*src="[^"]*"' | grep -oE 'src="[^"]*"' | cut -d'"' -f2 | sort -u | while read -r src; do
+            case "$src" in http*) url="$src" ;; *) url="$SITE$src" ;; esac
+            printf '%s  %s\n' "$(curl -s -o /dev/null -w '%{http_code} %{content_type}' "$url")" "$src"
+          done
+
       - name: Copy optional keys from GitHub secrets to the Worker
         # Keys can live in GitHub (Settings → Secrets and variables → Actions)
         # or directly on the Worker in Cloudflare. Any set in GitHub are copied

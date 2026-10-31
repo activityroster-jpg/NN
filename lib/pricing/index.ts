@@ -8,7 +8,7 @@ import { getDictionary } from "@/lib/i18n";
 import { convert, type FxRates } from "@/lib/domain/money";
 import type { Currency } from "@/lib/domain/types";
 import marketFile from "./market.json";
-import { estimateRange, overrideKey, saturdays, weekEstimate, type MarketData, type Overrides } from "./estimate";
+import { estimateRange, overrideKey, saturdays, seasonOf, weekEstimate, type MarketData, type Overrides, type Season } from "./estimate";
 
 export const MARKET = marketFile as MarketData;
 
@@ -107,4 +107,25 @@ export const destName = (id: string) => EN.destinations[id as keyof typeof EN.de
 export function estimateIn(eur: number, currency: Currency, rates: FxRates): number {
   if (currency === "EUR") return eur;
   return Math.round(convert(eur, "EUR", currency, rates) / 10) * 10;
+}
+
+/** Every coming week's estimate (EUR) for one model, per destination; weeks without a price left out. */
+export async function modelWeekGrid(
+  db: Db,
+  modelId: string,
+  todayIso: string,
+  destinationIds: string[],
+): Promise<{ destinationId: string; weeks: { w: string; season: Season; eur: number }[] }[]> {
+  const p = priced(modelId);
+  if (!p) return [];
+  const weeks = saturdays(todayIso, HORIZON_WEEKS);
+  const [{ markupPct }, overrides] = await Promise.all([getYachtPricing(db), loadOverrides(db, [modelId], todayIso)]);
+  const o = overrides.get(modelId);
+  return destinationIds.map((d) => ({
+    destinationId: d,
+    weeks: weeks.flatMap((w) => {
+      const eur = weekEstimate(MARKET, p, d, w, markupPct, o);
+      return eur == null ? [] : [{ w, season: seasonOf(MARKET, d, w), eur }];
+    }),
+  }));
 }
