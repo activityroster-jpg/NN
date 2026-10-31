@@ -1,7 +1,8 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { ModelPhoto, PHOTO_NOTE } from "@/components/fleet/ModelPhoto";
+import { ILLUSTRATION_NOTE, ModelPhoto, PHOTO_NOTE } from "@/components/fleet/ModelPhoto";
+import { ILLUSTRATION_LABEL, ILLUSTRATIONS, illustrationUrl } from "@/lib/fleet/illustration";
 import { IconArrowRight, IconBed, IconInfo, IconRuler, IconShower, IconUsers } from "@/components/Icons";
 import { JsonLd } from "@/components/seo/JsonLd";
 import { getDb } from "@/lib/db";
@@ -76,7 +77,7 @@ export default async function ModelPage({ params }: Props) {
             { name: "Our yachts", path: fleetPath },
             { name: m.name, path: modelPath(id) },
           ]),
-          { "@context": "https://schema.org", "@type": "Product", name: m.name, brand: { "@type": "Brand", name: m.builder }, category: m.kind === "catamaran" ? "Sailing catamaran charter" : "Sailing yacht charter", description: intro(id), url: abs(modelPath(id)), ...(photos[0] ? { image: abs(photos[0].url) } : {}) },
+          { "@context": "https://schema.org", "@type": "Product", name: m.name, brand: { "@type": "Brand", name: m.builder }, category: m.kind === "catamaran" ? "Sailing catamaran charter" : "Sailing yacht charter", description: intro(id), url: abs(modelPath(id)), image: abs(photos[0]?.url ?? illustrationUrl(id)) },
         ]}
       />
       <nav aria-label="Breadcrumb" className="text-sm text-muted">
@@ -85,26 +86,29 @@ export default async function ModelPage({ params }: Props) {
 
       <div className="mt-4 grid gap-8 lg:grid-cols-[minmax(0,1.4fr)_minmax(0,1fr)]">
         <div>
-          {photos.length > 0 ? (
-            <div className="grid gap-2">
-              <ModelPhoto url={photos[0]!.url} kind={m.kind} alt={`${m.name}, builder's photo`} className="aspect-[16/10] w-full rounded-2xl" />
-              {photos.length > 1 && (
-                <div className="grid grid-cols-3 gap-2">
-                  {photos.slice(1).map((p) => (
-                    <ModelPhoto key={p.url} url={p.url} kind={m.kind} alt={`${m.name}, builder's photo`} className="aspect-[4/3] w-full rounded-xl" />
-                  ))}
-                </div>
-              )}
-            </div>
-          ) : (
-            <div className="relative overflow-hidden rounded-2xl bg-surface-2">
-              <ModelPhoto kind={m.kind} alt="" className="aspect-[16/10] w-full" />
-              <p className="absolute right-3 bottom-3 left-3 rounded-lg bg-card/90 px-3 py-2 text-sm text-ink/80">The builder&apos;s photos of the {m.name} are on their way. Ask us and we&apos;ll send photos of the actual yacht with your quote.</p>
-            </div>
-          )}
+          {(() => {
+            // The builder's photos once uploaded; until then the five illustrations.
+            const shots = photos.length
+              ? photos.map((p) => ({ url: p.url, label: `${m.name}, builder's photo` }))
+              : ILLUSTRATIONS.map((k) => ({ url: illustrationUrl(id, k), label: `${m.name}: ${ILLUSTRATION_LABEL[k].toLowerCase()} (illustration)` }));
+            return (
+              <div className="grid gap-2">
+                <ModelPhoto url={shots[0]!.url} id={id} alt={shots[0]!.label} className="aspect-[16/10] w-full rounded-2xl" />
+                {shots.length > 1 && (
+                  <div className="grid grid-cols-4 gap-2">
+                    {shots.slice(1).map((p) => (
+                      <a key={p.url} href={p.url} target="_blank" rel="noreferrer" className="block">
+                        <ModelPhoto url={p.url} id={id} alt={p.label} className="aspect-[4/3] w-full rounded-xl border border-line" />
+                      </a>
+                    ))}
+                  </div>
+                )}
+              </div>
+            );
+          })()}
           <p className="mt-3 flex items-start gap-2 text-sm text-muted">
             <IconInfo className="mt-0.5 h-4 w-4 shrink-0" />
-            <span>{PHOTO_NOTE}{photos.some((p) => p.credit) ? ` Photos: ${[...new Set(photos.map((p) => p.credit).filter(Boolean))].join(", ")}.` : ""}</span>
+            <span>{photos.length ? PHOTO_NOTE : ILLUSTRATION_NOTE}{photos.some((p) => p.credit) ? ` Photos: ${[...new Set(photos.map((p) => p.credit).filter(Boolean))].join(", ")}.` : ""}</span>
           </p>
         </div>
 
@@ -161,7 +165,7 @@ export default async function ModelPage({ params }: Props) {
           <div className="mt-4 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
             {similar.map((s) => (
               <Link key={s.id} href={modelPath(s.id)} className="card overflow-hidden transition hover:shadow-md">
-                <ModelPhoto url={covers[s.id]} kind={s.kind} alt={s.name} className="aspect-[16/10] w-full" />
+                <ModelPhoto url={covers[s.id]} id={s.id} alt={s.name} className="aspect-[16/10] w-full" />
                 <div className="p-4">
                   <p className="text-xs font-semibold tracking-wider text-muted uppercase">{s.builder}</p>
                   <p className="font-semibold">{s.name}</p>

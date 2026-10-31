@@ -33,14 +33,14 @@ export const SLOTS: readonly Slot[] = [
   ),
   // Yacht model pages: the builder's own photos, uploaded by hand. Never filled
   // from stock (a stock photo would not be that model), so the query is empty.
-  ...MODELS.flatMap((m) => [1, 2, 3, 4].map((n) => ({ key: `model:${m.id}:g${n}`, label: `${m.builder} ${m.name.replace(m.builder, "").trim()} · photo ${n}`, query: "", group: "models" as const }))),
+  ...MODELS.flatMap((m) => [1, 2, 3, 4, 5].map((n) => ({ key: `model:${m.id}:g${n}`, label: `${m.builder} ${m.name.replace(m.builder, "").trim()} · photo ${n}`, query: "", group: "models" as const }))),
 ];
 
 /** Slots that only take uploads: no stock fill, no Refresh. */
 export const uploadOnly = (s: Slot) => s.group === "models";
 
 export const GALLERY_RE = /^destination:([a-z-]+):g([1-3])$/;
-export const MODEL_RE = /^model:([a-z0-9-]+):g([1-4])$/;
+export const MODEL_RE = /^model:([a-z0-9-]+):g([1-5])$/;
 /** Slots kept in the shared photo map (destination galleries and yacht models). */
 const inPhotoMap = (key: string) => GALLERY_RE.test(key) || MODEL_RE.test(key);
 
@@ -63,7 +63,7 @@ async function writePhotoMap(db: Db, map: PhotoMap): Promise<void> {
 /** The builder's photos for one yacht model page, in order, skipping empty slots. */
 export async function modelPhotos(db: Db, modelId: string): Promise<{ url: string; credit: string | null }[]> {
   const map = await readPhotoMap(db);
-  return [1, 2, 3, 4].map((n) => map[`model:${modelId}:g${n}`]).filter((v): v is SlotValue & { url: string } => !!v?.url);
+  return [1, 2, 3, 4, 5].map((n) => map[`model:${modelId}:g${n}`]).filter((v): v is SlotValue & { url: string } => !!v?.url);
 }
 
 /** First photo of every model that has one (for the fleet index). */

@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { ModelPhoto, PHOTO_NOTE } from "@/components/fleet/ModelPhoto";
+import { ModelPhoto } from "@/components/fleet/ModelPhoto";
 import { IconArrowRight } from "@/components/Icons";
 import { JsonLd } from "@/components/seo/JsonLd";
 import { getDb } from "@/lib/db";
@@ -24,7 +24,7 @@ function Card({ m, cover }: { m: ModelSpecs; cover?: string }) {
   const ft = feet(m.lengthOverallM);
   return (
     <Link href={modelPath(m.id)} className="card group overflow-hidden transition hover:shadow-md">
-      <ModelPhoto url={cover} kind={m.kind} alt={m.name} className="aspect-[16/10] w-full" />
+      <ModelPhoto url={cover} id={m.id} alt={m.name} className="aspect-[16/10] w-full" />
       <div className="p-5">
         <p className="text-xs font-semibold tracking-wider text-muted uppercase">{m.builder}</p>
         <h3 className="mt-1 text-xl font-semibold">{m.name}</h3>
@@ -57,7 +57,7 @@ export default async function Yachts({ params }: { params: Promise<{ locale: str
       <p className="text-sm font-semibold tracking-wider text-sea uppercase">Our yachts</p>
       <h1 className="h-display mt-1 text-5xl">The catamarans and sailing yachts we charter</h1>
       <p className="mt-3 max-w-2xl text-lg text-ink/75">Pick the model that suits your crew and we&apos;ll find the best available yacht of that model, or a close equal, for your week and destination. Every quote comes with the actual boat&apos;s photos, layout and year.</p>
-      <p className="mt-2 max-w-2xl text-sm text-muted">{PHOTO_NOTE}</p>
+      <p className="mt-2 max-w-2xl text-sm text-muted">Pictures show the model: the builder&apos;s photos where we have them, illustrations until then. The yacht you charter is a specific boat: its photos, layout, year and equipment come with your official quote.</p>
 
       {(["catamaran", "monohull"] as const).map((kind) => (
         <section key={kind} className="mt-14">
