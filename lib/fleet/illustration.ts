@@ -316,3 +316,16 @@ export function illustrationSvg(m: ModelSpecs, kind: IllustrationKind): string {
 
 export const illustrationUrl = (id: string, kind: IllustrationKind = "profile") => `/art/yacht/${id}-${kind}.svg`;
 export const ILLUSTRATION_LABEL: Record<IllustrationKind, string> = { profile: "Under sail", anchored: "At anchor", aerial: "From above", plan: "Typical layout", dimensions: "Dimensions" };
+
+// ── Gallery: photo-style 3D renders (public/art/yachts, made by
+// scripts/renders/render.mjs) plus the typical layout drawing above. ─────────
+export const GALLERY = ["sailing", "anchored", "aerial", "profile", "plan"] as const;
+export type GalleryKind = (typeof GALLERY)[number];
+export const galleryUrl = (id: string, kind: GalleryKind = "sailing") => (kind === "plan" ? illustrationUrl(id, "plan") : `/art/yachts/${id}-${kind}.webp`);
+export const GALLERY_LABEL: Record<GalleryKind, string> = {
+  sailing: "Under sail",
+  anchored: "At anchor at sunset",
+  aerial: "From above",
+  profile: "Side on, under sail",
+  plan: "Typical layout",
+};

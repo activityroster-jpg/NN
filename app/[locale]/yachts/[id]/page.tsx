@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { ILLUSTRATION_NOTE, ModelPhoto, PHOTO_NOTE } from "@/components/fleet/ModelPhoto";
-import { ILLUSTRATION_LABEL, ILLUSTRATIONS, illustrationUrl } from "@/lib/fleet/illustration";
+import { GALLERY, GALLERY_LABEL, galleryUrl } from "@/lib/fleet/illustration";
 import { IconArrowRight, IconBed, IconInfo, IconRuler, IconShower, IconUsers } from "@/components/Icons";
 import { JsonLd } from "@/components/seo/JsonLd";
 import { getDb } from "@/lib/db";
@@ -98,7 +98,7 @@ export default async function ModelPage({ params }: Props) {
             { name: "Our yachts", path: fleetPath },
             { name: m.name, path: modelPath(id) },
           ]),
-          { "@context": "https://schema.org", "@type": "Product", name: m.name, brand: { "@type": "Brand", name: m.builder }, category: m.kind === "catamaran" ? "Sailing catamaran charter" : "Sailing yacht charter", description: intro(id), url: abs(modelPath(id)), image: abs(photos[0]?.url ?? illustrationUrl(id)) },
+          { "@context": "https://schema.org", "@type": "Product", name: m.name, brand: { "@type": "Brand", name: m.builder }, category: m.kind === "catamaran" ? "Sailing catamaran charter" : "Sailing yacht charter", description: intro(id), url: abs(modelPath(id)), image: abs(photos[0]?.url ?? galleryUrl(id)) },
         ]}
       />
       <nav aria-label="Breadcrumb" className="text-sm text-muted">
@@ -108,10 +108,10 @@ export default async function ModelPage({ params }: Props) {
       <div className="mt-4 grid gap-8 lg:grid-cols-[minmax(0,1.4fr)_minmax(0,1fr)]">
         <div>
           {(() => {
-            // The builder's photos once uploaded; until then the five illustrations.
+            // The builder's photos once uploaded; until then four renders and the layout drawing.
             const shots = photos.length
               ? photos.map((p) => ({ url: p.url, label: `${m.name}, builder's photo` }))
-              : ILLUSTRATIONS.map((k) => ({ url: illustrationUrl(id, k), label: `${m.name}: ${ILLUSTRATION_LABEL[k].toLowerCase()} (illustration)` }));
+              : GALLERY.map((k) => ({ url: galleryUrl(id, k), label: `${m.name}: ${GALLERY_LABEL[k].toLowerCase()} (${k === "plan" ? "drawing" : "computer render"})` }));
             return (
               <div className="grid gap-2">
                 <ModelPhoto url={shots[0]!.url} id={id} alt={shots[0]!.label} className="aspect-[16/10] w-full rounded-2xl" />
