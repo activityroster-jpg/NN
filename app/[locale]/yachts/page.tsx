@@ -68,7 +68,7 @@ export default async function Yachts({ params }: { params: Promise<{ locale: str
       <p className="text-sm font-semibold tracking-wider text-sea uppercase">Our yachts</p>
       <h1 className="h-display mt-1 text-5xl">The catamarans and sailing yachts we charter</h1>
       <p className="mt-3 max-w-2xl text-lg text-ink/75">Pick the model that suits your crew and we&apos;ll find the best available yacht of that model, or a close equal, for your week and destination. Every quote comes with the actual boat&apos;s photos, layout and year.</p>
-      <p className="mt-2 max-w-2xl text-sm text-muted">Pictures show the model: the builder&apos;s photos where we have them, computer renders until then. The yacht you charter is a specific boat: its photos, layout, year and equipment come with your official quote.</p>
+      <p className="mt-2 max-w-2xl text-sm text-muted">Pictures are photos of similar yachts from a photo library (or the builder&apos;s own, where we have them), not the exact model. The yacht you charter is a specific boat: its photos, layout, year and equipment come with your official quote.</p>
       <p className="mt-2 max-w-2xl text-sm text-muted">{ESTIMATE_NOTE}</p>
 
       {(["catamaran", "monohull"] as const).map((kind) => (
