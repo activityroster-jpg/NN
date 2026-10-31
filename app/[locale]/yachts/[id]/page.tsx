@@ -140,7 +140,7 @@ export default async function ModelPage({ params }: Props) {
               ))}
             </tbody>
           </table>
-          <p className="mt-3 text-xs text-muted">Builder&apos;s figures. Charter yachts differ by year and layout{m.notes ? `; ${m.notes.replace(/\.$/, "")}` : ""}. The quote gives the exact yacht&apos;s details.</p>
+          <p className="mt-3 text-xs text-muted">Builder&apos;s figures for the model. Charter yachts differ by year, layout and options; your quote gives the exact yacht&apos;s details.</p>
         </div>
         <div>
           <h2 className="h-display text-3xl">Where to sail it</h2>

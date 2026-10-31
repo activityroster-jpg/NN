@@ -1,1 +1,820 @@
-{ "generatedAt": null, "models": [] }
+{
+  "generatedAt": "2026-10-31",
+  "models": [
+    {
+      "id": "lagoon-40",
+      "name": "Lagoon 40",
+      "builder": "Lagoon",
+      "kind": "catamaran",
+      "launched": 2017,
+      "lengthOverallM": 12.75,
+      "hullLengthM": 11.74,
+      "beamM": 6.76,
+      "draftM": 1.35,
+      "displacementKg": 10500,
+      "engineHp": 45,
+      "engines": 2,
+      "fuelL": 400,
+      "waterL": 300,
+      "cabins": [
+        3,
+        4
+      ],
+      "heads": [
+        2,
+        4
+      ],
+      "berthsMax": 12,
+      "designer": "VPLP Design (naval architecture); Patrick le Quément (exterior); Nauta Design (interior)",
+      "builderUrl": "https://www.catamarans-lagoon.com/boats/lagoon-40",
+      "notes": "engineHp is per engine (2 x 45 hp standard on the builder page; some boats have 2 x 29 hp, the earlier base option). Light displacement is 10.5 t EEC on the builder page; other sources give 10.88 t or 11 t. Some sites quote LOA 11.74 m, which is the hull length. Some listings show other tank sizes (e.g. 2 x 300 L water); the 400 L fuel / 300 L water figures are the builder's. Layouts: 3 cabins/2 heads, 4 cabins/2 heads, 4 cabins/4 heads. Berths are 6 to 12 per the builder.",
+      "sources": [
+        "https://www.catamarans-lagoon.com/boats/lagoon-40",
+        "https://www.multihulls-world.com/technical-specifications/lagoon-catamarans/lagoon-40",
+        "https://ancasta.com/boats-for-sale/new/sail/lagoon/40/36366/",
+        "https://en.wikipedia.org/wiki/Lagoon_40"
+      ]
+    },
+    {
+      "id": "lagoon-42",
+      "name": "Lagoon 42",
+      "builder": "Lagoon",
+      "kind": "catamaran",
+      "launched": 2016,
+      "lengthOverallM": 13.22,
+      "hullLengthM": 12.79,
+      "beamM": 7.68,
+      "draftM": 1.26,
+      "displacementKg": 12100,
+      "engineHp": 57,
+      "engines": 2,
+      "fuelL": 570,
+      "waterL": 300,
+      "cabins": [
+        3,
+        4
+      ],
+      "heads": [
+        3,
+        4
+      ],
+      "berthsMax": 12,
+      "designer": "VPLP Design (naval architecture); Patrick le Quément (exterior); Nauta Design (interior)",
+      "builderUrl": "https://www.catamarans-lagoon.com/boats/lagoon-42",
+      "notes": "This is the 2016 model, not the 1990s Lagoon 42 (7.5 t, 51 built). engineHp is per engine (2 x 57 hp per the builder; an older Multihulls World entry gives 2 x 45 hp). Figures are from the builder page; dealers quote LOA 12.80 to 12.92 m, beam 7.70 m, draft 1.25 m and light displacement of about 12 t. Tanks vary a lot between listings (300, 570 or 600 L). The builder gives 300 L water and 570 L fuel. Layouts: 3 cabins/3 heads and 4 cabins/4 heads. Berths are 6 to 12 per the builder.",
+      "sources": [
+        "https://www.catamarans-lagoon.com/boats/lagoon-42",
+        "https://www.multihulls-world.com/technical-specifications/lagoon-catamarans/lagoon-42-2016",
+        "https://ancasta.com/boats-for-sale/new-boats/lagoon/sailing-catamarans/42/",
+        "https://ancasta.com/boats-for-sale/new/sail/lagoon/42/44660/",
+        "https://navigare-yachting.com/images/ownership/special-offers/annexes/Lagoon_42.pdf"
+      ]
+    },
+    {
+      "id": "lagoon-43",
+      "name": "Lagoon 43",
+      "builder": "Lagoon",
+      "kind": "catamaran",
+      "launched": 2024,
+      "lengthOverallM": 13.85,
+      "hullLengthM": 12.82,
+      "beamM": 7.69,
+      "draftM": 1.27,
+      "displacementKg": 13900,
+      "engineHp": 57,
+      "engines": 2,
+      "fuelL": 570,
+      "waterL": 300,
+      "cabins": [
+        3,
+        4
+      ],
+      "heads": [
+        3,
+        4
+      ],
+      "berthsMax": 13,
+      "designer": "VPLP Design (naval architecture); Patrick le Quément (exterior); Nauta Design (interior)",
+      "builderUrl": "https://www.catamarans-lagoon.com/boats/lagoon-43",
+      "notes": "This is the current sailing catamaran launched in 2024, not the Lagoon Power 43. Ancasta says spring 2024; Navigare says Cannes 2024. engineHp is per engine (2 x 57 hp Yanmar). Draft is 1.27 m on the builder page and 1.31 m per Navigare and Multihull Co. Light displacement is 13.9 t CE; an earlier Multihulls World figure gives 13.32 t. Water is 300 L standard. The builder page shows 630 L, which includes an optional extra 330 L tank. Berths: 6 to 13 per the builder (8 to 13 per Navigare). Heads for the 3-cabin version are en-suite (3); 4 cabins have 4 heads. No 5-cabin version was found.",
+      "sources": [
+        "https://www.catamarans-lagoon.com/boats/lagoon-43",
+        "https://navigare-yachting.com/en/blog/yacht-investment/lagoon-43-review-a-versatile-cruiser-for-comfortable-onboard-living",
+        "https://ancasta.com/boats-for-sale/new-boats/lagoon/sailing-catamarans/43/",
+        "https://www.yachtingworld.com/reviews/boat-tests/lagoon-43-review-will-this-voluminous-new-cat-be-the-worlds-most-popular-multihull",
+        "https://www.multihullcompany.com/boat/lagoon-43-hull-156/"
+      ]
+    },
+    {
+      "id": "lagoon-46",
+      "name": "Lagoon 46",
+      "builder": "Lagoon",
+      "kind": "catamaran",
+      "launched": 2019,
+      "lengthOverallM": 14.5,
+      "hullLengthM": 13.99,
+      "beamM": 7.96,
+      "draftM": 1.37,
+      "displacementKg": 16300,
+      "engineHp": 57,
+      "engines": 2,
+      "fuelL": 1040,
+      "waterL": 600,
+      "cabins": [
+        3,
+        4
+      ],
+      "heads": [
+        3,
+        4
+      ],
+      "berthsMax": 12,
+      "designer": "VPLP Design (naval architecture); Patrick le Quément (exterior); Nauta Design (interior)",
+      "builderUrl": "https://www.catamarans-lagoon.com/boats/lagoon-46",
+      "notes": "engineHp is per engine (2 x 57 hp, sail drives). Fuel is 2 x 520 L and water 2 x 300 L. Figures are from the builder page; dealers quote LOA 14.35 m, draft 1.30 to 1.35 m and 16.6 t displacement. Launch year 2019 is from general knowledge; I did not confirm it in a source. Charter boats are often listed as 4 guest cabins plus 2 crew cabins. Berths are 6 to 12 per the builder.",
+      "sources": [
+        "https://www.catamarans-lagoon.com/boats/lagoon-46",
+        "https://www.multihulls-world.com/technical-specifications/lagoon-catamarans/lagoon-46",
+        "https://ancasta.com/boats-for-sale/new-boats/lagoon/sailing-catamarans/46/",
+        "https://navigare-yachting.com/en/yacht-ownership/new-yachts/lagoon/lagoon-46-nn/77"
+      ]
+    },
+    {
+      "id": "fp-elba-45",
+      "name": "Fountaine Pajot Elba 45",
+      "builder": "Fountaine Pajot",
+      "kind": "catamaran",
+      "launched": 2019,
+      "lengthOverallM": 13.45,
+      "hullLengthM": null,
+      "beamM": 7.55,
+      "draftM": 1.2,
+      "displacementKg": 14010,
+      "engineHp": 40,
+      "engines": 2,
+      "fuelL": 470,
+      "waterL": 700,
+      "cabins": [
+        3,
+        4
+      ],
+      "heads": [
+        3,
+        4
+      ],
+      "berthsMax": null,
+      "designer": "Berret Racoupeau Yacht Design",
+      "builderUrl": "https://media.fountaine-pajot.com/en/sailing-catamarans/elba-45-enx5d2d7be42412f670ff188190.htm",
+      "notes": "engineHp is per engine: 2 x 40 hp standard, 2 x 60 hp option (most charter boats have 2 x 60 hp Volvo D2). A Smart Electric version also exists. Light displacement is 14.01 t per Multihulls World and Yachting World; Fountaine Pajot's own 2019 magazine says 13.6 t. Tank figures are swapped in some sources (Multihulls World lists 700 L fuel and 470 L water). Most dealer and charter listings give 470 L fuel and 700 L water (2 x 350 L). Some listings give draft as 1.25 to 1.32 m. Versions are Maestro (3 cabins) and Quatuor (4 cabins). No builder hull length or maximum berth count was found. Designer from general knowledge, not confirmed in a source.",
+      "sources": [
+        "https://www.multihulls-world.com/technical-specifications/fountaine-pajot/elba-45",
+        "https://www.fountaine-pajot.com/sailing-catamarans/wp-content/uploads/sites/3/2023/08/multihulls-world-sept-2019-elba-45-min.pdf",
+        "https://www.yachtingworld.com/reviews/boat-tests/fountaine-pajot-elba-45-most-popular-catamaran-yet",
+        "https://ancasta.com/boats-for-sale/new/sail/fountaine-pajot/elba-45/33904/",
+        "https://media.fountaine-pajot.com/en/sailing-catamarans/elba-45/layout-enx5d2d8be22412f670ff18892c.htm"
+      ]
+    },
+    {
+      "id": "fp-tanna-47",
+      "name": "Fountaine Pajot Tanna 47",
+      "builder": "Fountaine Pajot",
+      "kind": "catamaran",
+      "launched": 2022,
+      "lengthOverallM": 13.94,
+      "hullLengthM": null,
+      "beamM": 7.7,
+      "draftM": 1.2,
+      "displacementKg": 14700,
+      "engineHp": 60,
+      "engines": 2,
+      "fuelL": 940,
+      "waterL": 700,
+      "cabins": [
+        3,
+        4,
+        5
+      ],
+      "heads": [
+        3,
+        5
+      ],
+      "berthsMax": 10,
+      "designer": "Berret Racoupeau Yacht Design",
+      "builderUrl": "https://media.fountaine-pajot.com/en/sailing-catamarans/tanna-47/layouts-enx60ed39ccb028c7382c8acc0a.htm",
+      "notes": "The Tanna 47 is an updated Saona 47 (2022 model) with the same hull and characteristics; it adds flybridge and lounge space. engineHp is per engine: 2 x 60 hp Volvo D2 per Ancasta; Multihulls World gives 2 x 50 or 60 hp. Draft is 1.20 m per Multihulls World and 1.30 m per Ancasta. Fuel is 2 x 470 L and water 2 x 350 L. A Navigare charter listing swaps these (700 L fuel, 940 L water). Versions are Maestro (3 cabins/3 heads) and Quintet (5 cabins/5 heads, sleeps 10). A 4-cabin version is mentioned by Yachting World, but its head count was not found. Some charter listings show 6 cabins. Launch year 2022 is from Fountaine Pajot's 2023 magazine ('Nouveauté 2022').",
+      "sources": [
+        "https://ancasta.com/boats-for-sale/new/sail/fountaine-pajot/tanna-47/45641/",
+        "https://www.multihulls-world.com/news-catamaran-trimaran/tanna-47-the-saona-reviewed-and-updated",
+        "https://www.yachtingworld.com/yachts-and-gear/first-look-tanna-47-relaxed-cruising-on-two-hulls-134216",
+        "https://navigare-yachting.com/en/yacht-ownership/new-yachts/fountaine-pajot/fountaine-pajot-saona-47-nn/48",
+        "https://www.fountaine-pajot.com/sailing-catamarans/wp-content/uploads/sites/3/2023/08/2023-fountaine-pajot-sailing-catamarans-magazine-web-version-min.pdf"
+      ]
+    },
+    {
+      "id": "lagoon-51",
+      "name": "Lagoon 51",
+      "builder": "Lagoon",
+      "kind": "catamaran",
+      "launched": 2022,
+      "lengthOverallM": 15.6,
+      "hullLengthM": 15.35,
+      "beamM": 8.1,
+      "draftM": 1.4,
+      "displacementKg": 19700,
+      "engineHp": 80,
+      "engines": 2,
+      "fuelL": 1040,
+      "waterL": 830,
+      "cabins": [
+        4,
+        5,
+        6
+      ],
+      "heads": [
+        3,
+        4
+      ],
+      "berthsMax": 14,
+      "designer": "VPLP Design (naval architecture); Patrick le Quément (exterior); Nauta Design (interior)",
+      "builderUrl": "https://www.catamarans-lagoon.com/boats/lagoon-51",
+      "notes": "engineHp is per engine (2 x 80 hp Yanmar 4JH80). Dealers quote the 15.35 m hull length as LOA, draft as 1.38 m, and displacement as 19.91 t CE (19.7 t EEC per the builder). Fuel is 2 x 520 L. The builder lists 4 to 6 cabins and 8 to 14 berths. Dealers give 8 to 12 berths and Multihulls World 6 to 14. Head counts are confirmed only for 4-cabin versions (3 or 4 heads); 5- and 6-cabin head counts were not found. Launch year is approximate: the press kit is dated March 2022, and the first new boats were offered for 2023/2024. Interior is by Nauta Design per the press kit.",
+      "sources": [
+        "https://www.catamarans-lagoon.com/boats/lagoon-51",
+        "https://www.multihulls-world.com/technical-specifications/lagoon-catamarans/lagoon-51",
+        "https://ancasta.com/boats-for-sale/new-boats/lagoon/sailing-catamarans/51/",
+        "https://ancasta.com/boats-for-sale/new/sail/lagoon/51/37867/",
+        "https://themultihullgroup.com/wp-content/uploads/2022/03/dossier-de-presse-lagoon-51-en-1.pdf"
+      ]
+    },
+    {
+      "id": "lagoon-55",
+      "name": "Lagoon 55",
+      "builder": "Lagoon",
+      "kind": "catamaran",
+      "launched": 2021,
+      "lengthOverallM": 16.56,
+      "hullLengthM": 16.56,
+      "beamM": 9.0,
+      "draftM": 1.55,
+      "displacementKg": 29200,
+      "engineHp": 110,
+      "engines": 2,
+      "fuelL": 1100,
+      "waterL": 960,
+      "cabins": [
+        4,
+        5,
+        6
+      ],
+      "heads": [
+        4
+      ],
+      "berthsMax": 16,
+      "designer": "VPLP Design (naval architecture); Patrick le Quément (exterior); Nauta Design (interior)",
+      "builderUrl": "https://www.catamarans-lagoon.com/boats/lagoon-55",
+      "notes": "Length overall shown is the hull length (16.56 m), as most dealers quote it; the builder's starred figure of 18.38 m includes fittings. engineHp is per engine (2 x 110 hp standard; some boats have 2 x 115 hp Nanni). The builder's LOA of 18.38 m is marked with an asterisk and is much longer than the 16.56 m hull length, so it probably includes bowsprit or other fittings. Many dealers quote 16.56 m as LOA. Light displacement is 29.2 t EEC per the builder; dealers say 27 t, and one old Multihulls World entry (13 t, 16.70 m) looks wrong. The builder lists 4 to 6 cabins and 8 to 16 berths. Heads confirmed only for the 4-cabin owner version (4 en-suite plus a crew head); other versions not found. First sailed early 2021.",
+      "sources": [
+        "https://www.catamarans-lagoon.com/boats/lagoon-55",
+        "https://www.multihulls-world.com/technical-specifications/lagoon-catamarans/lagoon-55-2021",
+        "https://ancasta.com/boats-for-sale/new-boats/lagoon/sailing-catamarans/55/",
+        "https://ancasta.com/boats-for-sale/used/sail/lagoon/55/38571/",
+        "https://www.nauticexpo.com/prod/lagoon/product-20535-617693.html",
+        "https://www.giornaledellavela.com/2021/03/17/lagoon-55/?lang=en"
+      ]
+    },
+    {
+      "id": "bali-5-4",
+      "name": "Bali 5.4",
+      "builder": "Bali Catamarans (Catana Group)",
+      "kind": "catamaran",
+      "launched": 2019,
+      "lengthOverallM": 16.8,
+      "hullLengthM": 16.2,
+      "beamM": 8.74,
+      "draftM": 1.48,
+      "displacementKg": 22500,
+      "engineHp": 80,
+      "engines": 2,
+      "fuelL": 1200,
+      "waterL": 1200,
+      "cabins": [
+        4,
+        5,
+        6
+      ],
+      "heads": [
+        4
+      ],
+      "berthsMax": 12,
+      "designer": "Xavier Faÿ (naval architecture); Olivier Poncin (concept/exterior); Lasta Design Studio (interior)",
+      "builderUrl": null,
+      "notes": "engineHp is per engine: 2 x 60 hp standard, 2 x 80 hp option, which most charter boats have (Yanmar 4JH80). Displacement varies: 22.5 t light per a Multihulls World review, 22 t in the 2019 buyer's guide, and 20.8 t on the Multihulls World spec page. A pre-launch figure of 10.5 t is clearly wrong. A review gives LOA 16.93 m. Versions have 4, 5 or 6 double cabins. Heads are confirmed only for the 4-cabin version (4 guest heads plus crew heads); 6-cabin head counts were not found. Charter 6-cabin boats sleep 12 guests plus crew. The Bali 5.4 no longer appears on bali-catamarans.com, which now lists the 5.2 and 5.8, so no builder model page was found. Launch year is 2019 per listings and the 2019 Multihull of the Year award.",
+      "sources": [
+        "https://www.multihulls-world.com/technical-specifications/bali-catamarans/bali-54",
+        "https://navigare-yachting.com/en/yacht-ownership/new-yachts/bali/bali-54-nn/148",
+        "https://www.multihulls-world.com/articles-catamaran-trimaran/2019-buyers-guide-50-to-70-feet-multihulls",
+        "https://alliedyachting.com/yacht-for-sale/bali-5-4-2019",
+        "https://www.bali-catamarans.com/en/news/the-2024-vintage-everything-you-need-to-know-about-the-new-bali-design"
+      ]
+    },
+    {
+      "id": "fp-saona-47",
+      "name": "Fountaine Pajot Saona 47",
+      "builder": "Fountaine Pajot",
+      "kind": "catamaran",
+      "launched": 2017,
+      "lengthOverallM": 13.94,
+      "hullLengthM": null,
+      "beamM": 7.7,
+      "draftM": 1.3,
+      "displacementKg": 13800,
+      "engineHp": 50,
+      "engines": 2,
+      "fuelL": 940,
+      "waterL": 700,
+      "cabins": [
+        3,
+        4,
+        5
+      ],
+      "heads": [
+        3,
+        5
+      ],
+      "berthsMax": 10,
+      "designer": "Berret Racoupeau Yacht Design",
+      "builderUrl": null,
+      "notes": "The Saona 47 was succeeded in 2022 by the Tanna 47 on the same hull. Replaced by the Tanna 47 in 2022; it is no longer on the builder's site, so no current model page was found. engineHp is per engine: 2 x 50 hp standard, 2 x 60 hp option. Displacement varies: 13.8 t unladen per a dealer (catamaranguru), 13.3 t light in a Multihulls World buyer's guide, and 14.72 t on one spec sheet. Draft is 1.30 m in the buyer's guide and a dealer guide, and about 1.20 m in a broker listing. Fuel is 2 x 470 L and water 700 L. Versions are Maestro (3 cabins), a 4-cabin version, and Quintet (5 cabins/5 heads). Launched April 2017 at La Grande-Motte.",
+      "sources": [
+        "https://www.multihulls-world.com/technical-specifications/fountaine-pajot/saona-47",
+        "https://www.multihulls-world.com/articles-catamaran-trimaran/buyers-guide-2020-45-to-50-feet-2",
+        "https://ancasta.com/boats-for-sale/used/sail/fountaine-pajot/saona-47/36686/",
+        "https://www.cruisingworld.com/fountaine-pajot-saona-47-review",
+        "https://catamaranguru.com/?p=4872"
+      ]
+    },
+    {
+      "id": "sun-odyssey-440",
+      "name": "Jeanneau Sun Odyssey 440",
+      "builder": "Jeanneau",
+      "kind": "monohull",
+      "launched": 2018,
+      "lengthOverallM": 13.39,
+      "hullLengthM": 12.64,
+      "beamM": 4.29,
+      "draftM": 2.2,
+      "displacementKg": 8561,
+      "engineHp": 45,
+      "engines": 1,
+      "fuelL": 200,
+      "waterL": 330,
+      "cabins": [
+        2,
+        3,
+        4
+      ],
+      "heads": [
+        2
+      ],
+      "berthsMax": 10,
+      "designer": "Philippe Briand Yacht Design with Jeanneau Design",
+      "builderUrl": "https://www.jeanneau.com/boats/sailboat/2-sun-odyssey/109-sun-odyssey-440",
+      "notes": "Draft is 2.20 m deep keel and 1.60 m shoal keel. Engine is a 45 hp Yanmar on shaft drive; a 57 hp option is reported by Yachting Monthly. Light displacement is 8,561 kg (18,874 lb per SAIL). One summary of the builder page gave LOA as 13 m; reviews give 13.39 m. Yacht.de says there are 2 heads in every layout; a Jeanneau article mentions a 4-cabin/4-head option, which I could not confirm. The 4-cabin version sleeps 10. Some sources say production started late 2017. Some charter listings give 530 L water.",
+      "sources": [
+        "https://www.jeanneau.com/boats/sailboat/2-sun-odyssey/109-sun-odyssey-440",
+        "https://www.yachtingmonthly.com/yacht-reviews/jeanneau-sun-odyssey-440-64728",
+        "https://sailmagazine.com/boats/boat-review-jeanneau-sun-odyssey-440/",
+        "https://www.yacht.de/en/yachts/cruising-yachts/sun-odyssey-440-a-cruising-yacht-full-of-ideas-in-the-rarely-served-size-segment/"
+      ]
+    },
+    {
+      "id": "bavaria-cruiser-46",
+      "name": "Bavaria Cruiser 46",
+      "builder": "Bavaria Yachts",
+      "kind": "monohull",
+      "launched": 2014,
+      "lengthOverallM": 14.27,
+      "hullLengthM": 13.6,
+      "beamM": 4.35,
+      "draftM": 2.1,
+      "displacementKg": 12600,
+      "engineHp": 55,
+      "engines": 1,
+      "fuelL": 210,
+      "waterL": 360,
+      "cabins": [
+        4
+      ],
+      "heads": [
+        2,
+        3
+      ],
+      "berthsMax": 10,
+      "designer": "Farr Yacht Design",
+      "builderUrl": null,
+      "notes": "This is the Farr-designed Cruiser 46 (about 2014 to 2019), not the newer Bavaria C46, which is a different hull (13.95 m hull, 4.70 m beam, 12,730 kg, 244 L fuel, 554 L water). Draft is 2.10 m standard; shoal is 1.73 m per YACHT or 1.85 m per a listing. Displacement is 12.6 t per the YACHT test and listings; one broker gives 11,000 kg. Engine is a 55 hp Volvo saildrive standard, with a 75 hp option per SAIL. Water is 360 L in most listings; others give 460 L or 700 L, probably with optional tanks. Four cabins is the common layout; a 3-cabin version was not confirmed. The model is discontinued and no builder page was found. Launch year is approximate: YACHT tested it in 2013 and the first model year was 2014.",
+      "sources": [
+        "https://www.yacht.de/en/yachts/cruising-yachts/bavaria-cruiser-46-cruising-boat-with-plenty-of-space-and-comfort-in-the-test/",
+        "https://sailmagazine.com/boats/boat-review-bavaria-cruiser-46/",
+        "https://www.devalk.nl/en/yachtbrokerage/806703/BAVARIA-46-CRUISER.html",
+        "https://ancasta.com/boats-for-sale/used/sail/bavaria/46-cruiser/50317/",
+        "https://www.yachtingmonthly.com/reviews/yacht-reviews/bavaria-c46-review-space-and-performance"
+      ]
+    },
+    {
+      "id": "oceanis-51-1",
+      "name": "Beneteau Oceanis 51.1",
+      "builder": "Beneteau",
+      "kind": "monohull",
+      "launched": 2017,
+      "lengthOverallM": 15.94,
+      "hullLengthM": 14.98,
+      "beamM": 4.8,
+      "draftM": 2.88,
+      "displacementKg": 13930,
+      "engineHp": 80,
+      "engines": 1,
+      "fuelL": 200,
+      "waterL": 440,
+      "cabins": [
+        3,
+        4,
+        5
+      ],
+      "heads": [
+        2,
+        3
+      ],
+      "berthsMax": 10,
+      "designer": "Berret Racoupeau Yacht Design; Nauta Design (interior)",
+      "builderUrl": "https://www.beneteau.com/en/oceanis/oceanis-511",
+      "notes": "Draft: 2.88 m is the builder maximum (performance keel, First Line). Standard is about 2.30 m (7 ft 7 in) and shoal is 1.92 m per the builder (6 ft 1 in per SAIL). Engine is an 80 hp Yanmar saildrive standard, 110 hp option. Fuel is 200 L and water 440 L standard; some boats carry about 730 L water with optional tanks. Layouts include 3 cabins/2 heads, 3 cabins/3 heads, 4 cabins/2 heads and 5 cabins/3 heads (sleeps 10). Keelindex names Biscontini as designer, which conflicts with the other sources. Launch year is approximate: production is listed from 2017 and it was a 2018 award nominee. The model page has moved to Beneteau's heritage (2015-2022) section.",
+      "sources": [
+        "https://www.beneteau.com/en-us/oceanis-2015-2022/oceanis-511",
+        "https://sailmagazine.com/boats/boat-review-beneteau-oceanis-51-1/",
+        "https://ancasta.com/boats-for-sale/new/sail/beneteau/oceanis-51-1/42972/",
+        "https://navigare-yachting.com/en/yacht-ownership/new-yachts/beneteau/oceanis-511-nn/56",
+        "https://www.boat24.com/en/sailingboats/beneteau/beneteau-oceanis-511/detail/684347/"
+      ]
+    },
+    {
+      "id": "dufour-530",
+      "name": "Dufour 530",
+      "builder": "Dufour Yachts",
+      "kind": "monohull",
+      "launched": 2020,
+      "lengthOverallM": 16.35,
+      "hullLengthM": 15.5,
+      "beamM": 4.99,
+      "draftM": 2.8,
+      "displacementKg": 17774,
+      "engineHp": 75,
+      "engines": 1,
+      "fuelL": 440,
+      "waterL": 740,
+      "cabins": [
+        3,
+        4,
+        5,
+        6
+      ],
+      "heads": [
+        2,
+        3,
+        4
+      ],
+      "berthsMax": null,
+      "designer": "Felci Yacht Design",
+      "builderUrl": "https://www.dufour-yachts.com/en/luxury-yachts/dufour-530/",
+      "notes": "Draft: 2.80 m performance keel, 2.30 m standard and 1.95 m shoal, per Yachting World. The builder headline is 2.30 m; SAIL gives 9 ft 1 in, about 2.77 m, for the performance keel. Engine is a 75 hp Yanmar saildrive standard, with a 110 hp Volvo shaft-drive option. Water is 740 L per the builder; SAIL says 179 US gal, about 678 L. Layouts range from 3 to 6 cabins with 2 to 4 heads, and all have a skipper cabin in the bow. A broker PDF says 3 to 5 cabins. Versions are Easy, Ocean and Performance. Shown at boot Düsseldorf in January 2020.",
+      "sources": [
+        "https://www.dufour-yachts.com/en/luxury-yachts/dufour-530/",
+        "https://sailmagazine.com/boats/boat-review-dufour-530/",
+        "https://www.yachtingworld.com/video/dufour-530-yacht-tour-new-model-125737",
+        "https://pressmare.it/en/shipyards/dufour-yachts/2020-01-21/launched-dufour-530-instinctive-sailing-25018",
+        "https://www.boatnews.com/story/32983/dufour-530-a-50-foot-sailboat-that-can-be-converted-from-3-to-6-cabins"
+      ]
+    },
+    {
+      "id": "hanse-508",
+      "name": "Hanse 508",
+      "builder": "Hanse Yachts",
+      "kind": "monohull",
+      "launched": 2018,
+      "lengthOverallM": 15.55,
+      "hullLengthM": 14.93,
+      "beamM": 4.75,
+      "draftM": 2.4,
+      "displacementKg": 14700,
+      "engineHp": 80,
+      "engines": 1,
+      "fuelL": 280,
+      "waterL": 630,
+      "cabins": [
+        3,
+        4,
+        5
+      ],
+      "heads": [
+        2,
+        3,
+        4
+      ],
+      "berthsMax": null,
+      "designer": "judel/vrolijk & co with the Hanse design team",
+      "builderUrl": "https://hanseyachts.com/gb/historical-models/hanse-508/",
+      "notes": "Lower confidence than the other models. No builder or magazine spec table was found, so the figures come from listings and spec databases. Draft is 2.40 m deep and 1.98 m shoal; a 2.10 m medium keel also appears. Displacement is 14.7 t (one database gives 15.1 t maximum). Engine is a Yanmar 4JH80 (80 hp). Fuel is 280 L and water 630 L from a single listing. Cabins range from 3 to 5 plus crew; one listing shows 6 guest cabins. Hanse lists production as 2018 to 2024 (itBoat says from 2017). Replaced by the Hanse 510.",
+      "sources": [
+        "https://hanseyachts.com/gb/historical-models/hanse-508/",
+        "https://www.yacht.de/en/cruising-yachts/yacht-test-hanse-508-cruising-yacht-from-germany-put-to-the-test/",
+        "https://www.yachtall.com/en/boat/hanse-508-s311874",
+        "https://www.yachtall.com/en/boat/hanse-508-s285957",
+        "https://old.itboat.com/models/10120-hanse-508",
+        "https://www.yachtingworld.com/reviews/boat-tests/first-look-hanse-510-decidedly-different-style"
+      ]
+    },
+    {
+      "id": "elan-impression-50-1",
+      "name": "Elan Impression 50.1",
+      "builder": "Elan Yachts",
+      "kind": "monohull",
+      "launched": null,
+      "lengthOverallM": 15.18,
+      "hullLengthM": 14.83,
+      "beamM": 4.68,
+      "draftM": 2.23,
+      "displacementKg": 12660,
+      "engineHp": 80,
+      "engines": 1,
+      "fuelL": 255,
+      "waterL": 605,
+      "cabins": [
+        3,
+        4,
+        5
+      ],
+      "heads": [
+        2,
+        3
+      ],
+      "berthsMax": 12,
+      "designer": "Humphreys Yacht Design",
+      "builderUrl": "https://www.elan-yachts.com/en/yacht-lines/impression-line/elan-impression-501",
+      "notes": "Figures are from the Elan spec page. Draft is 2.23 m standard and 1.84 m shoal. Engine is a Yanmar 4JH80 (80 hp); an electric twin Oceanvolt 15 kW option exists. One 2020 listing has a Volvo D2-75. Layouts are 3 cabins/3 heads (standard), 4 cabins/3 heads and 5 cabins/2 heads; the saloon converts to a double. The Elan brochure says the charter version berths up to 12. Launch year was not confirmed: used boats date from 2020, and SAIL reviewed it in 2023.",
+      "sources": [
+        "https://www.elan-yachts.com/en/yacht-lines/impression-line/elan-impression-501",
+        "http://sailmagazine.com/boats/review-elan-impression-50-1/",
+        "https://itboat.com/en/model/13909-elan-impression-50-1-6FckP/for-sale",
+        "https://www.elan-yachts.com/sites/default/files/2025-02/Brochure-ImpressionLine.pdf"
+      ]
+    },
+    {
+      "id": "jeanneau-yachts-60",
+      "name": "Jeanneau Yachts 60",
+      "builder": "Jeanneau",
+      "kind": "monohull",
+      "launched": 2021,
+      "lengthOverallM": 18.28,
+      "hullLengthM": 17.41,
+      "beamM": 5.2,
+      "draftM": 2.55,
+      "displacementKg": 20170,
+      "engineHp": 110,
+      "engines": 1,
+      "fuelL": 318,
+      "waterL": 760,
+      "cabins": [
+        3,
+        4,
+        5,
+        6
+      ],
+      "heads": [
+        3,
+        4
+      ],
+      "berthsMax": 12,
+      "designer": "Philippe Briand (naval architecture); Winch Design / Andrew Winch (interior); Jeanneau Design",
+      "builderUrl": "https://www.jeanneau.com/boats/sailboat/4-jeanneau-yachts/653-jeanneau-yachts-60",
+      "notes": "Draft is 2.55 m for the standard keel per Jeanneau and Yachting World. Yacht.de gives 2.70 m deep and 2.25 m shallow. Yacht.de gives LOA as 18.21 m. Displacement is 20,170 kg per Yachting World; no separate light figure was found. Engine is a 110 hp Yanmar standard, 150 hp option. Water is 2 x 380 L. Fuel is 318 L (70 imperial gallons) per Yachting World, which seems small for a 60-footer. The configurator lists 3 to 6 cabins (19 layouts), plus an optional skipper cabin. Head counts confirmed in listings are 3 cabins/3 heads and 4 cabins/4 heads plus crew; others were not found. First built 2021.",
+      "sources": [
+        "https://www.jeanneau.com/boats/sailboat/4-jeanneau-yachts/653-jeanneau-yachts-60",
+        "https://www.yachtingworld.com/reviews/boat-tests/jeanneau-yachts-60-review-different-yachts-in-one",
+        "https://www.yacht.de/en/boot-duesseldorf/60-footer-comparison-jeanneau-yachts-60-and-oceanis-yacht-60/",
+        "https://en.wikipedia.org/wiki/Jeanneau_Yachts_60",
+        "https://www.rightboat.com/boats-for-sale/jeanneau/yachts-60/rb504116"
+      ]
+    },
+    {
+      "id": "oceanis-yacht-60",
+      "name": "Beneteau Oceanis Yacht 60",
+      "builder": "Beneteau",
+      "kind": "monohull",
+      "launched": 2022,
+      "lengthOverallM": 18.95,
+      "hullLengthM": 17.64,
+      "beamM": 5.3,
+      "draftM": 2.65,
+      "displacementKg": 21700,
+      "engineHp": 150,
+      "engines": 1,
+      "fuelL": 500,
+      "waterL": 800,
+      "cabins": [
+        3,
+        4
+      ],
+      "heads": [
+        3,
+        4
+      ],
+      "berthsMax": null,
+      "designer": "Biscontini Yacht Design (naval architecture); Lorenzo Argento (interior)",
+      "builderUrl": "https://www.beneteau.com/oceanis-yacht/oceanis-yacht-60",
+      "notes": "Not the older Oceanis 60 (2015, Berret Racoupeau, 17.75 m hull, 4.99 m beam) or the Oceanis Yacht 62. LOA is 18.95 m per the builder; Yachting World gives 18.8 m. Hull length is 17.64 m per Yachting World; Beneteau says 'almost 18 m' and a listing gives 17.60 m. Beam is quoted as 5.25 to 5.30 m. Draft is 2.65 m standard; a shoal option is mentioned, but its figure was garbled in sources and one used listing gives 2.30 m. Light displacement is 21,700 kg per the builder (its imperial figure of 11,020 lb is wrong); Yachting World gives 21,500 kg. Engine is a 150 hp Yanmar shaft drive. Water is about 800 L per dealer and Yachting World, 860 L per one builder page. Layouts are 3 cabins/3 heads or 4 cabins/4 heads. Unveiled February 2022 and shown at Cannes in September 2022.",
+      "sources": [
+        "https://www.beneteau.com/oceanis-yacht/oceanis-yacht-60",
+        "https://www.yachtingworld.com/reviews/boat-tests/beneteau-oceanis-yacht-60-review",
+        "https://ancasta.com/boats-for-sale/new-boats/beneteau-sail/oceanis-yacht/oceanis-yacht-60/",
+        "https://sailmagazine.com/boats/beneteau-oceanis-yacht-60-top-10-best-best-nominee/",
+        "https://www.beneteau.com/newsroom-news/new-oceanis-yacht-60-flagship-elegance-nutshell"
+      ]
+    },
+    {
+      "id": "hanse-588",
+      "name": "Hanse 588",
+      "builder": "Hanse Yachts",
+      "kind": "monohull",
+      "launched": 2016,
+      "lengthOverallM": 17.2,
+      "hullLengthM": 16.7,
+      "beamM": 5.2,
+      "draftM": 2.84,
+      "displacementKg": 22800,
+      "engineHp": 110,
+      "engines": 1,
+      "fuelL": 520,
+      "waterL": 770,
+      "cabins": [
+        3,
+        4,
+        5
+      ],
+      "heads": [
+        4,
+        5
+      ],
+      "berthsMax": 11,
+      "designer": "judel/vrolijk & co with the Hanse design team",
+      "builderUrl": "https://hanseyachts.com/us/historical-models/hanse-588/",
+      "notes": "Draft is 2.84 m deep bulb (9 ft 4 in), 2.64 m standard and 2.26 m shoal, per SAIL; a broker gives 8 ft 6 in for the medium L-keel. Displacement is 22,800 kg (50,265 lb per SAIL and listings); Yachting World says 19,800 kg. Engine is a 110 hp Volvo standard, 150 hp option. Fuel is 520 L and water 770 L (one 2017 listing gives 720 L). Hull from the Hanse 575 mould. Up to 5 guest cabins and 5 heads, plus an optional crew cabin. One owner layout has 3 cabins (owner forward, 2 aft) plus crew, but its head count was not found. Hanse lists production as 2016 to 2024.",
+      "sources": [
+        "https://hanseyachts.com/us/historical-models/hanse-588/",
+        "https://sailmagazine.com/boats/boat-review-hanse-588/",
+        "https://ancasta.com/boats-for-sale/used/sail/hanse/588/45174/",
+        "https://www.yachtingworld.com/yachts-and-gear/first-look-videos-from-on-board-hanse-588-and-hanse-675-106216",
+        "https://worthavenueyachts.com/yachts-for-sale/hanse-588"
+      ]
+    },
+    {
+      "id": "hanse-458",
+      "name": "Hanse 458",
+      "builder": "Hanse Yachts",
+      "kind": "monohull",
+      "launched": 2018,
+      "lengthOverallM": 14.04,
+      "hullLengthM": 13.55,
+      "beamM": 4.38,
+      "draftM": 2.23,
+      "displacementKg": 11700,
+      "engineHp": 57,
+      "engines": 1,
+      "fuelL": 210,
+      "waterL": 450,
+      "cabins": [
+        3,
+        4
+      ],
+      "heads": [
+        2
+      ],
+      "berthsMax": 10,
+      "designer": "judel/vrolijk & co with the Hanse design team",
+      "builderUrl": "https://hanseyachts.com/gb/sailing-yachts/hanse-458/",
+      "notes": "Figures are from the Yachting Monthly test. Draft is 2.23 m deep keel (a listing gives 2.25 m); the shoal figure was not found. Displacement is 11,700 kg with 4,220 kg ballast. Engine is a 57 hp saildrive; some newer boats list 80 hp. Some brokers swap the tanks (450 L fuel, 210 L water); the manufacturer-derived figures are 210 L fuel and 450 L water. Layouts are 3 or 4 cabins with 2 heads. Berths are 8 plus 2 in the saloon. Production listed as 2018 onwards. Hanse's site now has a successor, the Hanse 460.",
+      "sources": [
+        "https://www.yachtingmonthly.com/reviews/yacht-reviews/hanse-458",
+        "https://hanseyachts.com/gb/sailing-yachts/hanse-458/",
+        "https://www.samboat.co.uk/model/hanse-458",
+        "https://www.seattleyachts.com/used-yachts-for-sale/hanse-458-2020-hanse-458/2771389_1",
+        "https://www.yacht.de/en/cruising-yachts/hanse-460-single-handed-and-unmistakable-cruising-yacht-on-test/"
+      ]
+    },
+    {
+      "id": "elan-impression-45-1",
+      "name": "Elan Impression 45.1",
+      "builder": "Elan Yachts",
+      "kind": "monohull",
+      "launched": 2019,
+      "lengthOverallM": 13.51,
+      "hullLengthM": 13.0,
+      "beamM": 4.18,
+      "draftM": 1.9,
+      "displacementKg": 10790,
+      "engineHp": 45,
+      "engines": 1,
+      "fuelL": 215,
+      "waterL": 300,
+      "cabins": [
+        3,
+        4
+      ],
+      "heads": [
+        2
+      ],
+      "berthsMax": 8,
+      "designer": "Humphreys Yacht Design (Rob Humphreys)",
+      "builderUrl": "https://www.elan-yachts.com/en/yacht-lines/impression-line/elan-impression-451",
+      "notes": "Elan's own pages disagree. The main model page gives LOA 13.51 m, 10,790 kg light displacement, water 300 L standard (572 L optional), and a Yanmar 4JH45 (45 hp) standard with 4JH57 or 15 kW Oceanvolt options. A separate Elan landing page gives LOA 13.85 m, 10,420 kg (mLCC), water 516 L standard (570 L optional), and engines of 50 hp Volvo or 57 hp Yanmar standard, 75 hp Volvo optional. Draft is 1.90 m standard and 1.60 m shoal; one listing gives 2.29 m. Layouts are 3 cabins/2 heads and 4 cabins/2 heads. Charter listings give 8 berths. Unveiled at Cannes in September 2019; it is the update of the Impression 45 (2014-2018).",
+      "sources": [
+        "https://www.elan-yachts.com/en/yacht-lines/impression-line/elan-impression-451",
+        "https://landing.elan-yachts.com/lp/yacht-lines/elan-impression-451",
+        "https://www.yachtingnews.com/elan-impression-45-1/",
+        "https://www.yacht.de/yachten/fahrtenyachten/bootsbau-bewaehrte-formen-neue-aufmachung-elan-impression-45-1/",
+        "https://itboat.com/models/10312-impression-45-1"
+      ]
+    },
+    {
+      "id": "sun-odyssey-519",
+      "name": "Jeanneau Sun Odyssey 519",
+      "builder": "Jeanneau",
+      "kind": "monohull",
+      "launched": 2015,
+      "lengthOverallM": 15.75,
+      "hullLengthM": 14.98,
+      "beamM": 4.69,
+      "draftM": 2.28,
+      "displacementKg": 13900,
+      "engineHp": 75,
+      "engines": 1,
+      "fuelL": 240,
+      "waterL": 615,
+      "cabins": [
+        3,
+        4,
+        5
+      ],
+      "heads": [
+        3
+      ],
+      "berthsMax": 10,
+      "designer": "Philippe Briand Yacht Design with Jeanneau Design",
+      "builderUrl": "https://www.jeanneau.com/boats/sailboat/2-sun-odyssey/43-sun-odyssey-519",
+      "notes": "Draft is 2.28 m standard keel; shoal is about 1.73 m. Displacement is 13,900 kg per the builder page, which does not say whether it is light displacement. Engine is a 75 hp Yanmar on earlier boats (4JH4-TE saildrive); 2018 and later boats are often listed with 80 hp. Jeanneau lists 3 or 4 cabins on one page and 3 to 5 on another. Charter boats are commonly 5 cabins/3 heads plus a skipper cabin. Heads for the 3- and 4-cabin versions were not found. Sleeps 6 to 10 (Wikipedia). Built about 2015 to 2019; some sources say from 2016.",
+      "sources": [
+        "https://www.jeanneau.com/boats/sailboat/2-sun-odyssey/43-sun-odyssey-519",
+        "https://en.wikipedia.org/wiki/Sun_Odyssey_519",
+        "https://navigare-yachting.com/en/yacht-charter/croatia/sailboat-charter/sun-odyssey-519-freyja-trogir-marina-baotic/192",
+        "https://itboat.com/en/listing/jeanneau-sun-odyssey-519-2019-3-y3KF4/for-sale"
+      ]
+    },
+    {
+      "id": "oceanis-48",
+      "name": "Beneteau Oceanis 48",
+      "builder": "Beneteau",
+      "kind": "monohull",
+      "launched": 2012,
+      "lengthOverallM": 14.6,
+      "hullLengthM": null,
+      "beamM": 4.74,
+      "draftM": 2.18,
+      "displacementKg": 12594,
+      "engineHp": 75,
+      "engines": 1,
+      "fuelL": null,
+      "waterL": 690,
+      "cabins": [
+        3,
+        4,
+        5
+      ],
+      "heads": [
+        2,
+        3,
+        4
+      ],
+      "berthsMax": null,
+      "designer": "Berret Racoupeau Yacht Design",
+      "builderUrl": "https://www.beneteau.com/oceanis-2005-2014/oceanis-48",
+      "notes": "The 2013-era model (Beneteau's 2005-2014 heritage range), not the current Oceanis 48 or 46.1. LOA 14.60 m, beam 4.74 m and lightship 12,594 kg are the builder's figures. Draft is 2.18 m deep (itBoat) and 1.83 m shoal (builder minimum). Engine is a 75 hp Yanmar 4JH4TCE standard (Cruising World 2013 test). Fuel is unconfirmed: sources give 189 L, 400 L and 104 US gal. Water is 690 L per itBoat and Yachting News (another listing gives 568 L). No builder hull length was found. The builder offers up to 5 cabins, or 3 cabins with a forward owner suite. Listings show 3 cabins/2 heads, 4 cabins/2 heads, 4+1 cabins/3 heads and 5 cabins/3 heads. Launch year is uncertain: listings start in 2012, Keelindex says 2011, others say 2013.",
+      "sources": [
+        "https://www.beneteau.com/oceanis-2005-2014/oceanis-48",
+        "https://www.cruisingworld.com/sailboats/boat-review-beneteau-oceanis-48/",
+        "https://itboat.com/models/1640-beneteau-oceanis-48",
+        "https://yachtingnews.com/beneteau-oceanis-48/amp",
+        "https://ancasta.com/boats-for-sale/used/sail/beneteau/oceanis-48/42525",
+        "https://keelindex.com/boat/oceanis-48-beneteau"
+      ]
+    }
+  ]
+}

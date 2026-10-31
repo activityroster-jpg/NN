@@ -28,6 +28,7 @@ export interface ModelSpecs {
   berthsMax: number | null;
   designer: string | null;
   builderUrl: string | null;
+  /** Research caveats for us; never shown on the site. */
   notes: string | null;
   sources: string[];
 }
