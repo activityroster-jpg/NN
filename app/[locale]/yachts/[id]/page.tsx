@@ -6,12 +6,15 @@ import { ILLUSTRATION_LABEL, ILLUSTRATIONS, illustrationUrl } from "@/lib/fleet/
 import { IconArrowRight, IconBed, IconInfo, IconRuler, IconShower, IconUsers } from "@/components/Icons";
 import { JsonLd } from "@/components/seo/JsonLd";
 import { getDb } from "@/lib/db";
-import { DESTINATION_IDS } from "@/lib/domain/destinations";
-import { classOf, feet, fleetPath, MODELS, modelById, modelPath, options, similarTo } from "@/lib/fleet";
+import { classOf, feet, fleetPath, modelById, modelPath, options, similarTo } from "@/lib/fleet";
 import { getDictionary } from "@/lib/i18n";
 import { modelCovers, modelPhotos } from "@/lib/photos/slots";
 import { abs, breadcrumbLd, pageMeta, snippet } from "@/lib/seo";
-import { requireLocale } from "@/lib/request";
+import { displayCurrency, requireLocale, todayIso } from "@/lib/request";
+import { getRates } from "@/lib/fx";
+import { money } from "@/lib/i18n/format";
+import { ESTIMATE_NOTE, estimateIn, modelRangesByDestination } from "@/lib/pricing";
+import { destinationViews } from "@/lib/services/destination-settings";
 
 type Props = { params: Promise<{ locale: string; id: string }> };
 
@@ -37,9 +40,8 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   return pageMeta({ locale, path: `/yachts/${id}`, englishOnly: true, title: `${m.name} charter: cabins, layout and specifications`, description: snippet(intro(id)) });
 }
 
-export function generateStaticParams() {
-  return MODELS.map((m) => ({ id: m.id }));
-}
+// Rendered per request: photos and prices change in the admin without a deploy.
+export const dynamic = "force-dynamic";
 
 export default async function ModelPage({ params }: Props) {
   const { locale: l, id } = await params;
@@ -48,7 +50,19 @@ export default async function ModelPage({ params }: Props) {
   if (!m) notFound();
   const t = getDictionary(locale);
   const db = await getDb();
-  const [photos, covers] = await Promise.all([modelPhotos(db, id), modelCovers(db)]);
+  const [photos, covers, ranges, views, currency, rates] = await Promise.all([
+    modelPhotos(db, id),
+    modelCovers(db),
+    modelRangesByDestination(db, id, todayIso()),
+    destinationViews(db),
+    displayCurrency(),
+    getRates(db),
+  ]);
+  const where = views.filter((v) => v.active).map((v) => ({ id: v.id, range: ranges.find((r) => r.destinationId === v.id)?.range ?? null }));
+  const shown = where.flatMap((w) => (w.range ? [w.range] : []));
+  const lowest = shown.length ? Math.min(...shown.map((r) => r.min)) : null;
+  const highest = shown.length ? Math.max(...shown.map((r) => r.max)) : null;
+  const price = (eur: number) => money(estimateIn(eur, currency, rates), currency, locale);
   const similar = similarTo(id);
   const c = classOf(id);
   const isAlternative = !!c?.alternatives.includes(id);
@@ -121,6 +135,13 @@ export default async function ModelPage({ params }: Props) {
             {m.heads.length > 0 && <li className="flex items-center gap-2"><IconShower className="h-5 w-5 text-sea" /> {options(m.heads)} heads</li>}
             {m.berthsMax && <li className="flex items-center gap-2"><IconUsers className="h-5 w-5 text-sea" /> up to {m.berthsMax} guests</li>}
           </ul>
+          {lowest != null && highest != null && (
+            <p className="mt-5 rounded-xl bg-brand-soft px-4 py-3">
+              <span className="block text-xs font-semibold tracking-wider text-brand uppercase">Estimated price</span>
+              <span className="text-2xl font-semibold">{price(lowest)} to {price(highest)}</span> <span className="text-sm text-ink/70">per week, boat only</span>
+              <span className="mt-1 block text-xs text-muted">Depends on the week and destination: see the table below.</span>
+            </p>
+          )}
           <p className="mt-5 text-ink/80">{intro(id)}</p>
           {isAlternative && <p className="mt-3 text-sm text-muted">We offer the {m.name} as an equal to the {c!.models.map((x) => modelById(x)?.name ?? x).join(" or ")} when those are taken.</p>}
           <div className="mt-6 flex flex-wrap gap-3">
@@ -147,15 +168,21 @@ export default async function ModelPage({ params }: Props) {
           <p className="mt-3 text-xs text-muted">Builder&apos;s figures for the model. Charter yachts differ by year, layout and options; your quote gives the exact yacht&apos;s details.</p>
         </div>
         <div>
-          <h2 className="h-display text-3xl">Where to sail it</h2>
-          <p className="mt-2 text-ink/75">We charter this model, or its equal, in all our destinations, subject to availability:</p>
-          <ul className="mt-4 flex flex-wrap gap-2">
-            {DESTINATION_IDS.map((d) => (
-              <li key={d}>
-                <Link href={`/${locale}/destinations/${d}`} className="inline-block rounded-full border border-line bg-card px-3 py-1.5 text-sm hover:border-brand">{t.destinations[d as keyof typeof t.destinations]?.name ?? d}</Link>
-              </li>
-            ))}
-          </ul>
+          <h2 className="h-display text-3xl">Where to sail it, and estimated prices</h2>
+          <p className="mt-2 text-ink/75">We charter this model, or its equal, in all our destinations, subject to availability. Estimated price per week, from the quietest week to the busiest:</p>
+          <table className="mt-4 w-full text-left text-sm">
+            <tbody>
+              {where.map((w) => (
+                <tr key={w.id} className="border-t border-line">
+                  <th className="py-2 pr-4 font-medium">
+                    <Link href={`/${locale}/destinations/${w.id}`} className="hover:underline">{t.destinations[w.id as keyof typeof t.destinations]?.name ?? w.id}</Link>
+                  </th>
+                  <td className="py-2 tabular-nums">{w.range ? (w.range.min === w.range.max ? price(w.range.min) : `${price(w.range.min)} – ${price(w.range.max)}`) : "On request"}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+          <p className="mt-3 text-xs text-muted">{ESTIMATE_NOTE}</p>
         </div>
       </section>
 

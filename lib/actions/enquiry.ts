@@ -1,7 +1,7 @@
 "use server";
 
 import { z } from "zod";
-import { getDb } from "@/lib/db";
+import { getDb, type Db } from "@/lib/db";
 import { enquiry } from "@/lib/db/schema";
 import { randomId } from "@/lib/crypto";
 import { DESTINATION_IDS } from "@/lib/domain/destinations";
@@ -14,6 +14,7 @@ import { clientIp } from "@/lib/request";
 import { audit } from "@/lib/audit";
 import { modelById } from "@/lib/fleet";
 import { COMPANY } from "@/lib/brand";
+import { estimatesForWeek, isSaturday } from "@/lib/pricing";
 
 export interface EnquiryState {
   ok: boolean;
@@ -107,6 +108,7 @@ export async function submitEnquiry(_prev: EnquiryState, form: FormData): Promis
     `Skipper: ${v.skipper ?? "-"}   Chef: ${v.chef ? "yes" : "no"}`,
     `Budget: ${v.budget ?? "-"}`,
     `Yachts: ${yachtNames(v.yachtKey)}`,
+    ...(await estimateLines(db, v.yachtKey, v.destinationId, v.weekStart)),
     `Language: ${v.locale}`,
     "",
     v.message ?? "",
@@ -134,4 +136,13 @@ function yachtNames(key: string | undefined): string {
   const m = /^models?:(.+)$/.exec(key);
   if (!m) return key;
   return m[1]!.split(",").map((id) => modelById(id)?.name ?? id).join(", ");
+}
+
+/** The estimates the customer saw for their yachts and week (EUR), for the office email. */
+async function estimateLines(db: Db, key: string | undefined, destinationId: string | undefined, weekStart: string | undefined): Promise<string[]> {
+  const ids = /^models?:(.+)$/.exec(key ?? "")?.[1]?.split(",") ?? [];
+  if (!ids.length || !destinationId || !weekStart || !isSaturday(weekStart)) return [];
+  const eur = await estimatesForWeek(db, destinationId, weekStart).catch(() => ({}) as Record<string, number | null>);
+  const shown = ids.flatMap((id) => (eur[id] != null ? [`${modelById(id)?.name ?? id} €${eur[id]!.toLocaleString("en-GB")}`] : []));
+  return shown.length ? [`Estimates shown (boat only, per week): ${shown.join(" · ")}`] : [];
 }

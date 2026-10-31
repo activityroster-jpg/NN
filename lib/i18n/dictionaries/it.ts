@@ -223,6 +223,9 @@ const it: Dictionary = {
     tooSmall: "troppo piccola per {n}",
     requestQuote: "Richiedi un preventivo",
     cabinsWord: "cabine",
+    estimate: "circa {price} / settimana",
+    estimateNote: "Prezzo stimato per la tua settimana, solo barca. Skipper, extra, cauzione e tasse locali esclusi; il preventivo conferma il prezzo.",
+    details: "Dettagli",
   },
   results: {
     title: "Barche: {destination}",
@@ -370,6 +373,9 @@ const it: Dictionary = {
   enquiry: {
     title: "Raccontaci il tuo viaggio",
     yachtsChosen: "Barche scelte (o equivalenti se occupate)",
+    estimateTitle: "Prezzo stimato per la tua settimana",
+    estimatePerWeek: "{price} a settimana, solo barca",
+    estimateNote: "Prezzo stimato per la tua settimana, solo barca. Skipper, extra, cauzione e tasse locali esclusi; il preventivo conferma il prezzo.",
     sub: "Ti rispondiamo entro un giorno lavorativo con barche adatte, prezzi reali e consigli onesti.",
     destination: "Destinazione",
     anyDestination: "Non ho ancora deciso",

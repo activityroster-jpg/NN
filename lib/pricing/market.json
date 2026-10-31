@@ -1,0 +1,384 @@
+{
+ "researchedAt": "placeholder",
+ "models": {
+  "lagoon-40": {
+   "low": 2950,
+   "shoulder": 4300,
+   "peak": 5350,
+   "estimated": true,
+   "basis": "placeholder"
+  },
+  "lagoon-42": {
+   "low": 3050,
+   "shoulder": 4450,
+   "peak": 5550,
+   "estimated": true,
+   "basis": "placeholder"
+  },
+  "lagoon-43": {
+   "low": 3200,
+   "shoulder": 4650,
+   "peak": 5800,
+   "estimated": true,
+   "basis": "placeholder"
+  },
+  "lagoon-46": {
+   "low": 3350,
+   "shoulder": 4850,
+   "peak": 6100,
+   "estimated": true,
+   "basis": "placeholder"
+  },
+  "fp-elba-45": {
+   "low": 3100,
+   "shoulder": 4500,
+   "peak": 5650,
+   "estimated": true,
+   "basis": "placeholder"
+  },
+  "fp-tanna-47": {
+   "low": 3200,
+   "shoulder": 4700,
+   "peak": 5850,
+   "estimated": true,
+   "basis": "placeholder"
+  },
+  "lagoon-51": {
+   "low": 3600,
+   "shoulder": 5250,
+   "peak": 6550,
+   "estimated": true,
+   "basis": "placeholder"
+  },
+  "lagoon-55": {
+   "low": 3850,
+   "shoulder": 5550,
+   "peak": 6950,
+   "estimated": true,
+   "basis": "placeholder"
+  },
+  "bali-5-4": {
+   "low": 3900,
+   "shoulder": 5650,
+   "peak": 7050,
+   "estimated": true,
+   "basis": "placeholder"
+  },
+  "fp-saona-47": {
+   "low": 3200,
+   "shoulder": 4700,
+   "peak": 5850,
+   "estimated": true,
+   "basis": "placeholder"
+  },
+  "sun-odyssey-440": {
+   "low": 1900,
+   "shoulder": 2800,
+   "peak": 3500,
+   "estimated": true,
+   "basis": "placeholder"
+  },
+  "bavaria-cruiser-46": {
+   "low": 2050,
+   "shoulder": 2950,
+   "peak": 3700,
+   "estimated": true,
+   "basis": "placeholder"
+  },
+  "oceanis-51-1": {
+   "low": 2300,
+   "shoulder": 3300,
+   "peak": 4150,
+   "estimated": true,
+   "basis": "placeholder"
+  },
+  "dufour-530": {
+   "low": 2350,
+   "shoulder": 3400,
+   "peak": 4250,
+   "estimated": true,
+   "basis": "placeholder"
+  },
+  "hanse-508": {
+   "low": 2200,
+   "shoulder": 3250,
+   "peak": 4050,
+   "estimated": true,
+   "basis": "placeholder"
+  },
+  "elan-impression-50-1": {
+   "low": 2150,
+   "shoulder": 3150,
+   "peak": 3950,
+   "estimated": true,
+   "basis": "placeholder"
+  },
+  "jeanneau-yachts-60": {
+   "low": 2600,
+   "shoulder": 3800,
+   "peak": 4750,
+   "estimated": true,
+   "basis": "placeholder"
+  },
+  "oceanis-yacht-60": {
+   "low": 2700,
+   "shoulder": 3950,
+   "peak": 4950,
+   "estimated": true,
+   "basis": "placeholder"
+  },
+  "hanse-588": {
+   "low": 2450,
+   "shoulder": 3600,
+   "peak": 4450,
+   "estimated": true,
+   "basis": "placeholder"
+  },
+  "hanse-458": {
+   "low": 2000,
+   "shoulder": 2900,
+   "peak": 3650,
+   "estimated": true,
+   "basis": "placeholder"
+  },
+  "elan-impression-45-1": {
+   "low": 1950,
+   "shoulder": 2800,
+   "peak": 3500,
+   "estimated": true,
+   "basis": "placeholder"
+  },
+  "sun-odyssey-519": {
+   "low": 2250,
+   "shoulder": 3300,
+   "peak": 4100,
+   "estimated": true,
+   "basis": "placeholder"
+  },
+  "oceanis-48": {
+   "low": 2100,
+   "shoulder": 3050,
+   "peak": 3800,
+   "estimated": true,
+   "basis": "placeholder"
+  }
+ },
+ "destinations": {
+  "croatia": {
+   "catMultiplier": 1,
+   "monoMultiplier": 1,
+   "months": {
+    "1": "closed",
+    "2": "closed",
+    "3": "closed",
+    "4": "low",
+    "5": "shoulder",
+    "6": "shoulder",
+    "7": "peak",
+    "8": "peak",
+    "9": "shoulder",
+    "10": "low",
+    "11": "closed",
+    "12": "closed"
+   }
+  },
+  "greece-athens": {
+   "catMultiplier": 1,
+   "monoMultiplier": 1,
+   "months": {
+    "1": "closed",
+    "2": "closed",
+    "3": "closed",
+    "4": "low",
+    "5": "shoulder",
+    "6": "shoulder",
+    "7": "peak",
+    "8": "peak",
+    "9": "shoulder",
+    "10": "low",
+    "11": "closed",
+    "12": "closed"
+   }
+  },
+  "sardinia": {
+   "catMultiplier": 1,
+   "monoMultiplier": 1,
+   "months": {
+    "1": "closed",
+    "2": "closed",
+    "3": "closed",
+    "4": "low",
+    "5": "shoulder",
+    "6": "shoulder",
+    "7": "peak",
+    "8": "peak",
+    "9": "shoulder",
+    "10": "low",
+    "11": "closed",
+    "12": "closed"
+   }
+  },
+  "bvi": {
+   "catMultiplier": 1,
+   "monoMultiplier": 1,
+   "months": {
+    "1": "peak",
+    "2": "peak",
+    "3": "peak",
+    "4": "peak",
+    "5": "shoulder",
+    "6": "shoulder",
+    "7": "shoulder",
+    "8": "closed",
+    "9": "closed",
+    "10": "closed",
+    "11": "shoulder",
+    "12": "peak"
+   }
+  },
+  "greece-ionian": {
+   "catMultiplier": 1,
+   "monoMultiplier": 1,
+   "months": {
+    "1": "closed",
+    "2": "closed",
+    "3": "closed",
+    "4": "low",
+    "5": "shoulder",
+    "6": "shoulder",
+    "7": "peak",
+    "8": "peak",
+    "9": "shoulder",
+    "10": "low",
+    "11": "closed",
+    "12": "closed"
+   }
+  },
+  "turkey": {
+   "catMultiplier": 1,
+   "monoMultiplier": 1,
+   "months": {
+    "1": "closed",
+    "2": "closed",
+    "3": "closed",
+    "4": "low",
+    "5": "shoulder",
+    "6": "shoulder",
+    "7": "peak",
+    "8": "peak",
+    "9": "shoulder",
+    "10": "low",
+    "11": "closed",
+    "12": "closed"
+   }
+  },
+  "balearics": {
+   "catMultiplier": 1,
+   "monoMultiplier": 1,
+   "months": {
+    "1": "closed",
+    "2": "closed",
+    "3": "closed",
+    "4": "low",
+    "5": "shoulder",
+    "6": "shoulder",
+    "7": "peak",
+    "8": "peak",
+    "9": "shoulder",
+    "10": "low",
+    "11": "closed",
+    "12": "closed"
+   }
+  },
+  "sicily": {
+   "catMultiplier": 1,
+   "monoMultiplier": 1,
+   "months": {
+    "1": "closed",
+    "2": "closed",
+    "3": "closed",
+    "4": "low",
+    "5": "shoulder",
+    "6": "shoulder",
+    "7": "peak",
+    "8": "peak",
+    "9": "shoulder",
+    "10": "low",
+    "11": "closed",
+    "12": "closed"
+   }
+  },
+  "corsica": {
+   "catMultiplier": 1,
+   "monoMultiplier": 1,
+   "months": {
+    "1": "closed",
+    "2": "closed",
+    "3": "closed",
+    "4": "closed",
+    "5": "low",
+    "6": "shoulder",
+    "7": "peak",
+    "8": "peak",
+    "9": "low",
+    "10": "closed",
+    "11": "closed",
+    "12": "closed"
+   }
+  },
+  "montenegro": {
+   "catMultiplier": 1,
+   "monoMultiplier": 1,
+   "months": {
+    "1": "closed",
+    "2": "closed",
+    "3": "closed",
+    "4": "closed",
+    "5": "low",
+    "6": "shoulder",
+    "7": "peak",
+    "8": "peak",
+    "9": "shoulder",
+    "10": "low",
+    "11": "closed",
+    "12": "closed"
+   }
+  },
+  "seychelles": {
+   "catMultiplier": 1,
+   "monoMultiplier": 1,
+   "months": {
+    "1": "low",
+    "2": "shoulder",
+    "3": "shoulder",
+    "4": "peak",
+    "5": "peak",
+    "6": "closed",
+    "7": "closed",
+    "8": "closed",
+    "9": "shoulder",
+    "10": "peak",
+    "11": "peak",
+    "12": "low"
+   }
+  },
+  "thailand": {
+   "catMultiplier": 1,
+   "monoMultiplier": 1,
+   "months": {
+    "1": "peak",
+    "2": "peak",
+    "3": "shoulder",
+    "4": "shoulder",
+    "5": "closed",
+    "6": "closed",
+    "7": "closed",
+    "8": "closed",
+    "9": "closed",
+    "10": "closed",
+    "11": "shoulder",
+    "12": "peak"
+   }
+  }
+ }
+}
