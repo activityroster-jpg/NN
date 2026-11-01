@@ -32,6 +32,10 @@ on:
         description: "Lesson slugs, comma separated; blank = only changed lessons; all = every lesson; none = skip lessons"
         required: false
         default: ""
+      howtos:
+        description: "Know-how guide ids, comma separated; blank = only changed videos; all = every one; none = skip them"
+        required: false
+        default: ""
 
 concurrency:
   group: guide-videos
@@ -49,6 +53,7 @@ jobs:
       matrix: ${{ steps.plan.outputs.matrix }}
       shorts: ${{ steps.plan.outputs.shorts }}
       lessons: ${{ steps.plan.outputs.lessons }}
+      howtos: ${{ steps.plan.outputs.howtos }}
     steps:
       - name: Which videos to make
         id: plan
@@ -56,10 +61,12 @@ jobs:
           ONLY: ${{ github.event.inputs.guides }}
           ONLY_SHORTS: ${{ github.event.inputs.shorts }}
           ONLY_LESSONS: ${{ github.event.inputs.lessons }}
+          ONLY_HOWTOS: ${{ github.event.inputs.howtos }}
         run: |
           curl -fsS "$SITE/api/cruising/videos" > guides.json
           curl -fsS "$SITE/api/shorts/videos" > shorts.json
           curl -fsS "$SITE/api/courses/videos" > lessons.json
+          curl -fsS "$SITE/api/cruising/howto-videos" > howtos.json
           python3 - <<'PY' >> "$GITHUB_OUTPUT"
           import json, os, sys
           def plan(items, only, why):
@@ -81,6 +88,8 @@ jobs:
           print("shorts=" + json.dumps([{"id": g["id"], "key": g["key"]} for g in shorts]))
           lessons = plan(json.load(open("lessons.json"))["lessons"], os.environ.get("ONLY_LESSONS", ""), lambda g: f"narration {g['narration']} recorded")
           print("lessons=" + json.dumps([{"id": g["id"], "key": g["key"]} for g in lessons]))
+          howtos = plan(json.load(open("howtos.json"))["howtos"], os.environ.get("ONLY_HOWTOS", ""), lambda g: f"narration {g['narration']} recorded")
+          print("howtos=" + json.dumps([{"id": g["id"], "key": g["key"]} for g in howtos]))
           PY
           cat "$GITHUB_OUTPUT"
 
@@ -214,4 +223,50 @@ jobs:
           npx wrangler r2 object put "$BUCKET/${key%.mp4}.jpg" --file "out/${{ matrix.lesson.id }}.jpg" --content-type image/jpeg --remote --jurisdiction eu \
           && npx wrangler r2 object put "$BUCKET/${key%.mp4}.json" --file "out/${{ matrix.lesson.id }}.json" --content-type application/json --remote --jurisdiction eu \
           && npx wrangler r2 object put "$BUCKET/$key" --file "out/${{ matrix.lesson.id }}.mp4" --content-type video/mp4 --remote --jurisdiction eu \
+            || echo "::warning::Could not store the video in Cloudflare (does the API token have Workers R2 Storage → Edit?). It is attached to this run as a download."
+
+  render-howto:
+    needs: plan
+    if: needs.plan.outputs.howtos != '[]'
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    strategy:
+      fail-fast: false
+      max-parallel: 6
+      matrix:
+        howto: ${{ fromJSON(needs.plan.outputs.howtos) }}
+    env:
+      CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+      CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - name: Install the browser and ffmpeg
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq ffmpeg fonts-dejavu-core
+          npm install --no-save --no-package-lock playwright@1.49.1
+          npx playwright install --with-deps chromium
+      - name: Render ${{ matrix.howto.id }}
+        env:
+          RENDER_PATH: /render/howto
+        run: node scripts/videos/make-guide-video.mjs "$SITE" "${{ matrix.howto.id }}" "out/${{ matrix.howto.id }}.mp4"
+      - name: Attach the video to this run
+        uses: actions/upload-artifact@v4
+        with:
+          name: howto-${{ matrix.howto.id }}
+          path: |
+            out/${{ matrix.howto.id }}.mp4
+            out/${{ matrix.howto.id }}.jpg
+          retention-days: 14
+      - name: Store for Admin → Videos
+        run: |
+          key="${{ matrix.howto.key }}"
+          npx wrangler r2 object put "$BUCKET/${key%.mp4}.jpg" --file "out/${{ matrix.howto.id }}.jpg" --content-type image/jpeg --remote --jurisdiction eu \
+          && npx wrangler r2 object put "$BUCKET/${key%.mp4}.json" --file "out/${{ matrix.howto.id }}.json" --content-type application/json --remote --jurisdiction eu \
+          && npx wrangler r2 object put "$BUCKET/$key" --file "out/${{ matrix.howto.id }}.mp4" --content-type video/mp4 --remote --jurisdiction eu \
             || echo "::warning::Could not store the video in Cloudflare (does the API token have Workers R2 Storage → Edit?). It is attached to this run as a download."

@@ -11,6 +11,9 @@ import { lessonPath } from "@/lib/courses/navigation/seo";
 import { lessonNarrationId } from "@/lib/courses/navigation/scripts";
 import { storedLessonVideos, youtubeText } from "@/lib/courses/navigation/videos";
 import { abs } from "@/lib/seo";
+import { HOWTO } from "@/lib/cruising/howto";
+import { howToNarrationId } from "@/lib/cruising/howto-scripts";
+import { howToYoutubeText, storedHowToVideos } from "@/lib/cruising/howto-videos";
 
 export const metadata = { title: "Videos" };
 
@@ -22,7 +25,18 @@ export default async function Videos() {
   const env = await getEnvAsync();
   const versions = new Map<string, string>();
   for (const s of SHORTS) versions.set(s.id, shortVersion(env, s, await readManifest(env, s.id)));
-  const [stored, narration, shorts, footage, lessonVideos] = await Promise.all([storedVideos(env), narrationStatus(env), storedShorts(env, versions), footageStatus(env), storedLessonVideos(env)]);
+  const [stored, narration, shorts, footage, lessonVideos, howToVideos] = await Promise.all([storedVideos(env), narrationStatus(env), storedShorts(env, versions), footageStatus(env), storedLessonVideos(env), storedHowToVideos(env)]);
+  const chaptersOf = async (key: string | undefined) => {
+    if (!key || !env.PHOTOS) return null;
+    const meta = await env.PHOTOS.get(key.replace(/\.mp4$/, ".json"));
+    return meta ? (((await meta.json()) as { chapters?: { title: string; start: number }[] }).chapters ?? null) : null;
+  };
+  const howtos = await Promise.all(
+    HOWTO.map(async (g) => {
+      const v = howToVideos.get(g.id);
+      return { g, v, yt: howToYoutubeText(g, abs(`/en/cruising/how-to/${g.id}`), await chaptersOf(v?.key)), n: narration.get(howToNarrationId(g.id)) ?? { recorded: 0, total: 0 } };
+    }),
+  );
   const lessons = await Promise.all(
     publishedLessons().map(async (l) => {
       const v = lessonVideos.get(l.slug);
@@ -157,6 +171,49 @@ export default async function Videos() {
                       <>
                         <a href={`/admin/lessons/download/${l.slug}`} className="btn-primary px-4 py-2 text-sm">Download MP4</a>
                         <a href={`/admin/lessons/download/${l.slug}?thumb=1`} className="ml-2 text-xs underline">Thumbnail</a>
+                      </>
+                    )}
+                  </td>
+                </tr>
+              );
+            })}
+          </tbody>
+        </table>
+      </Card>
+      <Card title="Charter know-how videos">
+        <p className="mb-4 text-sm text-muted">The narrated videos of the charter know-how guides as MP4s (1920×1080, narration, intro sting, captions) with a thumbnail and a ready-made YouTube title and description, chapters included. Made automatically once a guide&apos;s narration is recorded.</p>
+        <table className="w-full text-left text-sm">
+          <thead className="text-xs text-muted uppercase">
+            <tr><th className="py-2">Guide</th><th className="py-2">Video</th><th className="py-2"></th></tr>
+          </thead>
+          <tbody>
+            {howtos.map(({ g, v, yt, n }) => {
+              const done = n.total > 0 && n.recorded === n.total;
+              return (
+                <tr key={g.id} className="border-t border-line align-top">
+                  <td className="py-3 pr-4">
+                    <span className="font-semibold">{g.title}</span>
+                    <details className="mt-1">
+                      <summary className="cursor-pointer text-xs text-muted">YouTube title and description</summary>
+                      <input readOnly value={yt.title} className="mt-2 w-full max-w-xl rounded-md border border-line bg-surface p-2 text-xs" />
+                      <textarea readOnly rows={10} value={yt.description} className="mt-2 w-full max-w-xl rounded-md border border-line bg-surface p-2 text-xs text-ink/80" />
+                    </details>
+                  </td>
+                  <td className="py-3 text-ink/80">
+                    {v ? (
+                      <>
+                        {v.uploaded.toLocaleDateString("en-GB", { day: "numeric", month: "short", year: "numeric" })} · {size(v.size)}
+                        {!v.current && <span className="block text-xs text-warn">The guide has changed since; a new video is on its way.</span>}
+                      </>
+                    ) : (
+                      <span className="text-muted">{done ? "Not made yet" : `Narration ${n.recorded} of ${n.total}`}</span>
+                    )}
+                  </td>
+                  <td className="py-3 text-right whitespace-nowrap">
+                    {v && (
+                      <>
+                        <a href={`/admin/howto/download/${g.id}`} className="btn-primary px-4 py-2 text-sm">Download MP4</a>
+                        <a href={`/admin/howto/download/${g.id}?thumb=1`} className="ml-2 text-xs underline">Thumbnail</a>
                       </>
                     )}
                   </td>
