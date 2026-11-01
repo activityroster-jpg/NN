@@ -1,5 +1,6 @@
 import type { MetadataRoute } from "next";
 import { GUIDES } from "@/lib/cruising";
+import { HOWTO } from "@/lib/cruising/howto";
 import { MODELS } from "@/lib/fleet";
 import { COURSE_SLUG, publishedLessons } from "@/lib/courses/navigation/outline";
 import { DESTINATIONS } from "@/lib/domain/destinations";
@@ -12,7 +13,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
   const base = (process.env.SITE_URL ?? "https://nauticalnomads.com").replace(/\/$/, "");
   const now = new Date();
   const translated = ["", "/plan", "/destinations", "/how-it-works", "/about", "/contact", "/enquire", ...DESTINATIONS.map((d) => `/destinations/${d.id}`)];
-  const englishOnly = ["/cruising", ...GUIDES.map((g) => `/cruising/${g.id}`), "/yachts", ...MODELS.map((m) => `/yachts/${m.id}`), `/learn/${COURSE_SLUG}`, ...publishedLessons().map((l) => `/learn/${COURSE_SLUG}/${l.slug}`), ...Object.keys(LEGAL_DOCS).map((d) => `/legal/${d}`)];
+  const englishOnly = ["/cruising", ...GUIDES.map((g) => `/cruising/${g.id}`), ...HOWTO.map((h) => `/cruising/how-to/${h.id}`), "/yachts", ...MODELS.map((m) => `/yachts/${m.id}`), `/learn/${COURSE_SLUG}`, ...publishedLessons().map((l) => `/learn/${COURSE_SLUG}/${l.slug}`), ...Object.keys(LEGAL_DOCS).map((d) => `/legal/${d}`)];
   const priority = (p: string) => (p === "" ? 1 : p.startsWith("/destinations/") || p.startsWith("/cruising") || p.startsWith("/learn") || p.startsWith("/yachts") ? 0.8 : p.startsWith("/legal") ? 0.2 : 0.6);
   return [
     ...translated.map((p) => ({
