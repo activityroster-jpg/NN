@@ -413,7 +413,7 @@ export function Planner({
                 <label key={m.id} className={`flex cursor-pointer gap-3 rounded-xl border p-3 transition ${on ? "border-brand bg-brand-soft" : "border-line bg-card hover:border-ink/30"} ${full ? "opacity-60" : ""}`}>
                   <input type="checkbox" className="sr-only" checked={on} disabled={full} onChange={() => toggle(m.id)} />
                   {/* eslint-disable-next-line @next/next/no-img-element */}
-                  <img src={m.cover ?? (m.kind === "catamaran" ? "/photos/house/catamaran-swim-platform-sm.jpg" : "/photos/house/winch-under-sail-sm.jpg")} alt="" loading="lazy" className="h-16 w-24 shrink-0 rounded-lg object-cover" />
+                  {m.cover ? <img src={m.cover} alt="" loading="lazy" className="h-16 w-24 shrink-0 rounded-lg object-cover" /> : <span className="h-16 w-24 shrink-0 rounded-lg bg-surface-2" aria-hidden="true" />}
                   <span className="min-w-0 flex-1">
                     <span className="block text-xs font-semibold tracking-wider text-muted uppercase">{m.builder}</span>
                     <span className="block font-semibold">{m.name}</span>
