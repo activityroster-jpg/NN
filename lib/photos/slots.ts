@@ -20,6 +20,8 @@ export interface Slot {
 export interface SlotValue {
   url: string | null;
   credit: string | null;
+  /** Stock library id ("pixabay:123") for picked photos, so none is used twice. */
+  sourceId?: string | null;
 }
 
 // Stock searches for the yacht model slots, by hull type, one per gallery position.
@@ -102,7 +104,7 @@ export async function readSlots(db: Db): Promise<Record<string, SlotValue>> {
   const out: Record<string, SlotValue> = {};
   for (const s of SLOTS) {
     if (inPhotoMap(s.key)) {
-      out[s.key] = { url: map[s.key]?.url ?? null, credit: map[s.key]?.credit ?? null };
+      out[s.key] = { url: map[s.key]?.url ?? null, credit: map[s.key]?.credit ?? null, sourceId: map[s.key]?.sourceId ?? null };
     } else if (s.key.startsWith("destination:")) {
       const r = rows.find((x) => x.id === s.key.slice("destination:".length));
       out[s.key] = { url: r?.heroImageUrl ?? null, credit: r?.heroCredit ?? null };

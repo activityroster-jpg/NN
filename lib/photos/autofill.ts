@@ -24,7 +24,8 @@ export async function autofillEmpty(env: AppEnv, db: Db, budgetMs: number): Prom
   let filled = 0;
   if (!autofillEnabled(env)) return { filled, remaining: 0 };
   const slots = await readSlots(db);
-  const used = new Set(Object.values(slots).map((v) => v.url ?? "").filter(Boolean));
+  // Library ids of photos already on the site (pickNext excludes by id).
+  const used = new Set(Object.values(slots).flatMap((v) => [v.sourceId ?? "", v.url ?? ""]).filter(Boolean));
   const empty = SLOTS.filter((s) => !uploadOnly(s) && !slots[s.key]?.url);
   let i = 0;
   while (i < empty.length && Date.now() < deadline) {
@@ -40,8 +41,9 @@ export async function autofillEmpty(env: AppEnv, db: Db, budgetMs: number): Prom
       console.error("autofill", s.key, r.error);
       continue;
     }
+    used.add(r.sourceId);
     used.add(r.url);
-    await writeSlot(db, s.key, { url: r.url, credit: r.credit });
+    await writeSlot(db, s.key, { url: r.url, credit: r.credit, sourceId: r.sourceId });
     await audit(db, "cron", "photo_autofilled", "photo_slot", s.key, { url: r.url, query: s.query });
     filled++;
   }
