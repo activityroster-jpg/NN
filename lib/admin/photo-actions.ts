@@ -23,11 +23,14 @@ export async function refreshSlot(key: string, seen: string[], query?: string): 
   const db = await getDb();
   // Never repeat a photo already used in another slot.
   const used = new Set<string>(seen.slice(0, 200));
-  for (const v of Object.values(await readSlots(db))) if (v.credit) used.add(v.url ?? "");
+  for (const v of Object.values(await readSlots(db))) {
+    if (v.sourceId) used.add(v.sourceId);
+    if (v.credit) used.add(v.url ?? "");
+  }
   const q = (query ?? "").trim().slice(0, 100) || slot.query;
   const r = await pickNext(env, db, k, q, used);
   if (r.ok) {
-    await writeSlot(db, k, { url: r.url, credit: r.credit });
+    await writeSlot(db, k, { url: r.url, credit: r.credit, sourceId: r.sourceId });
     await audit(db, actor, "photo_refreshed", "photo_slot", k, { url: r.url, query: q });
     revalidatePath("/", "layout");
   }

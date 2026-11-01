@@ -142,6 +142,25 @@ jobs:
           fi
           echo "production healthy"
 
+      - name: Fill empty photo slots
+        # Yacht models and destinations get their library photos now rather
+        # than over the next hours. Stops when none are left or on an error.
+        if: steps.smoke.outcome == 'success'
+        continue-on-error: true
+        run: |
+          stuck=0; last=""
+          for i in $(seq 1 30); do
+            r="$(curl -sS --max-time 90 -X POST "$SITE/api/photos/warm" || echo '{"error":"request failed"}')"
+            echo "$r"
+            if printf '%s' "$r" | grep -q '"error"'; then echo "::warning::Photos not filled: $r"; exit 0; fi
+            if printf '%s' "$r" | grep -q '"remaining":0'; then echo "All photo slots filled."; exit 0; fi
+            rem="$(printf '%s' "$r" | sed -n 's/.*"remaining":\([0-9-]*\).*/\1/p')"
+            if [ "$rem" = "$last" ]; then stuck=$((stuck+1)); else stuck=0; fi
+            last="$rem"
+            if [ "$stuck" -ge 4 ]; then echo "::warning::Photo filling stopped progressing ($r); the hourly job will retry."; exit 0; fi
+          done
+          echo "::warning::Photos still filling; the hourly job will finish."
+
       - name: Check a yacht page's images
         # Informational: lists every image on one model page and whether it loads.
         if: steps.smoke.outcome == 'success'

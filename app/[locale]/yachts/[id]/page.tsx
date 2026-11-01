@@ -1,8 +1,8 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { ILLUSTRATION_NOTE, ModelPhoto, PHOTO_NOTE, similarNote } from "@/components/fleet/ModelPhoto";
-import { GALLERY, GALLERY_LABEL, galleryUrl } from "@/lib/fleet/illustration";
+import { fallbackPhoto, ModelPhoto, PHOTO_NOTE, similarNote } from "@/components/fleet/ModelPhoto";
+import { illustrationUrl } from "@/lib/fleet/illustration";
 import { IconArrowRight, IconBed, IconInfo, IconRuler, IconShower, IconUsers } from "@/components/Icons";
 import { JsonLd } from "@/components/seo/JsonLd";
 import { getDb } from "@/lib/db";
@@ -100,7 +100,7 @@ export default async function ModelPage({ params }: Props) {
             { name: "Our yachts", path: fleetPath },
             { name: m.name, path: modelPath(id) },
           ]),
-          { "@context": "https://schema.org", "@type": "Product", name: m.name, brand: { "@type": "Brand", name: m.builder }, category: m.kind === "catamaran" ? "Sailing catamaran charter" : "Sailing yacht charter", description: intro(id), url: abs(modelPath(id)), image: abs(photos.find((p) => !isStockCredit(p.credit))?.url ?? galleryUrl(id)) },
+          { "@context": "https://schema.org", "@type": "Product", name: m.name, brand: { "@type": "Brand", name: m.builder }, category: m.kind === "catamaran" ? "Sailing catamaran charter" : "Sailing yacht charter", description: intro(id), url: abs(modelPath(id)), image: abs(photos.find((p) => !isStockCredit(p.credit))?.url ?? fallbackPhoto(m.kind)) },
         ]}
       />
       <nav aria-label="Breadcrumb" className="text-sm text-muted">
@@ -110,18 +110,19 @@ export default async function ModelPage({ params }: Props) {
       <div className="mt-4 grid gap-8 lg:grid-cols-[minmax(0,1.4fr)_minmax(0,1fr)]">
         <div>
           {(() => {
-            // Real photos (the builder's uploads, or library photos of a similar
-            // yacht) then the typical layout; renders only until photos arrive.
             const kindWord = m.kind === "catamaran" ? "catamaran" : "sailing yacht";
+            // Real photos (the builder's uploads, or library photos of a similar
+            // yacht), else the house photo for the hull type; then the layout.
+            const plan = { url: illustrationUrl(id, "plan"), label: `${m.name}: typical layout (drawing)`, similar: false };
             const shots: { url: string; label: string; similar: boolean }[] = photos.length
               ? [
                   ...photos.map((p) => {
                     const similar = isStockCredit(p.credit);
                     return { url: p.url, label: similar ? `A similar ${kindWord} (library photo, not the ${m.name})` : `${m.name}, builder's photo`, similar };
                   }),
-                  { url: galleryUrl(id, "plan"), label: `${m.name}: typical layout (drawing)`, similar: false },
+                  plan,
                 ]
-              : GALLERY.map((k) => ({ url: galleryUrl(id, k), label: `${m.name}: ${GALLERY_LABEL[k].toLowerCase()} (${k === "plan" ? "drawing" : "computer render"})`, similar: false }));
+              : [{ url: fallbackPhoto(m.kind), label: `A similar ${kindWord}, not the ${m.name}`, similar: true }, plan];
             const thumbs = shots.slice(1);
             return (
               <div className="grid gap-2">
@@ -144,7 +145,7 @@ export default async function ModelPage({ params }: Props) {
           <p className="mt-3 flex items-start gap-2 text-sm text-muted">
             <IconInfo className="mt-0.5 h-4 w-4 shrink-0" />
             <span>
-              {!photos.length ? ILLUSTRATION_NOTE : photos.some((p) => isStockCredit(p.credit)) ? similarNote(m.kind === "catamaran" ? "catamarans" : "sailing yachts", m.name) : PHOTO_NOTE}
+              {!photos.length || photos.some((p) => isStockCredit(p.credit)) ? similarNote(m.kind === "catamaran" ? "catamarans" : "sailing yachts", m.name) : PHOTO_NOTE}
               {photos.some((p) => p.credit) ? ` Photos: ${[...new Set(photos.map((p) => p.credit).filter(Boolean))].join(", ")}.` : ""}
             </span>
           </p>
