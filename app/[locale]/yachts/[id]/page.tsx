@@ -1,11 +1,11 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { notFound } from "next/navigation";
+import { notFound, permanentRedirect } from "next/navigation";
 import { ModelPhoto, NO_PHOTO_NOTE, PHOTO_NOTE } from "@/components/fleet/ModelPhoto";
 import { IconArrowRight, IconBed, IconInfo, IconRuler, IconShower, IconUsers } from "@/components/Icons";
 import { JsonLd } from "@/components/seo/JsonLd";
 import { getDb } from "@/lib/db";
-import { classOf, feet, fleetPath, modelById, modelPath, options, similarTo } from "@/lib/fleet";
+import { classOf, feet, fleetPath, modelById, RETIRED_MODELS, modelPath, options, similarTo } from "@/lib/fleet";
 import { getDictionary } from "@/lib/i18n";
 import { modelCovers, modelPhotos } from "@/lib/photos/slots";
 import { abs, breadcrumbLd, pageMeta, snippet } from "@/lib/seo";
@@ -46,6 +46,8 @@ export const dynamic = "force-dynamic";
 export default async function ModelPage({ params }: Props) {
   const { locale: l, id } = await params;
   const locale = await requireLocale(Promise.resolve({ locale: l }));
+  const retired = RETIRED_MODELS[id];
+  if (retired) permanentRedirect(`/${locale}/yachts/${retired.replacedBy}`);
   const m = modelById(id);
   if (!m) notFound();
   const t = getDictionary(locale);

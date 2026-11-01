@@ -36,7 +36,7 @@ export const corsicaWest: CruisingGuide = {
     { kind: "anchor", note: "Sand patches between rock and seagrass. Anchor on sand only, and never overnight inside the Scandola reserve." },
   ],
   speak: {
-    Ajaccio: "Ajaksio",
+    Ajaccio: "Azhaksyo",
     "Port Charles Ornano": "Port Sharl Ornano",
     Cargèse: "Carzhez",
     Girolata: "Jeerolahta",

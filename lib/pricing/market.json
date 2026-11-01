@@ -45,14 +45,6 @@
    "confidence": "Likely",
    "basis": "Tanna 47, 2023+ builds; 70 observations, 4 sources"
   },
-  "fp-saona-47": {
-   "peak": 14350,
-   "low": 6195,
-   "product": "bareboat",
-   "confidence": "Likely",
-   "basis": "No 2023+ Saona 47 exists: priced as the Tanna 47, its redesign on the same hull",
-   "successor": "Fountaine Pajot Tanna 47"
-  },
   "lagoon-51": {
    "peak": 20900,
    "low": 7928,
@@ -146,13 +138,6 @@
    "confidence": "Guessing",
    "basis": "No 2023+ Sun Odyssey 519 (built 2016–21): priced as the Sun Odyssey 490, ~1.5 m shorter; 2019–20 519s list €8,000–8,950 at peak in Greece",
    "successor": "Jeanneau Sun Odyssey 490"
-  },
-  "jeanneau-yachts-60": {
-   "peak": 12000,
-   "low": 4150,
-   "product": "skippered",
-   "confidence": "Guessing",
-   "basis": "Jeanneau 60, 2023 builds; listed rows carry a ~20–22% early-booking discount, so list peak taken as ~€12,000 (a 2021 boat in Athens lists €14,250)"
   },
   "oceanis-yacht-60": {
    "peak": 16600,

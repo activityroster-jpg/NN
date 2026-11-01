@@ -318,42 +318,6 @@
       ]
     },
     {
-      "id": "fp-saona-47",
-      "name": "Fountaine Pajot Saona 47",
-      "builder": "Fountaine Pajot",
-      "kind": "catamaran",
-      "launched": 2017,
-      "lengthOverallM": 13.94,
-      "hullLengthM": null,
-      "beamM": 7.7,
-      "draftM": 1.3,
-      "displacementKg": 13800,
-      "engineHp": 50,
-      "engines": 2,
-      "fuelL": 940,
-      "waterL": 700,
-      "cabins": [
-        3,
-        4,
-        5
-      ],
-      "heads": [
-        3,
-        5
-      ],
-      "berthsMax": 10,
-      "designer": "Berret Racoupeau Yacht Design",
-      "builderUrl": null,
-      "notes": "The Saona 47 was succeeded in 2022 by the Tanna 47 on the same hull. Replaced by the Tanna 47 in 2022; it is no longer on the builder's site, so no current model page was found. engineHp is per engine: 2 x 50 hp standard, 2 x 60 hp option. Displacement varies: 13.8 t unladen per a dealer (catamaranguru), 13.3 t light in a Multihulls World buyer's guide, and 14.72 t on one spec sheet. Draft is 1.30 m in the buyer's guide and a dealer guide, and about 1.20 m in a broker listing. Fuel is 2 x 470 L and water 700 L. Versions are Maestro (3 cabins), a 4-cabin version, and Quintet (5 cabins/5 heads). Launched April 2017 at La Grande-Motte.",
-      "sources": [
-        "https://www.multihulls-world.com/technical-specifications/fountaine-pajot/saona-47",
-        "https://www.multihulls-world.com/articles-catamaran-trimaran/buyers-guide-2020-45-to-50-feet-2",
-        "https://ancasta.com/boats-for-sale/used/sail/fountaine-pajot/saona-47/36686/",
-        "https://www.cruisingworld.com/fountaine-pajot-saona-47-review",
-        "https://catamaranguru.com/?p=4872"
-      ]
-    },
-    {
       "id": "sun-odyssey-440",
       "name": "Jeanneau Sun Odyssey 440",
       "builder": "Jeanneau",
@@ -566,43 +530,6 @@
         "http://sailmagazine.com/boats/review-elan-impression-50-1/",
         "https://itboat.com/en/model/13909-elan-impression-50-1-6FckP/for-sale",
         "https://www.elan-yachts.com/sites/default/files/2025-02/Brochure-ImpressionLine.pdf"
-      ]
-    },
-    {
-      "id": "jeanneau-yachts-60",
-      "name": "Jeanneau Yachts 60",
-      "builder": "Jeanneau",
-      "kind": "monohull",
-      "launched": 2021,
-      "lengthOverallM": 18.28,
-      "hullLengthM": 17.41,
-      "beamM": 5.2,
-      "draftM": 2.55,
-      "displacementKg": 20170,
-      "engineHp": 110,
-      "engines": 1,
-      "fuelL": 318,
-      "waterL": 760,
-      "cabins": [
-        3,
-        4,
-        5,
-        6
-      ],
-      "heads": [
-        3,
-        4
-      ],
-      "berthsMax": 12,
-      "designer": "Philippe Briand (naval architecture); Winch Design / Andrew Winch (interior); Jeanneau Design",
-      "builderUrl": "https://www.jeanneau.com/boats/sailboat/4-jeanneau-yachts/653-jeanneau-yachts-60",
-      "notes": "Draft is 2.55 m for the standard keel per Jeanneau and Yachting World. Yacht.de gives 2.70 m deep and 2.25 m shallow. Yacht.de gives LOA as 18.21 m. Displacement is 20,170 kg per Yachting World; no separate light figure was found. Engine is a 110 hp Yanmar standard, 150 hp option. Water is 2 x 380 L. Fuel is 318 L (70 imperial gallons) per Yachting World, which seems small for a 60-footer. The configurator lists 3 to 6 cabins (19 layouts), plus an optional skipper cabin. Head counts confirmed in listings are 3 cabins/3 heads and 4 cabins/4 heads plus crew; others were not found. First built 2021.",
-      "sources": [
-        "https://www.jeanneau.com/boats/sailboat/4-jeanneau-yachts/653-jeanneau-yachts-60",
-        "https://www.yachtingworld.com/reviews/boat-tests/jeanneau-yachts-60-review-different-yachts-in-one",
-        "https://www.yacht.de/en/boot-duesseldorf/60-footer-comparison-jeanneau-yachts-60-and-oceanis-yacht-60/",
-        "https://en.wikipedia.org/wiki/Jeanneau_Yachts_60",
-        "https://www.rightboat.com/boats-for-sale/jeanneau/yachts-60/rb504116"
       ]
     },
     {

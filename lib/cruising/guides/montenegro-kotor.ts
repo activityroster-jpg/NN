@@ -37,8 +37,8 @@ export const montenegroKotor: CruisingGuide = {
   speak: {
     Bura: "Bora",
     bura: "bora",
-    Jugo: "Hugo",
-    jugo: "hugo",
+    Jugo: "Yoogo",
+    jugo: "yoogo",
     "Herceg Novi": "Hertseg Novi",
     "Luštica": "Looshtitsa",
     "Sveti Stefan": "Svetty Stefan",

@@ -3,16 +3,21 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { IconArrowRight, IconInfo } from "@/components/Icons";
 import { PrintButton } from "@/components/cruising/PrintButton";
+import HowToVideo from "@/components/cruising/HowToVideo";
+import { HOWTO_SCRIPTS, howToNarrationId } from "@/lib/cruising/howto-scripts";
+import { narrationComplete } from "@/lib/cruising/prerecord";
+import { voiceEnabled } from "@/lib/cruising/voice";
+import { getEnvAsync } from "@/lib/env";
 import { JsonLd } from "@/components/seo/JsonLd";
-import { HOWTO, howToById, SERIES, seriesOf } from "@/lib/cruising/howto";
+import { howToById, SERIES, seriesOf } from "@/lib/cruising/howto";
 import { abs, breadcrumbLd, pageMeta, snippet } from "@/lib/seo";
 import { requireLocale } from "@/lib/request";
 
 type Props = { params: Promise<{ locale: string; id: string }> };
 
-export function generateStaticParams() {
-  return HOWTO.map((g) => ({ id: g.id }));
-}
+// Rendered per request (like the destination guides): the video appears as
+// soon as its narration is recorded.
+export const dynamic = "force-dynamic";
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { locale, id } = await params;
@@ -27,6 +32,11 @@ export default async function HowToPage({ params }: Props) {
   const g = howToById(id);
   if (!g) notFound();
   const series = SERIES.find((s) => s.id === g.series)!;
+  const script = HOWTO_SCRIPTS[g.id];
+  const env = await getEnvAsync();
+  const recorded = voiceEnabled(env);
+  // Hidden until every sentence is recorded, so the voice never changes part way.
+  const pending = !!script && recorded && !(await narrationComplete(env, howToNarrationId(g.id)));
   const siblings = seriesOf(g.series).filter((x) => x.id !== g.id);
   return (
     <div className="container-page max-w-3xl py-12 print:py-0">
@@ -49,6 +59,18 @@ export default async function HowToPage({ params }: Props) {
         <span>{g.minutes} min read</span>
         <PrintButton />
       </div>
+      {script && (
+        <div className="mt-8 print:hidden">
+          {pending ? (
+            <div className="flex aspect-video flex-col items-center justify-center rounded-2xl bg-[#13293b] p-8 text-center text-white">
+              <p className="h-display text-3xl">The narrated video is being recorded</p>
+              <p className="mt-3 max-w-lg text-white/75">It will appear here shortly. The full guide is below.</p>
+            </div>
+          ) : (
+            <HowToVideo script={script} title={g.title} kicker={series.title} summary={g.summary} recorded={recorded} />
+          )}
+        </div>
+      )}
       <p className="mt-6 text-lg text-ink/80">{g.intro}</p>
 
       {g.sections.map((s) => (

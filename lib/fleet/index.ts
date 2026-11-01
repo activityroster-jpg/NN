@@ -50,7 +50,7 @@ export const FLEET_CLASSES: FleetClass[] = [
   { id: "cat-42", kind: "catamaran", title: "42 to 43-foot catamaran", models: ["lagoon-42", "lagoon-43"], alternatives: [], blurb: "The charter fleets' favourite size: four double cabins, room to spread out, still simple to sail." },
   { id: "cat-46", kind: "catamaran", title: "46-foot catamaran", models: ["lagoon-46"], alternatives: [], blurb: "More space in every cabin and on deck, for groups who want a little luxury." },
   { id: "cat-fp", kind: "catamaran", title: "Fountaine Pajot 45 to 47", models: ["fp-elba-45", "fp-tanna-47"], alternatives: [], blurb: "French-built catamarans with a sporty feel, bright saloons and big flybridge or cockpit lounging." },
-  { id: "cat-large", kind: "catamaran", title: "Large catamaran", models: ["lagoon-51", "lagoon-55"], alternatives: ["bali-5-4", "fp-saona-47"], blurb: "Big catamarans for groups, crewed charters and long weeks aboard: space, comfort and a crew cabin." },
+  { id: "cat-large", kind: "catamaran", title: "Large catamaran", models: ["lagoon-51", "lagoon-55"], alternatives: ["bali-5-4"], blurb: "Big catamarans for groups, crewed charters and long weeks aboard: space, comfort and a crew cabin." },
   { id: "mono-44", kind: "monohull", title: "44-foot sailing yacht", models: ["sun-odyssey-440"], alternatives: [], blurb: "A modern, easy-to-sail cruiser with a walk-around deck: a lovely boat for couples and small groups." },
   { id: "mono-46-bavaria", kind: "monohull", title: "46-foot sailing yacht", models: ["bavaria-cruiser-46"], alternatives: [], blurb: "The proven charter workhorse: solid, roomy below and good value." },
   { id: "mono-45-elan", kind: "monohull", title: "45-foot sailing yacht", models: ["elan-impression-45-1"], alternatives: [], blurb: "A comfortable, well-mannered cruiser with generous volume for its length." },
@@ -58,10 +58,19 @@ export const FLEET_CLASSES: FleetClass[] = [
   { id: "mono-48", kind: "monohull", title: "48-foot sailing yacht", models: ["oceanis-48"], alternatives: [], blurb: "A spacious Beneteau with room for a bigger group and a good turn of speed." },
   { id: "mono-51", kind: "monohull", title: "51-foot sailing yacht", models: ["oceanis-51-1", "sun-odyssey-519"], alternatives: [], blurb: "Five-cabin charter favourites: big crews, big cockpits, still friendly to sail." },
   { id: "mono-53", kind: "monohull", title: "50 to 53-foot sailing yacht", models: ["dufour-530"], alternatives: ["hanse-508", "elan-impression-50-1"], blurb: "Large modern cruisers with fold-down swim platforms and generous owner-style cabins." },
-  { id: "mono-60", kind: "monohull", title: "60-foot sailing yacht", models: ["jeanneau-yachts-60"], alternatives: ["oceanis-yacht-60", "hanse-588"], blurb: "Flagship cruisers, usually with a skipper: superyacht comfort on a sailing boat." },
+  { id: "mono-60", kind: "monohull", title: "60-foot sailing yacht", models: ["oceanis-yacht-60"], alternatives: ["hanse-588"], blurb: "Flagship cruisers, usually with a skipper: superyacht comfort on a sailing boat." },
 ];
 
 export const MODELS: ModelSpecs[] = (specsFile as { models: ModelSpecs[] }).models;
+
+/**
+ * Models no longer offered: their pages redirect to the replacement, and old
+ * enquiries still show their name.
+ */
+export const RETIRED_MODELS: Record<string, { name: string; replacedBy: string }> = {
+  "fp-saona-47": { name: "Fountaine Pajot Saona 47", replacedBy: "fp-tanna-47" },
+  "jeanneau-yachts-60": { name: "Jeanneau Yachts 60", replacedBy: "oceanis-yacht-60" },
+};
 
 export function modelById(id: string): ModelSpecs | undefined {
   return MODELS.find((m) => m.id === id);
