@@ -11,7 +11,11 @@ export interface BoardSlot {
   group: "home" | "featured" | "other" | "gallery" | "models";
   url: string | null;
   credit: string | null;
+  /** Takes uploads only (no Refresh, not filled from the library). */
+  uploadOnly?: boolean;
 }
+
+const STOCK_CREDIT = /\/ (Pixabay|Unsplash)$/;
 
 type Status = "idle" | "queued" | "fetching" | "uploading" | "error";
 
@@ -86,13 +90,47 @@ export function PhotoBoard({ slots: initial, gapSec, sourceLabel }: { slots: Boa
     } else setS(key, "error", r.error);
   };
 
-  const empty = slots.filter((s) => !s.url).map((s) => s.key);
+  const empty = slots.filter((s) => !s.url && !s.uploadOnly).map((s) => s.key);
+
+  // Yacht models: one model's slots at a time.
+  const modelIds = [...new Set(slots.filter((s) => s.group === "models").map((s) => s.key.split(":")[1]!))];
+  const [model, setModel] = useState(modelIds[0] ?? "");
+  const [credit, setCredit] = useState("");
+  const [batchMsg, setBatchMsg] = useState("");
+  const modelSlots = slots.filter((s) => s.group === "models" && s.key.split(":")[1] === model);
+  /** Several photos for the chosen model: into empty slots, then over library photos, in order. */
+  const addPhotos = async (files: FileList | null) => {
+    const list = [...(files ?? [])].filter((f) => f.type.startsWith("image/"));
+    if (!list.length) return;
+    const targets = [...modelSlots.filter((s) => !s.url), ...modelSlots.filter((s) => s.url && STOCK_CREDIT.test(s.credit ?? ""))];
+    if (list.length > targets.length) setBatchMsg(`Only ${targets.length} free slot${targets.length === 1 ? "" : "s"} for this yacht: clear some of your photos to add more.`);
+    let done = 0;
+    for (const [i, f] of list.slice(0, targets.length).entries()) {
+      const key = targets[i]!.key;
+      if (f.size > 12 * 1024 * 1024) {
+        setS(key, "error", "Larger than 12 MB.");
+        continue;
+      }
+      setS(key, "uploading", "Uploading…");
+      const fd = new FormData();
+      fd.set("key", key);
+      fd.set("file", f);
+      if (credit.trim()) fd.set("credit", credit.trim());
+      const r = await uploadToSlot(fd);
+      if (r.ok) {
+        update(key, { url: r.url, credit: credit.trim() || null });
+        setS(key, "idle", "");
+        done++;
+      } else setS(key, "error", r.error);
+    }
+    if (list.length <= targets.length) setBatchMsg(`Added ${done} photo${done === 1 ? "" : "s"}.`);
+  };
   const groups: [string, BoardSlot["group"]][] = [
     ["Home page", "home"],
     ["Featured destinations", "featured"],
     ["Other destinations", "other"],
     ["Destination page galleries", "gallery"],
-    ["Yacht models (similar-yacht stock photos; upload the builder\u2019s to replace)", "models"],
+    ["Yacht models (up to 10 photos each)", "models"],
   ];
 
   return (
@@ -110,11 +148,36 @@ export function PhotoBoard({ slots: initial, gapSec, sourceLabel }: { slots: Boa
       {groups.map(([title, g]) => (
         <section key={g}>
           <h2 className="mb-3 font-semibold">{title}</h2>
+          {g === "models" && (
+            <div className="card mb-4 space-y-3 p-4">
+              <div className="flex flex-wrap items-end gap-3">
+                <label className="block">
+                  <span className="field-label">Yacht</span>
+                  <select value={model} onChange={(e) => { setModel(e.target.value); setBatchMsg(""); }} className="field py-1.5">
+                    {modelIds.map((id) => (
+                      <option key={id} value={id}>{slots.find((s) => s.key === `model:${id}:g1`)?.label.replace(/ · photo 1$/, "") ?? id}</option>
+                    ))}
+                  </select>
+                </label>
+                <label className="block min-w-56 flex-1">
+                  <span className="field-label">Credit shown under the photos (optional)</span>
+                  <input value={credit} onChange={(e) => setCredit(e.target.value)} placeholder="© Lagoon / photographer" className="field py-1.5" />
+                </label>
+                <label className="btn-primary cursor-pointer px-4 py-2 text-sm">
+                  Add photos
+                  <input type="file" accept="image/*" multiple className="hidden" onChange={(e) => { addPhotos(e.target.files); e.target.value = ""; }} />
+                </label>
+              </div>
+              <p className="text-xs text-muted">
+                Up to {modelSlots.length} photos per yacht, in order. Photos 1–5 fill themselves with library photos of a similar yacht; once you add any photo of your own, the yacht&apos;s page shows only yours. Choose several files at once: they go into empty slots first, then replace library photos.
+              </p>
+              {batchMsg && <p className="text-sm">{batchMsg}</p>}
+            </div>
+          )}
           <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-            {slots
-              .filter((s) => s.group === g)
+            {(g === "models" ? modelSlots : slots.filter((s) => s.group === g))
               .map((s) => (
-                <Tile key={s.key} slot={s} status={status[s.key] ?? "idle"} message={msg[s.key] ?? ""} canRefresh={!!sourceLabel}
+                <Tile key={s.key} slot={s} status={status[s.key] ?? "idle"} message={msg[s.key] ?? ""} canRefresh={!!sourceLabel && !s.uploadOnly}
                   onRefresh={() => enqueue(s.key)}
                   onQuery={(q) => { queries.current[s.key] = q; }}
                   onFiles={(f) => onFiles(s.key, f)}

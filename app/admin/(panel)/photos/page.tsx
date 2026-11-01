@@ -3,7 +3,7 @@ import { Card, PageTitle } from "@/components/admin/ui";
 import { getDb } from "@/lib/db";
 import { getEnvAsync } from "@/lib/env";
 import { MIN_GAP_SEC, photoSource } from "@/lib/photos/picker";
-import { readSlots, SLOTS } from "@/lib/photos/slots";
+import { readSlots, SLOTS, uploadOnly } from "@/lib/photos/slots";
 import { storageEnabled } from "@/lib/photos/storage";
 import { pixabayEnabled } from "@/lib/photos/pixabay";
 
@@ -13,7 +13,7 @@ export default async function Photos() {
   const env = await getEnvAsync();
   const db = await getDb();
   const values = await readSlots(db);
-  const slots: BoardSlot[] = SLOTS.map((s) => ({ ...s, url: values[s.key]?.url ?? null, credit: values[s.key]?.credit ?? null }));
+  const slots: BoardSlot[] = SLOTS.map((s) => ({ ...s, url: values[s.key]?.url ?? null, credit: values[s.key]?.credit ?? null, uploadOnly: uploadOnly(s) }));
   const source = photoSource(env);
   const storage = storageEnabled(env);
   return (

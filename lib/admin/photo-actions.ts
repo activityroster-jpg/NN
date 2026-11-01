@@ -10,7 +10,7 @@ import { readSlots, slotByKey, uploadOnly, writeSlot } from "@/lib/photos/slots"
 import { storePhoto } from "@/lib/photos/storage";
 import { requireAdmin } from "./auth";
 
-const Key = z.string().regex(/^(destination:[a-z-]+(:g[1-3])?|home:(hero|monohull|catamaran)|model:[a-z0-9-]+:g[1-5])$/);
+const Key = z.string().regex(/^(destination:[a-z-]+(:g[1-3])?|home:(hero|monohull|catamaran)|model:[a-z0-9-]+:g(10|[1-9]))$/);
 
 /** Replace a slot's photo with the next matching one. Called by the board, one slot at a time. */
 export async function refreshSlot(key: string, seen: string[], query?: string): Promise<PickResult & { key: string }> {
