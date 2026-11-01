@@ -68,25 +68,22 @@ export default async function Yachts({ params }: { params: Promise<{ locale: str
       <p className="text-sm font-semibold tracking-wider text-sea uppercase">Our yachts</p>
       <h1 className="h-display mt-1 text-5xl">The catamarans and sailing yachts we charter</h1>
       <p className="mt-3 max-w-2xl text-lg text-ink/75">Pick the model that suits your crew and we&apos;ll find the best available yacht of that model, or a close equal, for your week and destination. Every quote comes with the actual boat&apos;s photos, layout and year.</p>
-      <p className="mt-2 max-w-2xl text-sm text-muted">Pictures are photos of similar yachts from a photo library (or the builder&apos;s own, where we have them), not the exact model. The yacht you charter is a specific boat: its photos, layout, year and equipment come with your official quote.</p>
+      <p className="mt-2 max-w-2xl text-sm text-muted">Photos show the model. The yacht you charter is a specific boat: its own photos, layout, year and equipment come with your official quote.</p>
       <p className="mt-2 max-w-2xl text-sm text-muted">{ESTIMATE_NOTE}</p>
 
       {(["catamaran", "monohull"] as const).map((kind) => (
         <section key={kind} className="mt-14">
           <h2 className="h-display text-4xl">{KIND_TITLE[kind]}</h2>
-          {FLEET_CLASSES.filter((c) => c.kind === kind).map((c) => (
-            <div key={c.id} className="mt-8">
-              <h3 className="text-xl font-semibold">{c.title}</h3>
-              <p className="mt-1 max-w-2xl text-ink/75">{c.blurb}</p>
-              <div className="mt-4 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
-                {[...c.models, ...c.alternatives].map((id) => {
-                  const m = modelById(id);
-                  return m ? <Card key={id} m={m} cover={covers[id]} from={from(id)} /> : null;
-                })}
-              </div>
-              {c.alternatives.length > 0 && <p className="mt-2 text-xs text-muted">We quote the {c.models.map((id) => modelById(id)?.name ?? id).join(" or ")} first; the others are equals we may offer when those are taken.</p>}
-            </div>
-          ))}
+          {/* Smallest to largest, three to a row. */}
+          <div className="mt-6 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+            {all
+              .map((id) => modelById(id))
+              .filter((m): m is ModelSpecs => !!m && m.kind === kind)
+              .sort((a, b) => (a.lengthOverallM ?? 0) - (b.lengthOverallM ?? 0) || a.name.localeCompare(b.name))
+              .map((m) => (
+                <Card key={m.id} m={m} cover={covers[m.id]} from={from(m.id)} />
+              ))}
+          </div>
         </section>
       ))}
     </div>
