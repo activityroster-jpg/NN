@@ -1,4 +1,5 @@
 import { describe, expect, it } from "vitest";
+import { HOWTO_SCRIPTS, howToNarrationId } from "@/lib/cruising/howto-scripts";
 import { GUIDES } from "@/lib/cruising";
 import { sentenceHash } from "@/lib/cruising/narration";
 import { LESSON_SCRIPTS, lessonNarrationId } from "@/lib/courses/navigation/scripts";
@@ -17,7 +18,10 @@ describe("shorts", () => {
     const ids = [...GUIDES.map((g) => g.id), ...SHORTS.map((s) => s.id)];
     expect(new Set(ids).size).toBe(ids.length);
     const lessons = Object.values(LESSON_SCRIPTS).map((l) => lessonNarrationId(l.slug));
-    expect(narrationSources().map((x) => x.id)).toEqual([...ids, ...lessons]);
+    const howtos = Object.values(HOWTO_SCRIPTS).map((h) => howToNarrationId(h.id));
+    const all = narrationSources().map((x) => x.id);
+    expect(all).toEqual([...ids, ...lessons, ...howtos]);
+    expect(new Set(all).size).toBe(all.length);
   });
   it("sentence hashes are unique within a short", () => {
     for (const s of SHORTS) {

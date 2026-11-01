@@ -12,7 +12,7 @@ import { isLocale } from "@/lib/i18n/config";
 import { allow } from "@/lib/rate-limit";
 import { clientIp } from "@/lib/request";
 import { audit } from "@/lib/audit";
-import { modelById } from "@/lib/fleet";
+import { modelById, RETIRED_MODELS } from "@/lib/fleet";
 import { COMPANY } from "@/lib/brand";
 import { estimatesForWeek, isSaturday, PRODUCT_COVER, productOf } from "@/lib/pricing";
 
@@ -135,7 +135,7 @@ function yachtNames(key: string | undefined): string {
   if (!key) return "-";
   const m = /^models?:(.+)$/.exec(key);
   if (!m) return key;
-  return m[1]!.split(",").map((id) => modelById(id)?.name ?? id).join(", ");
+  return m[1]!.split(",").map((id) => modelById(id)?.name ?? RETIRED_MODELS[id]?.name ?? id).join(", ");
 }
 
 /** The estimates the customer saw for their yachts and week (EUR), for the office email. */
