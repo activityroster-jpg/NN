@@ -3,13 +3,12 @@ import { MODELS } from "@/lib/fleet";
 import { isStockCredit, MODEL_RE, MODEL_SLOTS, SLOTS, uploadOnly } from "@/lib/photos/slots";
 
 describe("yacht model photo slots", () => {
-  it("has ten per model: 1–5 filled from the library, 6–10 uploads only", () => {
+  it("has ten per model, all uploads only (no library photos)", () => {
     expect(MODEL_SLOTS).toBe(10);
     for (const m of MODELS) {
       const mine = SLOTS.filter((s) => s.key.startsWith(`model:${m.id}:`));
       expect(mine.map((s) => s.key)).toEqual(Array.from({ length: 10 }, (_, i) => `model:${m.id}:g${i + 1}`));
-      expect(mine.slice(0, 5).every((s) => !uploadOnly(s) && s.query.length > 0)).toBe(true);
-      expect(mine.slice(5).every((s) => uploadOnly(s))).toBe(true);
+      expect(mine.every((s) => uploadOnly(s) && s.query === "")).toBe(true);
     }
   });
 

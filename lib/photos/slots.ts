@@ -27,11 +27,6 @@ export interface SlotValue {
 /** Photos per yacht model. */
 export const MODEL_SLOTS = 10;
 
-// Stock searches for the yacht model slots, by hull type, one per gallery position.
-const MODEL_QUERIES: Record<"catamaran" | "monohull", string[]> = {
-  catamaran: ["catamaran sailing", "catamaran bay", "catamaran aerial", "catamaran yacht", "catamaran sunset"],
-  monohull: ["sailing yacht", "sailboat bay", "sailboat aerial", "yacht deck sailing", "sailboat sunset"],
-};
 
 export const SLOTS: readonly Slot[] = [
   { key: "home:hero", label: "Home page hero", query: "sailing yacht deck mediterranean", group: "home" },
@@ -42,20 +37,19 @@ export const SLOTS: readonly Slot[] = [
   ...DESTINATIONS.flatMap((d) =>
     [1, 2, 3].map((n) => ({ key: `destination:${d.id}:g${n}`, label: `${d.id} · gallery ${n}`, query: GALLERY_QUERIES[d.id]?.[n - 1] ?? `${d.id} coast`, group: "gallery" as const })),
   ),
-  // Yacht model pages: up to MODEL_SLOTS photos each. The first five fill
-  // themselves with library photos of a similar yacht (same hull type), shown
-  // only while the model has no uploaded photos; the rest take uploads only.
+  // Yacht model pages: up to MODEL_SLOTS photos each, uploaded in the admin
+  // (no library photos: a model shows a blank panel until it has uploads).
   ...MODELS.flatMap((m) =>
     Array.from({ length: MODEL_SLOTS }, (_, i) => i + 1).map((n) => ({
       key: `model:${m.id}:g${n}`,
       label: `${m.name} · photo ${n}`,
-      query: MODEL_QUERIES[m.kind][n - 1] ?? "",
+      query: "",
       group: "models" as const,
     })),
   ),
 ];
 
-/** Slots that only take uploads (no stock fill, no Refresh): yacht model photos 6–10. */
+/** Slots that only take uploads (no stock fill, no Refresh): every yacht model photo. */
 export const uploadOnly = (s: Slot) => s.group === "models" && !s.query;
 
 /** True when a slot's photo came from the stock library rather than an upload. */
@@ -82,25 +76,22 @@ async function writePhotoMap(db: Db, map: PhotoMap): Promise<void> {
     .onConflictDoUpdate({ target: setting.key, set: { value: map, updatedAt: new Date().toISOString() } });
 }
 
-/**
- * Photos for one yacht model page, in slot order: the uploaded ones (the
- * builder's) if there are any, otherwise the library photos of a similar yacht.
- */
+/** Uploaded photos for one yacht model page, in slot order (library photos are never shown). */
 export async function modelPhotos(db: Db, modelId: string): Promise<{ url: string; credit: string | null }[]> {
   const map = await readPhotoMap(db);
-  const all = Array.from({ length: MODEL_SLOTS }, (_, i) => map[`model:${modelId}:g${i + 1}`]).filter((v): v is SlotValue & { url: string } => !!v?.url);
-  const own = all.filter((v) => !isStockCredit(v.credit));
-  return (own.length ? own : all).map((v) => ({ url: v.url, credit: v.credit }));
+  return Array.from({ length: MODEL_SLOTS }, (_, i) => map[`model:${modelId}:g${i + 1}`])
+    .filter((v): v is SlotValue & { url: string } => !!v?.url && !isStockCredit(v.credit))
+    .map((v) => ({ url: v.url, credit: v.credit }));
 }
 
-/** Cover photo of every model that has one: its first uploaded photo, else its first library photo. */
+/** Cover photo of every model that has one: its first uploaded photo. */
 export async function modelCovers(db: Db): Promise<Record<string, string>> {
   const map = await readPhotoMap(db);
   const best: Record<string, { url: string; rank: number }> = {};
   for (const [k, v] of Object.entries(map)) {
     const m = MODEL_RE.exec(k);
-    if (!m || !v.url) continue;
-    const rank = (isStockCredit(v.credit) ? 100 : 0) + Number(m[2]);
+    if (!m || !v.url || isStockCredit(v.credit)) continue;
+    const rank = Number(m[2]);
     if (!best[m[1]!] || rank < best[m[1]!]!.rank) best[m[1]!] = { url: v.url, rank };
   }
   return Object.fromEntries(Object.entries(best).map(([id, b]) => [id, b.url]));

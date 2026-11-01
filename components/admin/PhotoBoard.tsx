@@ -169,7 +169,7 @@ export function PhotoBoard({ slots: initial, gapSec, sourceLabel }: { slots: Boa
                 </label>
               </div>
               <p className="text-xs text-muted">
-                Up to {modelSlots.length} photos per yacht, in order. Photos 1–5 fill themselves with library photos of a similar yacht; once you add any photo of your own, the yacht&apos;s page shows only yours. Choose several files at once: they go into empty slots first, then replace library photos.
+                Up to {modelSlots.length} photos per yacht, shown in this order; the first is the cover on the fleet list and planner. A yacht with no photos shows a blank panel. Choose several files at once: they go into the empty slots in order.
               </p>
               {batchMsg && <p className="text-sm">{batchMsg}</p>}
             </div>
