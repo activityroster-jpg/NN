@@ -10,13 +10,14 @@ import { siteUrl, type AppEnv } from "@/lib/env";
 import { refreshRates } from "@/lib/fx";
 import { autofillEmpty } from "@/lib/photos/autofill";
 import { prerecordNarration } from "@/lib/cruising/prerecord";
+import { warmFootage } from "@/lib/shorts/footage";
 import { providerFor } from "./charter";
 
 /** Hourly housekeeping: expire holds, remind about balances, refresh FX, purge old auth rows. */
 export async function tick(env: AppEnv, db: Db): Promise<Record<string, number>> {
   const now = new Date().toISOString();
   const today = now.slice(0, 10);
-  const out = { expired: 0, reminders: 0, fx: 0, photos: 0, narration: 0 };
+  const out = { expired: 0, reminders: 0, fx: 0, photos: 0, narration: 0, footage: 0 };
 
   // 1. Holds and unpaid bookings whose option has run out.
   const stale = await db
@@ -83,6 +84,13 @@ export async function tick(env: AppEnv, db: Db): Promise<Record<string, number>>
     out.narration = (await prerecordNarration(env, 3 * 60_000)).made;
   } catch (e) {
     console.error("narration prerecord failed", e);
+  }
+  // 6. Shorts: choose and download stock footage for scenes without it (up to ~2 min),
+  // so a batch of new shorts does not depend on the next deploy.
+  try {
+    out.footage = (await warmFootage(env, 2 * 60_000)).made;
+  } catch (e) {
+    console.error("footage warm failed", e);
   }
   return out;
 }
