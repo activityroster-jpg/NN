@@ -66,21 +66,6 @@
    "confidence": "Likely",
    "basis": "Crewed listings, 2023–24 builds: crew included, APA extra"
   },
-  "sun-odyssey-440": {
-   "peak": 5800,
-   "low": 2504,
-   "product": "bareboat",
-   "confidence": "Likely",
-   "basis": "Sun Odyssey 440, 2023–25, 3–4 cabins"
-  },
-  "bavaria-cruiser-46": {
-   "peak": 6700,
-   "low": 4237,
-   "product": "bareboat",
-   "confidence": "Likely",
-   "basis": "No 2023+ Cruiser 46: priced as the Bavaria C46 (2024–25), its successor; the 5-cabin C46 lists 15–25% higher",
-   "successor": "Bavaria C46"
-  },
   "hanse-458": {
    "peak": 6350,
    "low": 2812,
@@ -103,33 +88,12 @@
    "basis": "No 2023+ Oceanis 48 (built 2013–18): priced as the Oceanis 46.1 (2024–25), 15–30% above a 2018 Oceanis 48",
    "successor": "Beneteau Oceanis 46.1"
   },
-  "oceanis-51-1": {
-   "peak": 8400,
-   "low": 4187,
-   "product": "bareboat",
-   "confidence": "Likely",
-   "basis": "Oceanis 51.1, 2023–25, 5–6 cabins"
-  },
   "dufour-530": {
    "peak": 9000,
    "low": 3137,
    "product": "bareboat",
    "confidence": "Likely",
    "basis": "Dufour 530 2023–24 and its successor Dufour 54 (2026)"
-  },
-  "hanse-508": {
-   "peak": 8350,
-   "low": 3878,
-   "product": "bareboat",
-   "confidence": "Likely",
-   "basis": "Hanse 508 2023–24 and its successor Hanse 510"
-  },
-  "elan-impression-50-1": {
-   "peak": 8300,
-   "low": 2800,
-   "product": "bareboat",
-   "confidence": "Guessing",
-   "basis": "Impression 50.1, 2023–24; research low €1,592 is a distressed week, floor set at €2,800"
   },
   "sun-odyssey-519": {
    "peak": 7400,
